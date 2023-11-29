@@ -4,6 +4,9 @@ export class GameScene extends Phaser.Scene {
   private ball!: Phaser.Physics.Arcade.Sprite;
   private paddle!: Phaser.Physics.Arcade.Sprite;
   private bricks!: Phaser.Physics.Arcade.Group;
+  private pauseBtn!: Phaser.GameObjects.Sprite;
+  private lives = 3;
+  private hearts!: Phaser.GameObjects.Group;
   canvasW!: number;
   canvasH!: number;
 
@@ -23,6 +26,17 @@ export class GameScene extends Phaser.Scene {
 
     this.physics.world.setBounds(0, 0, this.canvasW, this.canvasH);
     this.physics.world.setBoundsCollision(true, true, true, false);
+
+    this.pauseBtn = this.add
+      .sprite(this.canvasW - 40, 30, "pause-btn")
+      .setInteractive();
+    this.pauseBtn.on("pointerdown", () => {
+      this.togglePause(this.scene);
+    });
+
+    this.hearts = this.add.group();
+    this.setLives();
+
     this.initBall();
     this.initPaddle();
     this.initBricks();
@@ -56,10 +70,31 @@ export class GameScene extends Phaser.Scene {
 
   update() {
     if (this.ball.y > this.canvasH + this.ball.height) {
-      alert("game over");
+      this.lives--;
+      this.setLives();
+      if (this.lives < 1) {
+        alert("game over");
+        // this.scene.pause();
+        this.lives = 3;
+        this.setLives();
+      }
       this.ball.body?.reset(this.canvasW / 2, this.canvasH / 2);
       this.ball.setVelocity(220, -220);
     }
+  }
+
+  setLives() {
+    this.hearts.destroy(true, false);
+    this.hearts = this.add.group();
+    if (!this.lives) return;
+    for (let i = 0; i < this.lives; i++) {
+      this.hearts.add(this.add.sprite(60 + 40 * i, 30, "heart"));
+    }
+  }
+
+  togglePause(scene: any) {
+    scene.pause();
+    scene.launch("PauseScene");
   }
 
   initBall() {
@@ -99,7 +134,7 @@ export class GameScene extends Phaser.Scene {
         col: 19,
       },
       offset: {
-        top: 50,
+        top: 70,
         left: 65,
       },
       padding: 2,

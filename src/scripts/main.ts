@@ -1,14 +1,16 @@
 import "phaser";
-import { LoadScreen } from "../scenes/LoadScreen";
+import { LoadScene } from "../scenes/LoadScene";
 import { GameScene } from "../scenes/GameScene";
+import { PauseScene } from "../scenes/PauseScene";
+import { StartScene } from "../scenes/StartScene";
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   width: 1100,
-  scene: [LoadScreen, GameScene],
+  scene: [LoadScene, StartScene, GameScene, PauseScene],
   scale: {
     mode: Phaser.Scale.FIT,
-    autoCenter: Phaser.Scale.CENTER_HORIZONTALLY,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
   },
 };
 

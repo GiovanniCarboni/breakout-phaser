@@ -1,6 +1,6 @@
-export class LoadScreen extends Phaser.Scene {
+export class LoadScene extends Phaser.Scene {
   constructor() {
-    super({ key: "BootScene" });
+    super({ key: "LoadScene" });
   }
 
   preload() {
@@ -18,6 +18,8 @@ export class LoadScreen extends Phaser.Scene {
       frameWidth: 51,
       frameHeight: 20,
     });
+    this.load.image("pause-btn", "assets/images/pause-btn.png");
+    this.load.image("heart", "assets/images/heart.png");
   }
 
   create() {
@@ -26,6 +28,6 @@ export class LoadScreen extends Phaser.Scene {
       color: "red",
     });
     text.setOrigin(0.5, 0.5);
-    this.scene.start("GameScene");
+    this.scene.start("StartScene");
   }
 }
