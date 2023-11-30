@@ -59,7 +59,6 @@ export class GameScene extends Phaser.Scene {
     this.physics.add.collider(
       this.bricks,
       this.ball,
-      // this.ballHitPaddle,
       (_, brick) => {
         brick.destroy();
       },
@@ -73,10 +72,11 @@ export class GameScene extends Phaser.Scene {
       this.lives--;
       this.setLives();
       if (this.lives < 1) {
-        alert("game over");
-        // this.scene.pause();
-        this.lives = 3;
-        this.setLives();
+        setTimeout(() => {
+          alert("game over");
+          this.lives = 3;
+          this.setLives();
+        }, 100);
       }
       this.ball.body?.reset(this.canvasW / 2, this.canvasH / 2);
       this.ball.setVelocity(220, -220);
