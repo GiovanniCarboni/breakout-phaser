@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "copy-webpack-plugin": "^11.0.0",
+    "html-webpack-plugin": "^5.5.3",
     "phaser": "^3.70.0",
     "ts-loader": "^9.5.1",
     "typescript": "^5.3.2",
