@@ -1,5 +1,7 @@
 # Breakout with Pahser 3
 
+![Alt text](./public/cover.png)
+
 live demo: breakoutphaser.netlify.app
 
 ## Development
