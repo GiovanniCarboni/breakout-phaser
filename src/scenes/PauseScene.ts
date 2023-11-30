@@ -71,8 +71,15 @@ export class PauseScene extends Phaser.Scene {
 
   handleMouseOver(button: Phaser.GameObjects.Text) {
     button.setScale(1.1);
+    button.angle = -2;
+    setTimeout(() => {
+      button.angle = 2;
+    }, 100);
   }
   handleMouseOut(button: Phaser.GameObjects.Text) {
     button.setScale(1);
+    setTimeout(() => {
+      button.angle = 0;
+    }, 100);
   }
 }

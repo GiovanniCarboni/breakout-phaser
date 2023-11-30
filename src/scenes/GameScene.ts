@@ -5,7 +5,7 @@ export class GameScene extends Phaser.Scene {
   private paddle!: Phaser.Physics.Arcade.Sprite;
   private bricks!: Phaser.Physics.Arcade.Group;
   private pauseBtn!: Phaser.GameObjects.Sprite;
-  private lives = 3;
+  private lives!: number;
   private hearts!: Phaser.GameObjects.Group;
   canvasW!: number;
   canvasH!: number;
@@ -30,10 +30,24 @@ export class GameScene extends Phaser.Scene {
     this.pauseBtn = this.add
       .sprite(this.canvasW - 40, 30, "pause-btn")
       .setInteractive();
+    this.pauseBtn.on("pointerover", () => {
+      this.pauseBtn.setScale(1.1);
+      this.pauseBtn.angle = -2;
+      setTimeout(() => {
+        this.pauseBtn.angle = 2;
+      }, 100);
+    });
+    this.pauseBtn.on("pointerout", () => {
+      this.pauseBtn.setScale(1);
+      setTimeout(() => {
+        this.pauseBtn.angle = 0;
+      }, 100);
+    });
     this.pauseBtn.on("pointerdown", () => {
       this.togglePause(this.scene);
     });
 
+    this.lives = 3;
     this.hearts = this.add.group();
     this.setLives();
 
@@ -123,7 +137,6 @@ export class GameScene extends Phaser.Scene {
   }
 
   initBricks() {
-    // Create a group for bricks
     this.bricks = this.physics.add.group();
 
     const brickInfo = {
@@ -179,8 +192,6 @@ export class GameScene extends Phaser.Scene {
     });
 
     this.bricks.getChildren()[16].body?.gameObject.play("brickFireAnimation");
-
-    // this.bricks.playAnimation("brickAnimation");
   }
 
   ballHitPaddle() {
