@@ -4,7 +4,7 @@ export class LoadScene extends Phaser.Scene {
   }
 
   preload() {
-    setTimeout;
+    ////////// IMAGES /////////////////////
     this.load.image("ball", "assets/images/ball.png");
     this.load.spritesheet("paddle", "assets/images/paddle.png", {
       frameHeight: 20,
@@ -20,6 +20,17 @@ export class LoadScene extends Phaser.Scene {
     });
     this.load.image("pause-btn", "assets/images/pause-btn.png");
     this.load.image("heart", "assets/images/heart.png");
+
+    this.load.image("start", "assets/text/start.png");
+    this.load.image("restart", "assets/text/restart.png");
+    this.load.image("resume", "assets/text/resume.png");
+    this.load.image("backToMenu", "assets/text/back_to_menu.png");
+    ////////// AUDIO /////////////////////
+    this.load.audio("bounce", "assets/sounds/bounce.wav");
+    this.load.audio("brickbreak", "assets/sounds/brickbreak.wav");
+    this.load.audio("shuffle", "assets/sounds/shuffle.mp3");
+    this.load.audio("gameOver", "assets/sounds/game_over.mp3");
+    this.load.audio("lifeLost", "assets/sounds/lost_life.mp3");
   }
 
   create() {
