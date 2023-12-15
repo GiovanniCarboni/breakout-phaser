@@ -1,19 +1,19 @@
 import { sceneEvents } from "../events/EventCenter";
 
-export class UIScene extends Phaser.Scene {
+export class UI extends Phaser.Scene {
   private pauseBtn!: Phaser.GameObjects.Sprite;
   private hearts!: Phaser.GameObjects.Group;
   canvasW!: number;
   canvasH!: number;
   constructor() {
     super({
-      key: "UIScene",
+      key: "UI",
     });
   }
 
   create() {
-    this.scene.moveBelow("PauseScene");
-    this.scene.moveBelow("StartScene");
+    this.scene.moveBelow("pause");
+    this.scene.moveBelow("start");
 
     this.canvasW = this.scale.width;
     this.canvasH = this.scale.height;
@@ -43,19 +43,19 @@ export class UIScene extends Phaser.Scene {
     //////////////// LIVES /////////////////////////////////////
     sceneEvents.on("livesChanged", (lives: number) => {
       this.hearts?.destroy(true, false);
-      this.hearts = this.add.group();
       this.createHearts(lives);
     });
   }
 
   pause(scene: Phaser.Scenes.ScenePlugin) {
-    scene.moveBelow("PauseScene");
+    scene.moveBelow("pause");
     scene.pause();
-    scene.pause("GameScene");
-    scene.launch("PauseScene");
+    scene.pause("game");
+    scene.launch("pause");
   }
 
   createHearts(lives: number) {
+    this.hearts = this.add.group();
     for (let i = 0; i < lives; i++) {
       this.hearts.add(this.add.sprite(60 + 40 * i, 30, "heart"));
     }

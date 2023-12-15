@@ -1,6 +1,6 @@
-export class PauseScene extends Phaser.Scene {
+export class Pause extends Phaser.Scene {
   private buttons!: {
-    [key: string]: Phaser.GameObjects.Text | Phaser.GameObjects.Sprite;
+    [key: string]: Phaser.GameObjects.Sprite;
   };
   private shuffle!:
     | Phaser.Sound.NoAudioSound
@@ -8,7 +8,7 @@ export class PauseScene extends Phaser.Scene {
     | Phaser.Sound.WebAudioSound;
 
   constructor() {
-    super({ key: "PauseScene" });
+    super({ key: "pause" });
   }
 
   preload() {}
@@ -26,17 +26,17 @@ export class PauseScene extends Phaser.Scene {
     this.addButtonAnimations();
 
     this.buttons.resumeButton.on("pointerdown", () => {
-      this.scene.resume("GameScene");
-      this.scene.resume("UIScene");
+      this.scene.resume("game");
+      this.scene.resume("UI");
       this.scene.stop();
     });
     this.buttons.restartButton.on("pointerdown", () => {
-      this.scene.start("GameScene");
+      this.scene.start("game");
       this.scene.stop();
     });
     this.buttons.backToMenuButton.on("pointerdown", () => {
-      this.scene.stop("GameScene");
-      this.scene.start("StartScene");
+      this.scene.stop("game");
+      this.scene.start("start");
       this.scene.stop();
     });
   }
@@ -78,12 +78,12 @@ export class PauseScene extends Phaser.Scene {
     button.angle = -2;
     setTimeout(() => {
       button.angle = 2;
+      setTimeout(() => {
+        button.angle = 0;
+      }, 100);
     }, 100);
   }
   handleMouseOut(button: Phaser.GameObjects.Text | Phaser.GameObjects.Sprite) {
     button.setScale(1);
-    setTimeout(() => {
-      button.angle = 0;
-    }, 100);
   }
 }

@@ -1,4 +1,4 @@
-export class StartScene extends Phaser.Scene {
+export class Start extends Phaser.Scene {
   private startButton!: Phaser.GameObjects.Sprite;
   private shuffle!:
     | Phaser.Sound.NoAudioSound
@@ -6,7 +6,7 @@ export class StartScene extends Phaser.Scene {
     | Phaser.Sound.WebAudioSound;
 
   constructor() {
-    super({ key: "StartScene" });
+    super({ key: "start" });
   }
 
   preload() {}
@@ -23,7 +23,7 @@ export class StartScene extends Phaser.Scene {
     }
 
     this.startButton.on("pointerdown", () => {
-      this.scene.start("GameScene");
+      this.scene.start("game");
       this.scene.stop();
     });
   }
@@ -40,12 +40,12 @@ export class StartScene extends Phaser.Scene {
     button.angle = -2;
     setTimeout(() => {
       button.angle = 2;
+      setTimeout(() => {
+        button.angle = 0;
+      }, 100);
     }, 100);
   }
   handleMouseOut(button: Phaser.GameObjects.Sprite) {
     button.setScale(1);
-    setTimeout(() => {
-      button.angle = 0;
-    }, 100);
   }
 }
