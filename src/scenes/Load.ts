@@ -26,6 +26,10 @@ export class Load extends Phaser.Scene {
     this.load.image("restart", "assets/text/restart.png");
     this.load.image("resume", "assets/text/resume.png");
     this.load.image("backToMenu", "assets/text/back_to_menu.png");
+    this.load.spritesheet("gameOver", "assets/text/game_over.png", {
+      frameWidth: 360,
+      frameHeight: 40,
+    });
 
     ////////// AUDIO /////////////////////
     this.load.audio("bounce", "assets/sounds/bounce.wav");

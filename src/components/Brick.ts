@@ -1,5 +1,3 @@
-import { createBricksAnims } from "../anims/brickAnims";
-
 export default class Brick extends Phaser.Physics.Arcade.Sprite {
   constructor(
     scene: Phaser.Scene,

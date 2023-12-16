@@ -56,17 +56,10 @@ export class Game extends Phaser.Scene {
       if (this.lives > 1) this.sounds.lifeLost.play();
       this.lives--;
       this.setLives();
-
       if (this.lives < 1) {
-        this.sounds.gameOver.play();
-        this.time.addEvent({
-          delay: 100,
-          callback: () => {
-            alert("game over");
-            this.initLives();
-          },
-          callbackScope: this,
-        });
+        this.scene.stop();
+        this.scene.stop("UI");
+        this.scene.launch("gameOver");
       }
 
       this.ball.reset();
@@ -77,7 +70,6 @@ export class Game extends Phaser.Scene {
     this.sounds = {
       bounce: this.sound.add("bounce", { loop: false }),
       brickbreak: this.sound.add("brickbreak", { loop: false }),
-      gameOver: this.sound.add("gameOver", { loop: false }),
       lifeLost: this.sound.add("lifeLost", { loop: false }),
       fire: this.sound.add("fire", { loop: false }),
     };
