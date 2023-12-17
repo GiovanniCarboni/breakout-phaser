@@ -31,13 +31,14 @@ export class Pause extends Phaser.Scene {
       this.scene.stop();
     });
     this.buttons.restartButton.on("pointerdown", () => {
+      this.scene.stop("game");
       this.scene.start("game");
-      this.scene.stop();
+      // this.scene.stop();
     });
     this.buttons.backToMenuButton.on("pointerdown", () => {
       this.scene.stop("game");
       this.scene.start("start");
-      this.scene.stop();
+      // this.scene.stop();
     });
   }
 

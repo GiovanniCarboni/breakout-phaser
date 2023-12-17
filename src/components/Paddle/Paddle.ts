@@ -1,4 +1,4 @@
-import { createPaddleAnims } from "../anims/paddleAnims";
+import { createPaddleAnims } from "../../anims/paddleAnims";
 
 export default class Paddle extends Phaser.Physics.Arcade.Sprite {
   private canvasH: number;
@@ -14,7 +14,6 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
 
     this.canvasH = scene.scale.height;
     this.canvasW = scene.scale.width;
-    createPaddleAnims(scene.anims);
   }
 
   init() {
@@ -40,9 +39,9 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
 }
 
 export const createPaddle = function (scene: Phaser.Scene) {
-  const sprite = new Paddle(scene, 0, 0, "paddle");
-  scene.add.existing(sprite);
-  scene.physics.world.enableBody(sprite, Phaser.Physics.Arcade.DYNAMIC_BODY);
-  sprite.init();
-  return sprite;
+  const paddle = new Paddle(scene, 0, 0, "paddle");
+  scene.add.existing(paddle);
+  scene.physics.world.enableBody(paddle, Phaser.Physics.Arcade.DYNAMIC_BODY);
+  paddle.init();
+  return paddle;
 };

@@ -16,6 +16,8 @@ export class GameOver extends Phaser.Scene {
   }
 
   create() {
+    this.cameras.main.setBackgroundColor("#000");
+
     this.sounds = {
       shuffle: this.sound.add("shuffle", { loop: false }),
       gameOver: this.sound.add("gameOver", { loop: false }),
@@ -34,8 +36,8 @@ export class GameOver extends Phaser.Scene {
 
     // EVENTS
     this.buttons.restartButton.on("pointerdown", () => {
+      this.scene.stop("game");
       this.scene.start("game");
-      this.scene.stop();
     });
     this.buttons.backToMenuButton.on("pointerdown", () => {
       this.scene.stop("game");

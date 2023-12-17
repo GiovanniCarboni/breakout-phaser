@@ -30,9 +30,9 @@ export const createBrick = function (
   y: number,
   info: { type: number; entryNr: number }
 ) {
-  const sprite = new Brick(scene, x, y, "brick");
-  scene.add.existing(sprite);
-  scene.physics.world.enableBody(sprite, Phaser.Physics.Arcade.DYNAMIC_BODY);
-  sprite.init(info.type, info.entryNr);
-  return sprite;
+  const brick = new Brick(scene, x, y, "brick");
+  scene.add.existing(brick);
+  scene.physics.world.enableBody(brick, Phaser.Physics.Arcade.DYNAMIC_BODY);
+  brick.init(info.type, info.entryNr);
+  return brick;
 };

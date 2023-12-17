@@ -11,7 +11,7 @@ export interface LevelTemplate {
   layout: number[][];
 }
 
-export const getLevelTemplate = (level = 2): LevelTemplate => {
+export const getLevelTemplate = (level: number): LevelTemplate => {
   if (level === 2) {
     return {
       info: {
@@ -38,6 +38,7 @@ export const getLevelTemplate = (level = 2): LevelTemplate => {
     };
   }
 
+  // if level is one
   return {
     info: {
       width: 51,
@@ -48,6 +49,12 @@ export const getLevelTemplate = (level = 2): LevelTemplate => {
       },
       padding: 2.7,
     },
+    // layout: [
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2],
+    // ],
     layout: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

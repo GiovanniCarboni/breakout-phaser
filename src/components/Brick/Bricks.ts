@@ -1,11 +1,12 @@
-import { LevelTemplate, getLevelTemplate } from "./../templates/levelTemplates";
-import { createBricksAnims } from "../anims/brickAnims";
+import {
+  LevelTemplate,
+  getLevelTemplate,
+} from "../../templates/levelTemplates";
 import Brick, { createBrick } from "./Brick";
 
 export default class Bricks extends Phaser.Physics.Arcade.Group {
   constructor(scene: Phaser.Scene, config: any) {
     super(scene.physics.world, config);
-    createBricksAnims(scene.anims);
   }
 
   fillBricks(scene: Phaser.Scene, template: LevelTemplate) {
@@ -29,8 +30,8 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
   }
 }
 
-export const createBricks = function (scene: Phaser.Scene) {
-  const sprite = new Bricks(scene, { classType: Brick });
-  sprite.fillBricks(scene, getLevelTemplate());
-  return sprite;
+export const createBricks = function (scene: Phaser.Scene, level: number) {
+  const bricks = new Bricks(scene, { classType: Brick });
+  bricks.fillBricks(scene, getLevelTemplate(level));
+  return bricks;
 };

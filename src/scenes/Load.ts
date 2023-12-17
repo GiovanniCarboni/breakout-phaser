@@ -1,3 +1,6 @@
+import { createBricksAnims } from "../anims/brickAnims";
+import { createPaddleAnims } from "../anims/paddleAnims";
+
 export class Load extends Phaser.Scene {
   constructor() {
     super({ key: "load" });
@@ -38,14 +41,22 @@ export class Load extends Phaser.Scene {
     this.load.audio("gameOver", "assets/sounds/game_over.mp3");
     this.load.audio("lifeLost", "assets/sounds/lost_life.mp3");
     this.load.audio("fire", "assets/sounds/fire.mp3");
+    this.load.audio("hitWall", "assets/sounds/hit_wall.ogg");
   }
 
   create() {
+    createBricksAnims(this.anims);
+    createPaddleAnims(this.anims);
+
     const text = this.add.text(400, 300, "Loading", {
       fontSize: "32px",
       color: "red",
     });
+
     text.setOrigin(0.5, 0.5);
-    this.scene.start("start");
+
+    setTimeout(() => {
+      this.scene.start("start");
+    }, 1000);
   }
 }

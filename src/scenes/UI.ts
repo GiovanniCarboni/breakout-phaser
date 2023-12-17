@@ -3,6 +3,7 @@ import { sceneEvents } from "../events/EventCenter";
 export class UI extends Phaser.Scene {
   private pauseBtn!: Phaser.GameObjects.Sprite;
   private hearts!: Phaser.GameObjects.Group;
+  private stageText!: Phaser.GameObjects.Text;
   canvasW!: number;
   canvasH!: number;
   constructor() {
@@ -14,9 +15,13 @@ export class UI extends Phaser.Scene {
   create() {
     this.scene.moveBelow("pause");
     this.scene.moveBelow("start");
+    this.scene.moveBelow("gameOver");
 
     this.canvasW = this.scale.width;
     this.canvasH = this.scale.height;
+
+    /////////////// LEVEL NUMBER ///////////////////////////////
+    this.stageText = this.add.text(this.canvasW / 2, 15, `Stage 1`);
 
     ////////////// PAUSE BUTTON ////////////////////////////////
     this.pauseBtn = this.add
@@ -44,6 +49,10 @@ export class UI extends Phaser.Scene {
     sceneEvents.on("livesChanged", (lives: number) => {
       this.hearts?.destroy(true, false);
       this.createHearts(lives);
+    });
+
+    sceneEvents.on("levelChanged", (level: number) => {
+      this.stageText.setText(`Stage ${level}`);
     });
   }
 
