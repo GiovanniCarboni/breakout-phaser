@@ -5,21 +5,28 @@ export default class Powerups extends Phaser.Physics.Arcade.Group {
     super(scene.physics.world, config);
   }
 
-  addPowerup(config: {
-    position: { x: number; y: number };
-    velocity: { x: number; y: number };
-  }) {
-    const powerup = createPowerup(
-      this.scene,
-      config.position.x,
-      config.position.y
-    );
+  addPowerup(powerup: Powerup, velocity: { x: number; y: number }) {
     this.add(powerup);
     powerup.init({
-      x: config.position.x,
-      y: config.position.y,
+      x: velocity.x,
+      y: velocity.y,
     });
   }
+  // addPowerup(config: {
+  //   position: { x: number; y: number };
+  //   velocity: { x: number; y: number };
+  // }) {
+  //   const powerup = createPowerup(
+  //     this.scene,
+  //     config.position.x,
+  //     config.position.y
+  //   );
+  //   this.add(powerup);
+  //   powerup.init({
+  //     x: config.position.x,
+  //     y: config.position.y,
+  //   });
+  // }
 }
 
 export const createPowerups = function (scene: Phaser.Scene) {

@@ -21,6 +21,7 @@ export class Load extends Phaser.Scene {
       frameWidth: 51,
       frameHeight: 20,
     });
+    this.load.image("getLife", "assets/images/powerups/get_life.png");
     // ui
     this.load.image("pause-btn", "assets/images/pause-btn.png");
     this.load.image("heart", "assets/images/heart.png");

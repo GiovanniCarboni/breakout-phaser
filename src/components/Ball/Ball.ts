@@ -5,6 +5,7 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
   private canvasW: number;
   isMoving: boolean;
   private startPosition;
+  private hitWallSound: any;
   constructor(
     scene: Phaser.Scene,
     x: number,
@@ -25,14 +26,18 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
     this.y = this.startPosition.y;
     this.setCollideWorldBounds(true);
     this.setBounce(1);
+    this.hitWallSound = this.scene.sound.add("hitWall", {
+      loop: false,
+      volume: 0.6,
+    });
   }
 
-  update(paddle: Paddle, sounds: any) {
+  update(paddle: Paddle) {
     if (!this.isMoving) this.x = paddle.x;
 
     // to modify. not reliable
     if (this.x < 8 || this.x > this.canvasW - 8 || this.y < 8)
-      if (!sounds.hitWall.isPlaying) sounds.hitWall.play();
+      if (!this.hitWallSound.isPlaying) this.hitWallSound.play();
   }
 
   start() {

@@ -69,7 +69,7 @@ export class Game extends Phaser.Scene {
   }
 
   update(_: number, dt: number) {
-    this.ball.update(this.paddle, this.sounds);
+    this.ball.update(this.paddle);
 
     // balls falls under
     if (this.ball.y > this.canvasH + this.ball.height) {
@@ -141,6 +141,15 @@ export class Game extends Phaser.Scene {
       undefined,
       this
     );
+    this.physics.add.collider(
+      this.powerups,
+      this.paddle,
+      (obj1: any, obj2: any) => {
+        console.log("powerup");
+        const powerup = obj2 as Powerup;
+        powerup.destroy();
+      }
+    );
   }
 
   // TODO move ballHitPaddle logic to Ball
@@ -183,15 +192,12 @@ export class Game extends Phaser.Scene {
     }, 100);
 
     ////////////// POWER UP //////////////////////////
-    this.powerups.addPowerup({
-      position: {
-        x: brick.x,
-        y: brick.y,
-      },
-      velocity: {
-        x: this.ball.body?.velocity.x! - 150,
-        y: -this.ball.body?.velocity.y!,
-      },
+    const randomValue = Math.ceil(Math.random() * 3);
+    if (randomValue !== 8) return;
+    const powerup = createPowerup(this, brick.x, brick.y);
+    this.powerups.addPowerup(powerup, {
+      x: this.ball.body?.velocity.x! - 150,
+      y: -this.ball.body?.velocity.y!,
     });
   }
 

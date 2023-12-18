@@ -17,7 +17,7 @@ export default class Powerup extends Phaser.Physics.Arcade.Sprite {
 }
 
 export const createPowerup = (scene: Phaser.Scene, x: number, y: number) => {
-  const powerup = new Powerup(scene, x, y, "heart");
+  const powerup = new Powerup(scene, x, y, "getLife");
   scene.add.existing(powerup);
   scene.physics.world.enableBody(powerup, Phaser.Physics.Arcade.DYNAMIC_BODY);
   return powerup;
