@@ -1,6 +1,8 @@
 import Powerup, { createPowerup } from "./Powerup";
 
 export default class Powerups extends Phaser.Physics.Arcade.Group {
+  private powerups = ["loseLife", "getLife", "longerPaddle"];
+
   constructor(scene: Phaser.Scene, config: any) {
     super(scene.physics.world, config);
   }
@@ -12,21 +14,10 @@ export default class Powerups extends Phaser.Physics.Arcade.Group {
       y: velocity.y,
     });
   }
-  // addPowerup(config: {
-  //   position: { x: number; y: number };
-  //   velocity: { x: number; y: number };
-  // }) {
-  //   const powerup = createPowerup(
-  //     this.scene,
-  //     config.position.x,
-  //     config.position.y
-  //   );
-  //   this.add(powerup);
-  //   powerup.init({
-  //     x: config.position.x,
-  //     y: config.position.y,
-  //   });
-  // }
+
+  getRandomPowerup() {
+    return this.powerups[Math.floor(Math.random() * this.powerups.length)];
+  }
 }
 
 export const createPowerups = function (scene: Phaser.Scene) {

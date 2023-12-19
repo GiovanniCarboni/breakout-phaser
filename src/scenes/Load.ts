@@ -9,28 +9,44 @@ export class Load extends Phaser.Scene {
   preload() {
     ////////// IMAGES /////////////////////
     this.load.image("ball", "assets/images/ball.png");
-    this.load.spritesheet("paddle", "assets/images/paddle.png", {
+    this.load.spritesheet("paddle", "assets/images/paddle/paddle.png", {
       frameHeight: 20,
       frameWidth: 120,
     });
-    this.load.spritesheet("brick", "assets/images/brick.png", {
+    this.load.spritesheet(
+      "longPaddle",
+      "assets/images/paddle/long-paddle.png",
+      {
+        frameHeight: 20,
+        frameWidth: 180,
+      }
+    );
+    this.load.spritesheet(
+      "paddleGetsLonger",
+      "assets/images/paddle/paddle-gets-longer.png",
+      { frameWidth: 180, frameHeight: 20 }
+    );
+    this.load.spritesheet("brick", "assets/images/brick/brick.png", {
       frameWidth: 51,
       frameHeight: 20,
     });
-    this.load.spritesheet("brickFire", "assets/images/brick-fire.png", {
+    this.load.spritesheet("brickFire", "assets/images/brick/brick-fire.png", {
       frameWidth: 51,
       frameHeight: 20,
     });
+    // powerups
     this.load.image("getLife", "assets/images/powerups/get_life.png");
+    this.load.image("loseLife", "assets/images/powerups/lose_life.png");
+    this.load.image("longerPaddle", "assets/images/powerups/long_paddle.png");
     // ui
     this.load.image("pause-btn", "assets/images/pause-btn.png");
     this.load.image("heart", "assets/images/heart.png");
     // text
-    this.load.image("start", "assets/text/start.png");
-    this.load.image("restart", "assets/text/restart.png");
-    this.load.image("resume", "assets/text/resume.png");
-    this.load.image("backToMenu", "assets/text/back_to_menu.png");
-    this.load.spritesheet("gameOver", "assets/text/game_over.png", {
+    this.load.image("start", "assets/images/text/start.png");
+    this.load.image("restart", "assets/images/text/restart.png");
+    this.load.image("resume", "assets/images/text/resume.png");
+    this.load.image("backToMenu", "assets/images/text/back_to_menu.png");
+    this.load.spritesheet("gameOver", "assets/images/text/game_over.png", {
       frameWidth: 360,
       frameHeight: 40,
     });
@@ -48,16 +64,6 @@ export class Load extends Phaser.Scene {
   create() {
     createBricksAnims(this.anims);
     createPaddleAnims(this.anims);
-
-    const text = this.add.text(400, 300, "Loading", {
-      fontSize: "32px",
-      color: "red",
-    });
-
-    text.setOrigin(0.5, 0.5);
-
-    setTimeout(() => {
-      this.scene.start("start");
-    }, 1000);
+    this.scene.start("start");
   }
 }

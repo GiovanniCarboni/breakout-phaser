@@ -51,9 +51,6 @@ export class Game extends Phaser.Scene {
     this.bricks = createBricks(this, this.level);
     this.powerups = createPowerups(this);
 
-    // enables input for the scene
-    this.input.setPollAlways();
-
     this.addColliders();
 
     // start ball on click
@@ -70,18 +67,25 @@ export class Game extends Phaser.Scene {
 
   update(_: number, dt: number) {
     this.ball.update(this.paddle);
+    this.paddle.update();
 
     // balls falls under
     if (this.ball.y > this.canvasH + this.ball.height) {
       if (this.lives > 1) this.sounds.lifeLost.play();
       this.lives--;
       this.setLives();
-      if (this.lives < 1) {
-        this.scene.pause("UI");
-        this.scene.launch("gameOver");
-        this.scene.stop();
-      }
       this.ball.reset(this.paddle.x);
+      this.paddle.reset();
+      this.powerups.clear(undefined, true);
+    }
+
+    if (this.lives < 1) {
+      this.scene.pause("UI");
+      this.scene.launch("gameOver");
+      this.scene.stop();
+      this.ball.reset(this.paddle.x);
+      this.paddle.reset();
+      this.powerups.clear(undefined, true);
     }
 
     // TODO review advance level logic
@@ -90,10 +94,12 @@ export class Game extends Phaser.Scene {
     if (this.isStageCleared) {
       setTimeout(() => {
         this.level++;
+        this.powerups.clear(undefined, true);
         sceneEvents.emit("levelChanged", this.level);
         this.scene.resume();
         this.bricks = createBricks(this, this.level);
         this.ball.reset(this.paddle.x);
+        this.paddle.reset();
         this.addColliders();
         this.isStageCleared = false;
       }, 1000);
@@ -144,12 +150,30 @@ export class Game extends Phaser.Scene {
     this.physics.add.collider(
       this.powerups,
       this.paddle,
-      (obj1: any, obj2: any) => {
-        console.log("powerup");
-        const powerup = obj2 as Powerup;
-        powerup.destroy();
-      }
+      this.powerupHitPaddle,
+      undefined,
+      this
     );
+  }
+
+  powerupHitPaddle(_: any, obj2: any) {
+    const powerup = obj2 as Powerup;
+    switch (powerup.getData("power")) {
+      case "getLife":
+        if (this.lives < 4) {
+          this.lives++;
+          this.setLives();
+        }
+        break;
+      case "loseLife":
+        this.lives--;
+        this.setLives();
+        break;
+      case "longerPaddle":
+        this.paddle.makeLonger();
+        break;
+    }
+    powerup.destroy();
   }
 
   // TODO move ballHitPaddle logic to Ball
@@ -192,9 +216,14 @@ export class Game extends Phaser.Scene {
     }, 100);
 
     ////////////// POWER UP //////////////////////////
-    const randomValue = Math.ceil(Math.random() * 3);
-    if (randomValue !== 8) return;
-    const powerup = createPowerup(this, brick.x, brick.y);
+    const randomValue = Math.ceil(Math.random() * 15);
+    if (randomValue !== 1) return;
+
+    const powerupName = this.powerups.getRandomPowerup();
+    const powerup = createPowerup(this, brick.x, brick.y, powerupName).setData(
+      "power",
+      powerupName
+    );
     this.powerups.addPowerup(powerup, {
       x: this.ball.body?.velocity.x! - 150,
       y: -this.ball.body?.velocity.y!,

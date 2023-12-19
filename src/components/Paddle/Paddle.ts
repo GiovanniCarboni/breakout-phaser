@@ -1,6 +1,7 @@
 import { createPaddleAnims } from "../../anims/paddleAnims";
 
 export default class Paddle extends Phaser.Physics.Arcade.Sprite {
+  private isLong = false;
   private canvasH: number;
   private canvasW: number;
   constructor(
@@ -21,8 +22,14 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
     this.y = this.canvasH - 30;
     this.setInteractive();
     this.setImmovable(true);
-    this.play("paddleAnimation");
+    this.play("paddle");
     this.scene.input.on("pointermove", this.handleInput, this);
+  }
+
+  update() {
+    if (this.x < 0 + this.width / 2) this.x = 0 + this.width / 2;
+    if (this.x > this.canvasW - this.width / 2)
+      this.x = this.canvasW - this.width / 2;
   }
 
   handleInput(pointer: Phaser.Input.Pointer) {
@@ -35,7 +42,22 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
     this.x = paddlePosition || this.canvasW / 2;
   }
 
-  reset() {}
+  makeLonger() {
+    if (this.isLong) return;
+    this.play("paddleGetsLonger");
+    this.setSize(this.frame.width, 20);
+    this.on("animationcomplete", () => {
+      this.play("longPaddle");
+    });
+    this.isLong = true;
+  }
+
+  reset() {
+    this.x = this.canvasW / 2;
+    this.play("paddle");
+    this.setSize(this.frame.width, 20);
+    this.isLong = false;
+  }
 }
 
 export const createPaddle = function (scene: Phaser.Scene) {

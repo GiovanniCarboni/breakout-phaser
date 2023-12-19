@@ -2,7 +2,7 @@
 
 ![Alt text](./public/cover.png)
 
-live demo: breakoutphaser.netlify.app
+live demo: https://breakoutphaser.netlify.app/
 
 ## Development
 
