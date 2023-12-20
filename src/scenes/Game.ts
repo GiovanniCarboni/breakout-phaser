@@ -195,6 +195,8 @@ export class Game extends Phaser.Scene {
   }
 
   // TODO move ballHitBrick logic to Brick
+  // Make ballHitBrick recursive
+  
   ballHitBrick(_: any, obj2: any) {
     const brick = obj2 as Phaser.Physics.Arcade.Sprite;
     const brickType = brick.getData("type");
@@ -202,26 +204,19 @@ export class Game extends Phaser.Scene {
     const bricksToDestroy: Phaser.Physics.Arcade.Sprite[] = [];
     if (brickType === "common") this.sounds.brickbreak.play();
     if (brickType === "fire") {
-      this.sounds.fire.play();
-
-      const neighbors = this.getNeighbors(entry);
-
-      this.bricks.getChildren().forEach((brick) => {
-        if (neighbors.includes(brick?.getData("number"))) {
-          bricksToDestroy.push(brick as Phaser.Physics.Arcade.Sprite);
-          // if (brick?.getData("type") === "fire")
-        }
-      });
+      this.sounds.fire.play();    
+      this.destroyFireBricks(entry, bricksToDestroy);    
     }
-    brick.destroy();
-    setTimeout(() => {
-      bricksToDestroy.forEach((brick) => brick.destroy());
-    }, 100);
+    brick.destroy();  
+      bricksToDestroy.forEach((brick,i) => {
+        setTimeout(() => {
+          brick.destroy()}, 10*i);
+    }, );
+ 
 
     ////////////// POWER UP //////////////////////////
     const randomValue = Math.ceil(Math.random() * 1);
     if (randomValue !== 1) return;
-
     const powerupName = this.powerups.getRandomPowerup();
     const powerup = createPowerup(this, brick.x, brick.y, powerupName).setData(
       "power",
@@ -232,6 +227,23 @@ export class Game extends Phaser.Scene {
       y: -this.ball.body?.velocity.y!,
     });
   }
+
+  destroyFireBricks(entry: any, bricksToDestroy: Phaser.Physics.Arcade.Sprite[], checkedBricks: Set<number> = new Set()) {
+    const neighbors = this.getNeighbors(entry);
+    this.bricks.getChildren().forEach((brick) => {
+        if (neighbors.includes(brick?.getData("number"))) {
+            bricksToDestroy.push(brick as Phaser.Physics.Arcade.Sprite);
+            console.log(bricksToDestroy.length)
+            if (brick?.getData("type") === "fire") {
+                const brickNumber = brick.getData("number");
+                if (!checkedBricks.has(brickNumber)) {
+                    checkedBricks.add(brickNumber);
+                    this.destroyFireBricks(brickNumber, bricksToDestroy, checkedBricks);
+                }
+            }
+        }
+    });
+}
 
   getNeighbors(fireBrick: number) {
     return [
