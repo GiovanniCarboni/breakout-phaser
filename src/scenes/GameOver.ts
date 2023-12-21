@@ -1,5 +1,3 @@
-import { createTextAnims } from "../anims/textAnims";
-
 export class GameOver extends Phaser.Scene {
   private buttons!: {
     [key: string]: Phaser.GameObjects.Sprite;
@@ -21,7 +19,9 @@ export class GameOver extends Phaser.Scene {
     this.sounds = {
       shuffle: this.sound.add("shuffle", { loop: false }),
       gameOver: this.sound.add("gameOver", { loop: false }),
+      btnPressed: this.sound.add("buttonPressed", { loop: false, volume: 0.2 }),
     };
+
     this.sounds.gameOver.play();
 
     // GAME OVER TEXT
@@ -36,10 +36,12 @@ export class GameOver extends Phaser.Scene {
 
     // EVENTS
     this.buttons.restartButton.on("pointerdown", () => {
+      this.sounds.btnPressed.play();
       this.scene.stop("game");
       this.scene.start("game");
     });
     this.buttons.backToMenuButton.on("pointerdown", () => {
+      this.sounds.btnPressed.play();
       this.scene.stop("game");
       this.scene.start("start");
       this.scene.stop();
@@ -47,7 +49,6 @@ export class GameOver extends Phaser.Scene {
   }
 
   initGameOverText() {
-    createTextAnims(this.anims);
     this.add
       .sprite(this.scale.width / 2, this.scale.height / 2 - 70, "gameOver")
       .play("gameOver");

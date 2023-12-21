@@ -1,7 +1,7 @@
-import Powerup, { createPowerup } from "./Powerup";
+import Powerup from "./Powerup";
 
 export default class Powerups extends Phaser.Physics.Arcade.Group {
-  private powerups = ["loseLife", "getLife", "longerPaddle"];
+  private powerups = ["loseLife", "getLife", "longerPaddle", "shorterPaddle"];
 
   constructor(scene: Phaser.Scene, config: any) {
     super(scene.physics.world, config);

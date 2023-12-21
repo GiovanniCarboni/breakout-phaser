@@ -1,9 +1,11 @@
 export class Start extends Phaser.Scene {
   private startButton!: Phaser.GameObjects.Sprite;
-  private shuffle!:
-    | Phaser.Sound.NoAudioSound
-    | Phaser.Sound.HTML5AudioSound
-    | Phaser.Sound.WebAudioSound;
+  private sounds!: {
+    [key: string]:
+      | Phaser.Sound.NoAudioSound
+      | Phaser.Sound.HTML5AudioSound
+      | Phaser.Sound.WebAudioSound;
+  };
 
   constructor() {
     super({ key: "start" });
@@ -12,7 +14,10 @@ export class Start extends Phaser.Scene {
   preload() {}
 
   create() {
-    this.shuffle = this.sound.add("shuffle", { loop: false });
+    this.sounds = {
+      shuffle: this.sound.add("shuffle", { loop: false, volume: 0.2 }),
+      btnPressed: this.sound.add("buttonPressed", { loop: false, volume: 0.2 }),
+    };
 
     this.cameras.main.setBackgroundColor("#000");
     this.initStartButton();
@@ -23,6 +28,7 @@ export class Start extends Phaser.Scene {
     }
 
     this.startButton.on("pointerdown", () => {
+      this.sounds.btnPressed.play();
       this.scene.start("game");
       this.scene.stop();
     });
@@ -35,7 +41,7 @@ export class Start extends Phaser.Scene {
   }
 
   handleMouseOver(button: Phaser.GameObjects.Sprite) {
-    this.shuffle.play();
+    this.sounds.shuffle.play();
     button.setScale(1.1);
     button.angle = -2;
     setTimeout(() => {

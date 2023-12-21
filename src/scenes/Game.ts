@@ -147,7 +147,7 @@ export class Game extends Phaser.Scene {
       undefined,
       this
     );
-    this.physics.add.collider(
+    this.physics.add.overlap(
       this.powerups,
       this.paddle,
       this.powerupHitPaddle,
@@ -170,7 +170,10 @@ export class Game extends Phaser.Scene {
         this.setLives();
         break;
       case "longerPaddle":
-        this.paddle.makeLonger();
+        this.paddle.expand();
+        break;
+      case "shorterPaddle":
+        this.paddle.shrink();
         break;
     }
     powerup.destroy();
@@ -216,7 +219,7 @@ export class Game extends Phaser.Scene {
     }, 100);
 
     ////////////// POWER UP //////////////////////////
-    const randomValue = Math.ceil(Math.random() * 15);
+    const randomValue = Math.ceil(Math.random() * 1);
     if (randomValue !== 1) return;
 
     const powerupName = this.powerups.getRandomPowerup();

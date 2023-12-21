@@ -2,10 +2,12 @@ export class Pause extends Phaser.Scene {
   private buttons!: {
     [key: string]: Phaser.GameObjects.Sprite;
   };
-  private shuffle!:
-    | Phaser.Sound.NoAudioSound
-    | Phaser.Sound.HTML5AudioSound
-    | Phaser.Sound.WebAudioSound;
+  private sounds!: {
+    [key: string]:
+      | Phaser.Sound.NoAudioSound
+      | Phaser.Sound.HTML5AudioSound
+      | Phaser.Sound.WebAudioSound;
+  };
 
   constructor() {
     super({ key: "pause" });
@@ -14,7 +16,10 @@ export class Pause extends Phaser.Scene {
   preload() {}
 
   create() {
-    this.shuffle = this.sound.add("shuffle", { loop: false });
+    this.sounds = {
+      btnPressed: this.sound.add("buttonPressed", { loop: false, volume: 0.2 }),
+      shuffle: this.sound.add("shuffle", { loop: false }),
+    };
 
     this.cameras.main.setBackgroundColor("#000");
 
@@ -26,16 +31,19 @@ export class Pause extends Phaser.Scene {
     this.addButtonAnimations();
 
     this.buttons.resumeButton.on("pointerdown", () => {
+      this.sounds.btnPressed.play();
       this.scene.resume("game");
       this.scene.resume("UI");
       this.scene.stop();
     });
     this.buttons.restartButton.on("pointerdown", () => {
+      this.sounds.btnPressed.play();
       this.scene.stop("game");
       this.scene.start("game");
       // this.scene.stop();
     });
     this.buttons.backToMenuButton.on("pointerdown", () => {
+      this.sounds.btnPressed.play();
       this.scene.stop("game");
       this.scene.start("start");
       // this.scene.stop();
@@ -74,7 +82,7 @@ export class Pause extends Phaser.Scene {
   }
 
   handleMouseOver(button: Phaser.GameObjects.Text | Phaser.GameObjects.Sprite) {
-    this.shuffle.play();
+    this.sounds.shuffle.play();
     button.setScale(1.1);
     button.angle = -2;
     setTimeout(() => {

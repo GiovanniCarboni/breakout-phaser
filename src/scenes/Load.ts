@@ -1,5 +1,6 @@
 import { createBricksAnims } from "../anims/brickAnims";
 import { createPaddleAnims } from "../anims/paddleAnims";
+import { createTextAnims } from "../anims/textAnims";
 
 export class Load extends Phaser.Scene {
   constructor() {
@@ -9,6 +10,7 @@ export class Load extends Phaser.Scene {
   preload() {
     ////////// IMAGES /////////////////////
     this.load.image("ball", "assets/images/ball.png");
+    // paddle
     this.load.spritesheet("paddle", "assets/images/paddle/paddle.png", {
       frameHeight: 20,
       frameWidth: 120,
@@ -22,9 +24,22 @@ export class Load extends Phaser.Scene {
       }
     );
     this.load.spritesheet(
+      "shortPaddle",
+      "assets/images/paddle/short-paddle.png",
+      {
+        frameHeight: 20,
+        frameWidth: 64,
+      }
+    );
+    this.load.spritesheet(
       "paddleGetsLonger",
       "assets/images/paddle/paddle-gets-longer.png",
       { frameWidth: 180, frameHeight: 20 }
+    );
+    this.load.spritesheet(
+      "paddleGetsShorter",
+      "assets/images/paddle/paddle-gets-shorter.png",
+      { frameWidth: 120, frameHeight: 20 }
     );
     this.load.spritesheet("brick", "assets/images/brick/brick.png", {
       frameWidth: 51,
@@ -38,6 +53,7 @@ export class Load extends Phaser.Scene {
     this.load.image("getLife", "assets/images/powerups/get_life.png");
     this.load.image("loseLife", "assets/images/powerups/lose_life.png");
     this.load.image("longerPaddle", "assets/images/powerups/long_paddle.png");
+    this.load.image("shorterPaddle", "assets/images/powerups/short_paddle.png");
     // ui
     this.load.image("pause-btn", "assets/images/pause-btn.png");
     this.load.image("heart", "assets/images/heart.png");
@@ -58,12 +74,15 @@ export class Load extends Phaser.Scene {
     this.load.audio("gameOver", "assets/sounds/game_over.mp3");
     this.load.audio("lifeLost", "assets/sounds/lost_life.mp3");
     this.load.audio("fire", "assets/sounds/fire.mp3");
+    // TODO convert to mp3 -> ogg not valid for safari
+    this.load.audio("buttonPressed", "assets/sounds/button_pressed.ogg");
     this.load.audio("hitWall", "assets/sounds/hit_wall.ogg");
   }
 
   create() {
     createBricksAnims(this.anims);
     createPaddleAnims(this.anims);
+    createTextAnims(this.anims);
     this.scene.start("start");
   }
 }

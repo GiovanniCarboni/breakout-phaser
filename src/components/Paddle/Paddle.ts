@@ -1,7 +1,6 @@
-import { createPaddleAnims } from "../../anims/paddleAnims";
-
 export default class Paddle extends Phaser.Physics.Arcade.Sprite {
-  private isLong = false;
+  // 1 = short; 2 = default; 3 = long
+  private paddleLength: 1 | 2 | 3 = 2;
   private canvasH: number;
   private canvasW: number;
   constructor(
@@ -42,21 +41,49 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
     this.x = paddlePosition || this.canvasW / 2;
   }
 
-  makeLonger() {
-    if (this.isLong) return;
-    this.play("paddleGetsLonger");
-    this.setSize(this.frame.width, 20);
-    this.on("animationcomplete", () => {
-      this.play("longPaddle");
-    });
-    this.isLong = true;
+  expand() {
+    if (this.paddleLength === 3) return;
+    if (this.paddleLength === 2) {
+      this.play("paddleGetsLonger2");
+      this.on("animationcomplete", () => {
+        this.play("longPaddle");
+        this.setSize(this.frame.width, 20);
+      });
+    }
+    if (this.paddleLength === 1) {
+      this.play("paddleGetsLonger1");
+      this.on("animationcomplete", () => {
+        this.play("paddle");
+        this.setSize(this.frame.width, 20);
+      });
+    }
+    this.paddleLength++;
+  }
+
+  shrink() {
+    if (this.paddleLength === 1) return;
+    if (this.paddleLength === 2) {
+      this.play("paddleGetsShorter1");
+      this.on("animationcomplete", () => {
+        this.play("shortPaddle");
+        this.setSize(this.frame.width, 20);
+      });
+    }
+    if (this.paddleLength === 3) {
+      this.play("paddleGetsShorter2");
+      this.on("animationcomplete", () => {
+        this.play("paddle");
+        this.setSize(this.frame.width, 20);
+      });
+    }
+    this.paddleLength--;
   }
 
   reset() {
     this.x = this.canvasW / 2;
     this.play("paddle");
     this.setSize(this.frame.width, 20);
-    this.isLong = false;
+    this.paddleLength = 2;
   }
 }
 
