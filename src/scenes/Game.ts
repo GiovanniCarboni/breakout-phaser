@@ -5,6 +5,7 @@ import Bricks, { createBricks } from "../components/Brick/Bricks";
 import Powerup, { createPowerup } from "../components/Powerup/Powerup";
 import Powerups, { createPowerups } from "../components/Powerup/Powerups";
 import { Sprites, Events, Sounds, Scenes } from "../constants";
+import Brick from "../components/Brick/Brick";
 
 export class Game extends Phaser.Scene {
   private ball!: Ball;
@@ -203,18 +204,13 @@ export class Game extends Phaser.Scene {
     const brick = obj2 as Phaser.Physics.Arcade.Sprite;
     const brickType = brick.getData("type");
     const entry = brick.getData("number");
-    const bricksToDestroy: Phaser.Physics.Arcade.Sprite[] = [];
     if (brickType === "common") this.sounds.brickbreak.play();
     if (brickType === "fire") {
-      this.sounds.fire.play();
-      this.destroyFireBricks(entry, bricksToDestroy);
+      this.sounds.fire.play();    
+      this.destroyFireBricks(entry);    
+    } else {
+      brick.destroy();
     }
-    brick.destroy();
-    bricksToDestroy.forEach((brick, i) => {
-      setTimeout(() => {
-        brick.destroy();
-      }, 10 * i);
-    });
 
     ////////////// POWER UP //////////////////////////
     const randomValue = Math.ceil(Math.random() * 1);
@@ -229,27 +225,40 @@ export class Game extends Phaser.Scene {
       y: -this.ball.body?.velocity.y!,
     });
   }
+  async destroyFireBricks(entry: number) {
+    const queue: any[] = []; 
+    const checkedBricks = new Set(); 
+    const bricksToDestroy = [];
 
-  destroyFireBricks(
-    entry: any,
-    bricksToDestroy: Phaser.Physics.Arcade.Sprite[],
-    checkedBricks: Set<number> = new Set()
-  ) {
-    const neighbors = this.getNeighbors(entry);
-    this.bricks.getChildren().forEach((brick) => {
-      if (neighbors.includes(brick?.getData("number"))) {
-        bricksToDestroy.push(brick as Phaser.Physics.Arcade.Sprite);
-        console.log(bricksToDestroy.length);
-        if (brick?.getData("type") === "fire") {
-          const brickNumber = brick.getData("number");
-          if (!checkedBricks.has(brickNumber)) {
-            checkedBricks.add(brickNumber);
-            this.destroyFireBricks(brickNumber, bricksToDestroy, checkedBricks);
-          }
+    queue.push(entry); 
+    checkedBricks.add(entry);
+    let brickType: string
+
+    while (queue.length > 0) {
+        const currentBrickNumber = queue.shift(); 
+        const currentBrick = this.bricks.getChildren().find(brick => brick.getData("number") === currentBrickNumber);
+        if (currentBrick) {
+            brickType = currentBrick.getData("type")
+            bricksToDestroy.push(currentBrick);
+            if(brickType === "fire") {
+                const neighbours = this.getNeighbors(currentBrickNumber!);
+                for (const neighbour of neighbours) {
+                    if (!checkedBricks.has(neighbour)) {
+                        queue.push(neighbour);
+                        checkedBricks.add(neighbour);
+                    }
+                }
+            } else {
+                checkedBricks.add(currentBrick.getData("number"));
+            }
         }
-      }
-    });
-  }
+    }
+
+    for (const brick of bricksToDestroy) {
+        await new Promise(f => setTimeout(f, 10));
+        brick.destroy();
+    }
+}
 
   getNeighbors(fireBrick: number) {
     return [
