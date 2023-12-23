@@ -93,15 +93,15 @@ export class Load extends Phaser.Scene {
     );
 
     ////////// AUDIO /////////////////////
-    this.load.audio(Sounds.bounce, "assets/sounds/bounce.wav");
-    this.load.audio(Sounds.brickbreak, "assets/sounds/brickbreak.wav");
+    this.load.audio(Sounds.bounce, "assets/sounds/bounce.mp3");
+    this.load.audio(Sounds.brickbreak, "assets/sounds/brickbreak.mp3");
     this.load.audio(Sounds.shuffle, "assets/sounds/shuffle.mp3");
     this.load.audio(Sounds.gameOver, "assets/sounds/game_over.mp3");
     this.load.audio(Sounds.lifeLost, "assets/sounds/lost_life.mp3");
     this.load.audio(Sounds.fireBrick, "assets/sounds/fire.mp3");
     // TODO convert to mp3 -> ogg not valid for safari
-    this.load.audio(Sounds.buttonPress, "assets/sounds/button_pressed.ogg");
-    this.load.audio(Sounds.hitWall, "assets/sounds/hit_wall.ogg");
+    this.load.audio(Sounds.buttonPress, "assets/sounds/button_pressed.mp3");
+    this.load.audio(Sounds.hitWall, "assets/sounds/hit_wall.mp3");
   }
 
   create() {

@@ -55,7 +55,7 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
     if (this.paddleLength === 1) {
       this.play(Anims.paddleGetsLonger1);
       this.on("animationcomplete", () => {
-        this.play("paddle");
+        this.play(Anims.defaultPaddle);
         this.setSize(this.frame.width, 20);
       });
     }
