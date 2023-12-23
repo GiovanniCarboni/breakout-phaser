@@ -1,5 +1,5 @@
 import {
-  LevelTemplate,
+  LevelTemplate, // type
   getLevelTemplate,
 } from "../../templates/levelTemplates";
 import Brick, { createBrick } from "./Brick";

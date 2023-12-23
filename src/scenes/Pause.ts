@@ -1,3 +1,5 @@
+import { Sounds, Sprites, Scenes } from "../constants";
+
 export class Pause extends Phaser.Scene {
   private buttons!: {
     [key: string]: Phaser.GameObjects.Sprite;
@@ -10,15 +12,18 @@ export class Pause extends Phaser.Scene {
   };
 
   constructor() {
-    super({ key: "pause" });
+    super({ key: Scenes.pause });
   }
 
   preload() {}
 
   create() {
     this.sounds = {
-      btnPressed: this.sound.add("buttonPressed", { loop: false, volume: 0.2 }),
-      shuffle: this.sound.add("shuffle", { loop: false }),
+      btnPressed: this.sound.add(Sounds.buttonPress, {
+        loop: false,
+        volume: 0.2,
+      }),
+      shuffle: this.sound.add(Sounds.shuffle, { loop: false }),
     };
 
     this.cameras.main.setBackgroundColor("#000");
@@ -32,27 +37,27 @@ export class Pause extends Phaser.Scene {
 
     this.buttons.resumeButton.on("pointerdown", () => {
       this.sounds.btnPressed.play();
-      this.scene.resume("game");
-      this.scene.resume("UI");
+      this.scene.resume(Scenes.game);
+      this.scene.resume(Scenes.ui);
       this.scene.stop();
     });
     this.buttons.restartButton.on("pointerdown", () => {
       this.sounds.btnPressed.play();
-      this.scene.stop("game");
-      this.scene.start("game");
+      this.scene.stop(Scenes.game);
+      this.scene.start("Scenes.game");
       // this.scene.stop();
     });
     this.buttons.backToMenuButton.on("pointerdown", () => {
       this.sounds.btnPressed.play();
-      this.scene.stop("game");
-      this.scene.start("start");
+      this.scene.stop(Scenes.game);
+      this.scene.start(Scenes.game);
       // this.scene.stop();
     });
   }
 
   initResumeButton() {
     const resumeButton = this.add
-      .sprite(this.scale.width / 2, this.scale.height / 2 - 70, "resume")
+      .sprite(this.scale.width / 2, this.scale.height / 2 - 70, Sprites.resume)
       .setInteractive();
     resumeButton.setOrigin(0.5, 0.5);
     return resumeButton;
@@ -60,7 +65,7 @@ export class Pause extends Phaser.Scene {
 
   initRestartButton() {
     const restartButton = this.add
-      .sprite(this.scale.width / 2, this.scale.height / 2, "restart")
+      .sprite(this.scale.width / 2, this.scale.height / 2, Sprites.restart)
       .setInteractive();
     restartButton.setOrigin(0.5, 0.5);
     return restartButton;
@@ -68,7 +73,11 @@ export class Pause extends Phaser.Scene {
 
   initBackToMenuButton() {
     const backToMenuButton = this.add
-      .sprite(this.scale.width / 2, this.scale.height / 2 + 80, "backToMenu")
+      .sprite(
+        this.scale.width / 2,
+        this.scale.height / 2 + 80,
+        Sprites.backToMenu
+      )
       .setInteractive();
     backToMenuButton.setOrigin(0.5, 0.5);
     return backToMenuButton;

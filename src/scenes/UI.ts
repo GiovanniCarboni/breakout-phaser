@@ -1,3 +1,5 @@
+import { Scenes } from "../constants";
+import { Sprites } from "../constants/AssetNames";
 import { sceneEvents } from "../events/EventCenter";
 
 export class UI extends Phaser.Scene {
@@ -8,24 +10,33 @@ export class UI extends Phaser.Scene {
   canvasH!: number;
   constructor() {
     super({
-      key: "UI",
+      key: Scenes.ui,
     });
   }
 
   create() {
-    this.scene.moveBelow("pause");
-    this.scene.moveBelow("start");
-    this.scene.moveBelow("gameOver");
+    this.scene.moveBelow(Scenes.pause);
+    this.scene.moveBelow(Scenes.start);
+    this.scene.moveBelow(Scenes.gameOver);
 
     this.canvasW = this.scale.width;
     this.canvasH = this.scale.height;
 
-    /////////////// LEVEL NUMBER ///////////////////////////////
-    this.stageText = this.add.text(this.canvasW / 2, 15, `Stage 1`);
+    //////////////// LIVES /////////////////////////////////////
+    sceneEvents.on("livesChanged", (lives: number) => {
+      this.hearts?.destroy(true, false);
+      this.createHearts(lives);
+    });
 
+    /////////////// LEVEL NUMBER ///////////////////////////////
+    this.stageText = this.add.text(this.canvasW / 2, 15, "Stage 1");
+
+    sceneEvents.on("levelChanged", (level: number) => {
+      this.stageText.setText(`Stage ${level}`);
+    });
     ////////////// PAUSE BUTTON ////////////////////////////////
     this.pauseBtn = this.add
-      .sprite(this.canvasW - 60, 30, "pause-btn")
+      .sprite(this.canvasW - 60, 30, Sprites.pause)
       .setInteractive();
     // pause button event listeners
     this.pauseBtn.on("pointerover", () => {
@@ -44,29 +55,19 @@ export class UI extends Phaser.Scene {
     this.pauseBtn.on("pointerdown", () => {
       this.pause(this.scene);
     });
-
-    //////////////// LIVES /////////////////////////////////////
-    sceneEvents.on("livesChanged", (lives: number) => {
-      this.hearts?.destroy(true, false);
-      this.createHearts(lives);
-    });
-
-    sceneEvents.on("levelChanged", (level: number) => {
-      this.stageText.setText(`Stage ${level}`);
-    });
   }
 
   pause(scene: Phaser.Scenes.ScenePlugin) {
-    scene.moveBelow("pause");
+    scene.moveBelow(Scenes.pause);
     scene.pause();
-    scene.pause("game");
-    scene.launch("pause");
+    scene.pause(Scenes.game);
+    scene.launch(Scenes.pause);
   }
 
   createHearts(lives: number) {
     this.hearts = this.add.group();
     for (let i = 0; i < lives; i++) {
-      this.hearts.add(this.add.sprite(60 + 40 * i, 30, "heart"));
+      this.hearts.add(this.add.sprite(60 + 40 * i, 30, Sprites.heart));
     }
   }
 }

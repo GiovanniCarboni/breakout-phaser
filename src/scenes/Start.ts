@@ -1,3 +1,5 @@
+import { Scenes, Sounds, Sprites } from "../constants";
+
 export class Start extends Phaser.Scene {
   private startButton!: Phaser.GameObjects.Sprite;
   private sounds!: {
@@ -8,15 +10,18 @@ export class Start extends Phaser.Scene {
   };
 
   constructor() {
-    super({ key: "start" });
+    super({ key: Scenes.start });
   }
 
   preload() {}
 
   create() {
     this.sounds = {
-      shuffle: this.sound.add("shuffle", { loop: false, volume: 0.2 }),
-      btnPressed: this.sound.add("buttonPressed", { loop: false, volume: 0.2 }),
+      shuffle: this.sound.add(Sounds.shuffle, { loop: false, volume: 0.2 }),
+      btnPressed: this.sound.add(Sounds.buttonPress, {
+        loop: false,
+        volume: 0.2,
+      }),
     };
 
     this.cameras.main.setBackgroundColor("#000");
@@ -29,14 +34,14 @@ export class Start extends Phaser.Scene {
 
     this.startButton.on("pointerdown", () => {
       this.sounds.btnPressed.play();
-      this.scene.start("game");
+      this.scene.start(Scenes.game);
       this.scene.stop();
     });
   }
 
   initStartButton() {
     this.startButton = this.add
-      .sprite(this.scale.width / 2, this.scale.height / 2, "start")
+      .sprite(this.scale.width / 2, this.scale.height / 2, Sprites.start)
       .setInteractive();
   }
 

@@ -1,7 +1,13 @@
+import { Sprites } from "./../../constants";
 import Powerup from "./Powerup";
 
 export default class Powerups extends Phaser.Physics.Arcade.Group {
-  private powerups = ["loseLife", "getLife", "longerPaddle", "shorterPaddle"];
+  private powerups = [
+    Sprites.loseLife,
+    Sprites.getLife,
+    Sprites.expandPaddle,
+    Sprites.shrinkPaddle,
+  ];
 
   constructor(scene: Phaser.Scene, config: any) {
     super(scene.physics.world, config);

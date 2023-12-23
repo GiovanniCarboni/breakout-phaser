@@ -1,3 +1,5 @@
+import { Sprites, Anims } from "../../constants";
+
 export default class Brick extends Phaser.Physics.Arcade.Sprite {
   constructor(
     scene: Phaser.Scene,
@@ -12,11 +14,11 @@ export default class Brick extends Phaser.Physics.Arcade.Sprite {
   init(brickType: number, entryNr: number) {
     switch (brickType) {
       case 1:
-        this.play("brickAnimation");
+        this.play(Anims.commonBrick);
         this.setData("type", "common");
         break;
       case 2:
-        this.play("brickFireAnimation");
+        this.play(Anims.fireBrick);
         this.setData("type", "fire");
     }
     this.setData("number", entryNr);
@@ -30,7 +32,7 @@ export const createBrick = function (
   y: number,
   info: { type: number; entryNr: number }
 ) {
-  const brick = new Brick(scene, x, y, "brick");
+  const brick = new Brick(scene, x, y, Sprites.commonBrick);
   scene.add.existing(brick);
   scene.physics.world.enableBody(brick, Phaser.Physics.Arcade.DYNAMIC_BODY);
   brick.init(info.type, info.entryNr);

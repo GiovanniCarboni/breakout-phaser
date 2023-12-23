@@ -1,9 +1,11 @@
+import { Anims, Sprites } from "../constants";
+
 export const createBricksAnims = (
   anims: Phaser.Animations.AnimationManager
 ) => {
   anims.create({
-    key: "brickAnimation",
-    frames: anims.generateFrameNumbers("brick", {
+    key: Anims.commonBrick,
+    frames: anims.generateFrameNumbers(Sprites.commonBrick, {
       start: 0,
       end: 0,
     }),
@@ -11,8 +13,8 @@ export const createBricksAnims = (
     repeat: 1,
   });
   anims.create({
-    key: "brickFireAnimation",
-    frames: anims.generateFrameNumbers("brickFire", {
+    key: Anims.fireBrick,
+    frames: anims.generateFrameNumbers(Sprites.fireBrick, {
       start: 0,
       end: 4,
     }),

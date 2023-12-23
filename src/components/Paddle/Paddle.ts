@@ -1,3 +1,5 @@
+import { Anims, Sprites } from "../../constants";
+
 export default class Paddle extends Phaser.Physics.Arcade.Sprite {
   // 1 = short; 2 = default; 3 = long
   private paddleLength: 1 | 2 | 3 = 2;
@@ -21,7 +23,7 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
     this.y = this.canvasH - 30;
     this.setInteractive();
     this.setImmovable(true);
-    this.play("paddle");
+    this.play(Anims.defaultPaddle);
     this.scene.input.on("pointermove", this.handleInput, this);
   }
 
@@ -44,14 +46,14 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
   expand() {
     if (this.paddleLength === 3) return;
     if (this.paddleLength === 2) {
-      this.play("paddleGetsLonger2");
+      this.play(Anims.paddleGetsLonger2);
       this.on("animationcomplete", () => {
-        this.play("longPaddle");
+        this.play(Anims.longPaddle);
         this.setSize(this.frame.width, 20);
       });
     }
     if (this.paddleLength === 1) {
-      this.play("paddleGetsLonger1");
+      this.play(Anims.paddleGetsLonger1);
       this.on("animationcomplete", () => {
         this.play("paddle");
         this.setSize(this.frame.width, 20);
@@ -63,16 +65,16 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
   shrink() {
     if (this.paddleLength === 1) return;
     if (this.paddleLength === 2) {
-      this.play("paddleGetsShorter1");
+      this.play(Anims.paddleGetsShorter1);
       this.on("animationcomplete", () => {
-        this.play("shortPaddle");
+        this.play(Anims.shortPaddle);
         this.setSize(this.frame.width, 20);
       });
     }
     if (this.paddleLength === 3) {
-      this.play("paddleGetsShorter2");
+      this.play(Anims.paddleGetsShorter2);
       this.on("animationcomplete", () => {
-        this.play("paddle");
+        this.play(Anims.defaultPaddle);
         this.setSize(this.frame.width, 20);
       });
     }
@@ -81,14 +83,14 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
 
   reset() {
     this.x = this.canvasW / 2;
-    this.play("paddle");
+    this.play(Anims.defaultPaddle);
     this.setSize(this.frame.width, 20);
     this.paddleLength = 2;
   }
 }
 
 export const createPaddle = function (scene: Phaser.Scene) {
-  const paddle = new Paddle(scene, 0, 0, "paddle");
+  const paddle = new Paddle(scene, 0, 0, Sprites.defaultPaddle);
   scene.add.existing(paddle);
   scene.physics.world.enableBody(paddle, Phaser.Physics.Arcade.DYNAMIC_BODY);
   paddle.init();

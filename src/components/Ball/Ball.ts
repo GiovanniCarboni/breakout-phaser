@@ -1,3 +1,4 @@
+import { Sounds, Sprites } from "../../constants";
 import Paddle from "../Paddle/Paddle";
 
 export default class Ball extends Phaser.Physics.Arcade.Sprite {
@@ -26,7 +27,7 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
     this.y = this.startPosition.y;
     this.setCollideWorldBounds(true);
     this.setBounce(1);
-    this.hitWallSound = this.scene.sound.add("hitWall", {
+    this.hitWallSound = this.scene.sound.add(Sounds.hitWall, {
       loop: false,
       volume: 0.6,
     });
@@ -58,7 +59,7 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
 }
 
 export const createBall = function (scene: Phaser.Scene) {
-  const ball = new Ball(scene, 0, 0, "ball");
+  const ball = new Ball(scene, 0, 0, Sprites.ball);
   scene.add.existing(ball);
   scene.physics.world.enableBody(ball, Phaser.Physics.Arcade.DYNAMIC_BODY);
   ball.init();
