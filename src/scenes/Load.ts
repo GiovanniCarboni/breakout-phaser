@@ -2,6 +2,7 @@ import { Scenes, Sounds, Sprites } from "../constants";
 import { createBricksAnims } from "../anims/brickAnims";
 import { createPaddleAnims } from "../anims/paddleAnims";
 import { createTextAnims } from "../anims/textAnims";
+import { createBallAnims } from "../anims/ballAnims";
 
 export class Load extends Phaser.Scene {
   constructor() {
@@ -11,7 +12,15 @@ export class Load extends Phaser.Scene {
   preload() {
     ////////// IMAGES /////////////////////
     // ball
-    this.load.image(Sprites.ball, "assets/images/ball.png");
+    this.load.image(Sprites.ball, "assets/images/ball/ball.png");
+    this.load.spritesheet(
+      Sprites.fireBall,
+      "assets/images/ball/fire_ball.png",
+      {
+        frameWidth: 12,
+        frameHeight: 18,
+      }
+    );
     // paddle
     this.load.spritesheet(
       Sprites.defaultPaddle,
@@ -75,6 +84,10 @@ export class Load extends Phaser.Scene {
       Sprites.shrinkPaddle,
       "assets/images/powerups/shrink_paddle.png"
     );
+    this.load.image(
+      Sprites.igniteBall,
+      "assets/images/powerups/ignite_ball.png"
+    );
     // ui
     this.load.image(Sprites.pause, "assets/images/pause.png");
     this.load.image(Sprites.heart, "assets/images/heart.png");
@@ -91,10 +104,17 @@ export class Load extends Phaser.Scene {
         frameHeight: 40,
       }
     );
+    // others
+    this.load.spritesheet(Sprites.smoke, "assets/images/smoke.png", {
+      frameWidth: 26,
+      frameHeight: 26,
+    });
+    this.load.image(Sprites.sparkle, "assets/images/sparkle.png");
 
     ////////// AUDIO /////////////////////
     this.load.audio(Sounds.bounce, "assets/sounds/bounce.mp3");
     this.load.audio(Sounds.brickbreak, "assets/sounds/brickbreak.mp3");
+    this.load.audio(Sounds.fireBrickbreak, "assets/sounds/fire_brickbreak.mp3");
     this.load.audio(Sounds.shuffle, "assets/sounds/shuffle.mp3");
     this.load.audio(Sounds.gameOver, "assets/sounds/game_over.mp3");
     this.load.audio(Sounds.lifeLost, "assets/sounds/lost_life.mp3");
@@ -102,9 +122,11 @@ export class Load extends Phaser.Scene {
     // TODO convert to mp3 -> ogg not valid for safari
     this.load.audio(Sounds.buttonPress, "assets/sounds/button_pressed.mp3");
     this.load.audio(Sounds.hitWall, "assets/sounds/hit_wall.mp3");
+    this.load.audio(Sounds.ballIgnition, "assets/sounds/ball_ignition.mp3");
   }
 
   create() {
+    createBallAnims(this.anims);
     createBricksAnims(this.anims);
     createPaddleAnims(this.anims);
     createTextAnims(this.anims);

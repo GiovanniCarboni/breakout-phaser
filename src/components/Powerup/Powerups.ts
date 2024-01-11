@@ -7,6 +7,7 @@ export default class Powerups extends Phaser.Physics.Arcade.Group {
     Sprites.getLife,
     Sprites.expandPaddle,
     Sprites.shrinkPaddle,
+    Sprites.igniteBall,
   ];
 
   constructor(scene: Phaser.Scene, config: any) {

@@ -1,12 +1,14 @@
-import { Sounds, Sprites } from "../../constants";
+import { Anims, Sounds, Sprites } from "../../constants";
 import Paddle from "../Paddle/Paddle";
 
 export default class Ball extends Phaser.Physics.Arcade.Sprite {
   private canvasH: number;
   private canvasW: number;
-  isMoving: boolean;
   private startPosition;
   private hitWallSound: any;
+  private ballIgnitionSound: any;
+  isMoving: boolean;
+  isIgnited = false;
   constructor(
     scene: Phaser.Scene,
     x: number,
@@ -18,18 +20,21 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
 
     this.canvasH = scene.scale.height;
     this.canvasW = scene.scale.width;
-    this.startPosition = { x: this.canvasW / 2, y: this.canvasH - 46 };
+    this.startPosition = { x: this.canvasW / 2, y: this.canvasH - 35 };
 
     this.isMoving = false;
   }
 
   init() {
-    this.y = this.startPosition.y;
+    this.y = this.startPosition.y - this.height;
     this.setCollideWorldBounds(true);
     this.setBounce(1);
     this.hitWallSound = this.scene.sound.add(Sounds.hitWall, {
       loop: false,
       volume: 0.6,
+    });
+    this.ballIgnitionSound = this.scene.sound.add(Sounds.ballIgnition, {
+      loop: false,
     });
   }
 
@@ -39,6 +44,53 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
     // to modify. not reliable
     if (this.x < 8 || this.x > this.canvasW - 8 || this.y < 8)
       if (!this.hitWallSound.isPlaying) this.hitWallSound.play();
+
+    // following code only for ignited ball
+    if (!this.isIgnited) return;
+    // adjust angle based on trajectory
+    if (this.isMoving) {
+      const angle = Phaser.Math.Angle.BetweenPoints(this, {
+        x: this.x + this.body?.velocity.x!,
+        y: this.y + this.body?.velocity.y!,
+      });
+      this.setAngle(Phaser.Math.RadToDeg(angle) - 90);
+    }
+
+    // add fire sparkles
+    const randomValue = Math.ceil(Math.random() * 7);
+    if (randomValue === 1 && this.isMoving) {
+      const sparkle = this.scene.add.sprite(this.x, this.y, Sprites.sparkle);
+      this.scene.time.addEvent({
+        delay: Math.random() * 550,
+        callback: () => sparkle.destroy(),
+      });
+    }
+    if (randomValue === 2 && this.isMoving) {
+      const sparkle = this.scene.add.sprite(
+        this.x + 5,
+        this.y - 2,
+        Sprites.sparkle
+      );
+      this.scene.time.addEvent({
+        delay: Math.random() * 450,
+        callback: () => {
+          sparkle.destroy();
+        },
+      });
+    }
+    if (randomValue === 3 && this.isMoving) {
+      const sparkle = this.scene.add.sprite(
+        this.x - 4,
+        this.y - 3,
+        Sprites.sparkle
+      );
+      this.scene.time.addEvent({
+        delay: Math.random() * 250,
+        callback: () => {
+          sparkle.destroy();
+        },
+      });
+    }
   }
 
   start() {
@@ -46,15 +98,30 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
     this.isMoving = true;
   }
 
-  reset(x: number, y = this.startPosition.y) {
+  reset(x: number, y?: number) {
     this.isMoving = false;
-    this.body?.reset(x, y);
+    this.isIgnited = false;
     this.setVelocity(0);
+    this.setAngle(0);
+    // reset ball texture
+    this.anims.stop();
+    this.setTexture(Sprites.ball);
+    this.setScale(1, 1);
+    // reset position
+    this.body?.reset(x, y || this.startPosition.y - this.height);
   }
 
   stopMovement() {
     this.setVelocity(0);
     this.isMoving = false;
+  }
+
+  ignite() {
+    if (this.isIgnited) return;
+    this.setScale(1.5, 1.5);
+    this.isIgnited = true;
+    this.play(Anims.fireBall);
+    this.ballIgnitionSound.play();
   }
 }
 

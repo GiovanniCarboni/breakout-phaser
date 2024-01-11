@@ -2,6 +2,7 @@
 export enum Sprites {
   // ball
   ball = "ball",
+  fireBall = "fireBall",
   // paddle
   defaultPaddle = "defaultPaddle",
   shortPaddle = "shortPaddle",
@@ -16,6 +17,7 @@ export enum Sprites {
   loseLife = "loseLife",
   expandPaddle = "expandPaddle",
   shrinkPaddle = "shrinkPaddle",
+  igniteBall = "igniteBall",
   // UI
   heart = "heart",
   pause = "pause",
@@ -25,16 +27,21 @@ export enum Sprites {
   resume = "resume",
   backToMenu = "backToMenu",
   gameOver = "gameOver",
+  // others
+  smoke = "smoke",
+  sparkle = "sparkle",
 }
 
 // AUDIO ///////////////////////////////////////////////////////////////////////////
 export enum Sounds {
   bounce = "bounce",
   brickbreak = "brickbreak",
+  fireBrickbreak = "fireBrickbreak",
   shuffle = "shuffle",
   gameOver = "gameOver",
   lifeLost = "lifeLost",
   fireBrick = "fireBrick",
   buttonPress = "buttonPress",
   hitWall = "hitWall",
+  ballIgnition = "ballIgnition",
 }

@@ -1,4 +1,7 @@
 export enum Anims {
+  // ball
+  ball = "ball",
+  fireBall = "fireBall",
   // brick
   commonBrick = "commonBrick",
   fireBrick = "fireBrick",
@@ -12,4 +15,6 @@ export enum Anims {
   paddleGetsShorter2 = "paddleGetsShorter2",
   //text
   gameOver = "gameOver",
+  // others
+  smoke = "smoke",
 }
