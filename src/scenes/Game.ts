@@ -93,7 +93,6 @@ export class Game extends Phaser.Scene {
     }
 
     // stage cleared
-    // TODO review advance level logic
     if (!this.bricks.getLength() && !this.isStageCleared)
       this.isStageCleared = true;
     if (this.isStageCleared) {
@@ -178,7 +177,7 @@ export class Game extends Phaser.Scene {
   }
 
   addPowerup(x: number, y: number) {
-    const randomValue = Math.ceil(Math.random() * 15);
+    const randomValue = Math.ceil(Math.random() * 10);
     if (randomValue !== 1) return;
     const powerupName = this.powerups.getRandomPowerup();
     const powerup = createPowerup(this, x, y, powerupName).setData(

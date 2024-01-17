@@ -132,8 +132,8 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
 
   addCannons() {
     if (this.cannons.getLength()) return;
-    this.cannons.get(this.x + 10, this.y, Sprites.cannon);
-    this.cannons.get(this.x + 10, this.y, Sprites.cannon);
+    this.cannons.get(this.x, this.y, Sprites.cannon);
+    this.cannons.get(this.x, this.y, Sprites.cannon);
     this.scene.input.on("pointerdown", this.handleShooting, this);
   }
 
@@ -154,10 +154,11 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
     const cannonR =
       this.cannons.getChildren()[1] as Phaser.Physics.Arcade.Sprite;
 
-    const lButton = this.bullets.get(cannonL.x, cannonL.y - 5, Sprites.bullet);
-    lButton.setVelocity(0, -550);
-    const rButton = this.bullets.get(cannonR.x, cannonR.y - 5, Sprites.bullet);
-    rButton.setVelocity(0, -550);
+    const lBullet = this.bullets.get(cannonL.x, cannonL.y - 5, Sprites.bullet);
+    lBullet.setVelocity(0, -550);
+    const rBullet = this.bullets.get(cannonR.x, cannonR.y - 5, Sprites.bullet);
+    rBullet.setVelocity(0, -550);
+    
     this.shotSound.play();
   }
 }
