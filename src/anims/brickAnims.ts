@@ -21,4 +21,13 @@ export const createBricksAnims = (
     frameRate: 8,
     repeat: -1,
   });
+  anims.create({
+    key: Anims.metalBrick,
+    frames: anims.generateFrameNumbers(Sprites.metalBrick, {
+      start: 0,
+      end: 0,
+    }),
+    frameRate: 8,
+    repeat: -1,
+  });
 };

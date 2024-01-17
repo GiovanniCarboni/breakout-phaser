@@ -259,16 +259,20 @@ export class Game extends Phaser.Scene {
   ballHitBrick(obj1: any, obj2: any) {
     const brick = obj2 as Phaser.Physics.Arcade.Sprite;
     const brickType = brick.getData("type");
-
-    if (brickType === "common") {
-      this.sounds.brickbreak.play();
+    if (brickType === "metal" && !this.ball.isIgnited) {
+      return
     }
+
+    const entry = brick.getData("number");
+    if (brickType === "common"  && !this.ball.isIgnited) {
+      this.sounds.brickbreak.play();
+      brick.destroy()
+    }
+
     if (brickType === "fire" || this.ball.isIgnited) {
       this.sounds.fireBrickbreak.play();
       this.destroyFireBricks(brick.getData("number"));
       this.createSmoke(obj1.x, obj1.y);
-    } else {
-      brick.destroy();
     }
 
     this.addPowerup(brick.x, brick.y);
