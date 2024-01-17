@@ -20,6 +20,11 @@ export default class Brick extends Phaser.Physics.Arcade.Sprite {
       case 2:
         this.play(Anims.fireBrick);
         this.setData("type", "fire");
+        break;
+      case 3:
+        this.play(Anims.metalBrick);
+        this.setData("type", "metal");
+        break;
     }
     this.setData("number", entryNr);
     // this.setImmovable(true);
