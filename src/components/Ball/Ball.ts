@@ -5,8 +5,14 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
   private canvasH: number;
   private canvasW: number;
   private startPosition;
-  private hitWallSound: any;
-  private ballIgnitionSound: any;
+  private hitWallSound!:
+    | Phaser.Sound.NoAudioSound
+    | Phaser.Sound.HTML5AudioSound
+    | Phaser.Sound.WebAudioSound;
+  private ballIgnitionSound!:
+    | Phaser.Sound.NoAudioSound
+    | Phaser.Sound.HTML5AudioSound
+    | Phaser.Sound.WebAudioSound;
   isMoving: boolean;
   isIgnited = false;
   constructor(

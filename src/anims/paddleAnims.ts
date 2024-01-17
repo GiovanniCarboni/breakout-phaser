@@ -5,60 +5,83 @@ export const createPaddleAnims = (
 ) => {
   anims.create({
     key: Anims.defaultPaddle,
-    frames: anims.generateFrameNumbers(Sprites.defaultPaddle, {
-      start: 0,
-      end: 3,
+    frames: anims.generateFrameNames(Sprites.paddle, {
+      start: 1,
+      end: 4,
+      prefix: "paddle_default_",
+      suffix: ".png",
     }),
     frameRate: 8,
     repeat: -1,
   });
   anims.create({
     key: Anims.longPaddle,
-    frames: anims.generateFrameNumbers(Sprites.longPaddle, {
-      start: 0,
-      end: 3,
+    frames: anims.generateFrameNames(Sprites.paddle, {
+      start: 1,
+      end: 4,
+      prefix: "paddle_long_",
+      suffix: ".png",
     }),
     frameRate: 8,
     repeat: -1,
   });
   anims.create({
     key: Anims.shortPaddle,
-    frames: anims.generateFrameNumbers(Sprites.shortPaddle, {
-      start: 0,
-      end: 3,
+    frames: anims.generateFrameNames(Sprites.paddle, {
+      start: 1,
+      end: 4,
+      prefix: "paddle_short_",
+      suffix: ".png",
     }),
     frameRate: 8,
     repeat: -1,
   });
   anims.create({
     key: Anims.paddleGetsLonger1,
-    frames: anims.generateFrameNumbers(Sprites.paddletransition1, {
-      start: 14,
-      end: 0,
+    frames: anims.generateFrameNames(Sprites.paddle, {
+      start: 15,
+      end: 1,
+      prefix: "transition1_",
+      suffix: ".png",
     }),
     frameRate: 60,
   });
   anims.create({
     key: Anims.paddleGetsLonger2,
-    frames: anims.generateFrameNumbers(Sprites.paddleTransition2, {
-      start: 0,
-      end: 13,
+    frames: anims.generateFrameNames(Sprites.paddle, {
+      start: 1,
+      end: 14,
+      prefix: "transition2_",
+      suffix: ".png",
     }),
     frameRate: 60,
   });
   anims.create({
     key: Anims.paddleGetsShorter1,
-    frames: anims.generateFrameNumbers(Sprites.paddletransition1, {
-      start: 0,
-      end: 14,
+    frames: anims.generateFrameNames(Sprites.paddle, {
+      start: 1,
+      end: 15,
+      prefix: "transition1_",
+      suffix: ".png",
     }),
     frameRate: 60,
   });
   anims.create({
     key: Anims.paddleGetsShorter2,
-    frames: anims.generateFrameNumbers(Sprites.paddleTransition2, {
-      start: 13,
-      end: 0,
+    frames: anims.generateFrameNames(Sprites.paddle, {
+      start: 14,
+      end: 1,
+      prefix: "transition2_",
+      suffix: ".png",
+    }),
+    frameRate: 60,
+  });
+
+  anims.create({
+    key: Anims.shoot,
+    frames: anims.generateFrameNumbers(Sprites.cannonShooting, {
+      start: 0,
+      end: 3,
     }),
     frameRate: 60,
   });

@@ -19,3 +19,16 @@ const config: Phaser.Types.Core.GameConfig = {
 };
 
 new Phaser.Game(config);
+
+// async function connectRadio() {
+//   try {
+//     const res = await fetch(
+//       `http://www.radio-browser.info/webservice/json/stations/bycountryexact/Italy`
+//     );
+//     const data = await res.json();
+//     console.log(data);
+//   } catch (err) {
+//     console.error(err);
+//   }
+// }
+// connectRadio();

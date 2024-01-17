@@ -21,41 +21,18 @@ export class Load extends Phaser.Scene {
         frameHeight: 18,
       }
     );
-    // paddle
-    this.load.spritesheet(
-      Sprites.defaultPaddle,
-      "assets/images/paddle/default_paddle.png",
-      {
-        frameHeight: 20,
-        frameWidth: 120,
-      }
+    this.load.atlas(
+      Sprites.paddle,
+      "assets/images/paddle/paddle.png",
+      "assets/images/paddle/paddle.json"
     );
+    this.load.image(Sprites.cannon, "assets/images/paddle/cannon.png");
     this.load.spritesheet(
-      Sprites.longPaddle,
-      "assets/images/paddle/long_paddle.png",
-      {
-        frameHeight: 20,
-        frameWidth: 180,
-      }
+      Sprites.cannonShooting,
+      "assets/images/paddle/cannon_shooting.png",
+      { frameWidth: 10, frameHeight: 8 }
     );
-    this.load.spritesheet(
-      Sprites.shortPaddle,
-      "assets/images/paddle/short_paddle.png",
-      {
-        frameHeight: 20,
-        frameWidth: 64,
-      }
-    );
-    this.load.spritesheet(
-      Sprites.paddleTransition2,
-      "assets/images/paddle/paddle_transition_2.png",
-      { frameWidth: 180, frameHeight: 20 }
-    );
-    this.load.spritesheet(
-      Sprites.paddletransition1,
-      "assets/images/paddle/paddle_transition_1.png",
-      { frameWidth: 120, frameHeight: 20 }
-    );
+    this.load.image(Sprites.bullet, "assets/images/paddle/bullet.png");
     // brick
     this.load.spritesheet(
       Sprites.commonBrick,
@@ -88,6 +65,10 @@ export class Load extends Phaser.Scene {
       Sprites.igniteBall,
       "assets/images/powerups/ignite_ball.png"
     );
+    this.load.image(
+      Sprites.addShooter,
+      "assets/images/powerups/add_shooter.png"
+    );
     // ui
     this.load.image(Sprites.pause, "assets/images/pause.png");
     this.load.image(Sprites.heart, "assets/images/heart.png");
@@ -119,10 +100,10 @@ export class Load extends Phaser.Scene {
     this.load.audio(Sounds.gameOver, "assets/sounds/game_over.mp3");
     this.load.audio(Sounds.lifeLost, "assets/sounds/lost_life.mp3");
     this.load.audio(Sounds.fireBrick, "assets/sounds/fire.mp3");
-    // TODO convert to mp3 -> ogg not valid for safari
     this.load.audio(Sounds.buttonPress, "assets/sounds/button_pressed.mp3");
     this.load.audio(Sounds.hitWall, "assets/sounds/hit_wall.mp3");
     this.load.audio(Sounds.ballIgnition, "assets/sounds/ball_ignition.mp3");
+    this.load.audio(Sounds.shot, "assets/sounds/shot.mp3");
   }
 
   create() {

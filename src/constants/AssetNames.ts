@@ -4,11 +4,10 @@ export enum Sprites {
   ball = "ball",
   fireBall = "fireBall",
   // paddle
-  defaultPaddle = "defaultPaddle",
-  shortPaddle = "shortPaddle",
-  longPaddle = "longPaddle",
-  paddletransition1 = "paddleTransition1",
-  paddleTransition2 = "paddleTransition2",
+  paddle = "paddle",
+  cannon = "cannon",
+  cannonShooting = "cannonShooting",
+  bullet = "bullet",
   // brick
   commonBrick = "commonBrick",
   fireBrick = "fireBrick",
@@ -18,6 +17,7 @@ export enum Sprites {
   expandPaddle = "expandPaddle",
   shrinkPaddle = "shrinkPaddle",
   igniteBall = "igniteBall",
+  addShooter = "addShooter",
   // UI
   heart = "heart",
   pause = "pause",
@@ -44,4 +44,5 @@ export enum Sounds {
   buttonPress = "buttonPress",
   hitWall = "hitWall",
   ballIgnition = "ballIgnition",
+  shot = "shot",
 }

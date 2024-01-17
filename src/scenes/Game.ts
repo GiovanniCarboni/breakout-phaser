@@ -5,7 +5,6 @@ import Bricks, { createBricks } from "../components/Brick/Bricks";
 import Powerup, { createPowerup } from "../components/Powerup/Powerup";
 import Powerups, { createPowerups } from "../components/Powerup/Powerups";
 import { Sprites, Events, Sounds, Scenes, Anims } from "../constants";
-import Brick from "../components/Brick/Brick";
 
 export class Game extends Phaser.Scene {
   private ball!: Ball;
@@ -15,6 +14,7 @@ export class Game extends Phaser.Scene {
   private level!: number;
   private lives!: number;
   private isStageCleared = false;
+  // private bullets!: Phaser.Physics.Arcade.Group;
   private sounds!: {
     [key: string]:
       | Phaser.Sound.NoAudioSound
@@ -52,6 +52,7 @@ export class Game extends Phaser.Scene {
     this.paddle = createPaddle(this);
     this.bricks = createBricks(this, this.level);
     this.powerups = createPowerups(this);
+    // this.bullets = this.physics.add.group();
 
     this.addColliders();
 
@@ -93,7 +94,7 @@ export class Game extends Phaser.Scene {
 
     // stage cleared
     // TODO review advance level logic
-    if (this.bricks.getChildren().length === 0 && !this.isStageCleared)
+    if (!this.bricks.getLength() && !this.isStageCleared)
       this.isStageCleared = true;
     if (this.isStageCleared) {
       setTimeout(() => {
@@ -167,6 +168,27 @@ export class Game extends Phaser.Scene {
       undefined,
       this
     );
+    this.physics.add.collider(
+      this.paddle.bullets,
+      this.bricks,
+      this.bulletHitBrick,
+      undefined,
+      this
+    );
+  }
+
+  addPowerup(x: number, y: number) {
+    const randomValue = Math.ceil(Math.random() * 15);
+    if (randomValue !== 1) return;
+    const powerupName = this.powerups.getRandomPowerup();
+    const powerup = createPowerup(this, x, y, powerupName).setData(
+      "power",
+      powerupName
+    );
+    this.powerups.addPowerup(powerup, {
+      x: this.ball.body?.velocity.x! - 150,
+      y: -this.ball.body?.velocity.y!,
+    });
   }
 
   powerupHitPaddle(_: any, obj2: any) {
@@ -191,11 +213,13 @@ export class Game extends Phaser.Scene {
       case Sprites.igniteBall:
         this.ball.ignite();
         break;
+      case Sprites.addShooter:
+        this.paddle.addCannons();
+        break;
     }
     powerup.destroy();
   }
 
-  // TODO move ballHitPaddle logic to Ball
   ballHitPaddle(obj1: any, _: any) {
     // for overlap
     // this.ball.setVelocityY(-this.ball.body?.velocity.y!);
@@ -214,37 +238,45 @@ export class Game extends Phaser.Scene {
     }
   }
 
+  bulletHitBrick(bulletObj: any, brickObj: any) {
+    const brick = brickObj as Phaser.Physics.Arcade.Sprite;
+    const brickType = brick.getData("type");
+
+    if (brickType === "common") {
+      this.sounds.brickbreak.play();
+    }
+    if (brickType === "fire") {
+      this.sounds.fireBrickbreak.play();
+      this.destroyFireBricks(brick.getData("number"));
+      this.createSmoke(bulletObj.x, bulletObj.y);
+    } else {
+      brick.destroy();
+    }
+
+    (bulletObj as Phaser.Physics.Arcade.Sprite).destroy();
+    this.addPowerup(brick.x, brick.y);
+  }
+
   ballHitBrick(obj1: any, obj2: any) {
-    // if (this.ball.isIgnited);
     const brick = obj2 as Phaser.Physics.Arcade.Sprite;
     const brickType = brick.getData("type");
-    const entry = brick.getData("number");
+
     if (brickType === "common") {
       this.sounds.brickbreak.play();
     }
     if (brickType === "fire" || this.ball.isIgnited) {
       this.sounds.fireBrickbreak.play();
-      this.destroyFireBricks(entry);
+      this.destroyFireBricks(brick.getData("number"));
       this.createSmoke(obj1.x, obj1.y);
     } else {
       brick.destroy();
     }
 
-    ////////////// POWER UP //////////////////////////
-    const randomValue = Math.ceil(Math.random() * 15);
-    if (randomValue !== 1) return;
-    const powerupName = this.powerups.getRandomPowerup();
-    const powerup = createPowerup(this, brick.x, brick.y, powerupName).setData(
-      "power",
-      powerupName
-    );
-    this.powerups.addPowerup(powerup, {
-      x: this.ball.body?.velocity.x! - 150,
-      y: -this.ball.body?.velocity.y!,
-    });
+    this.addPowerup(brick.x, brick.y);
   }
+
   async destroyFireBricks(entry: number) {
-    const queue: any[] = [];
+    const queue: number[] = [];
     const checkedBricks = new Set();
     const bricksToDestroy = [];
 
@@ -278,8 +310,10 @@ export class Game extends Phaser.Scene {
       i++;
     }
 
-    for (const brick of bricksToDestroy) {
+    for (const brickObj of bricksToDestroy) {
+      const brick = brickObj as Phaser.Physics.Arcade.Sprite;
       await new Promise((f) => setTimeout(f, 10));
+      this.addPowerup(brick.x, brick.y);
       brick.destroy();
     }
   }
