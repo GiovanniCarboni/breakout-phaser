@@ -51,6 +51,14 @@ export class Load extends Phaser.Scene {
       }
     );
     this.load.spritesheet(
+      Sprites.burnBrick,
+      "assets/images/brick/burn_brick.png",
+      {
+        frameWidth: 51,
+        frameHeight: 20,
+      }
+    );
+    this.load.spritesheet(
       Sprites.metalBrick,
       "assets/images/brick/metal_brick.png",
       {
@@ -109,7 +117,7 @@ export class Load extends Phaser.Scene {
     this.load.audio(Sounds.lifeLost, "assets/sounds/lost_life.mp3");
     this.load.audio(Sounds.fireBrick, "assets/sounds/fire.mp3");
     this.load.audio(Sounds.buttonPress, "assets/sounds/button_pressed.mp3");
-    this.load.audio(Sounds.hitWall, "assets/sounds/hit_wall.mp3");
+    this.load.audio(Sounds.hitMetal, "assets/sounds/hit_metal.mp3");
     this.load.audio(Sounds.ballIgnition, "assets/sounds/ball_ignition.mp3");
     this.load.audio(Sounds.shot, "assets/sounds/shot.mp3");
   }

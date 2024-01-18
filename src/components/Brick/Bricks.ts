@@ -1,3 +1,4 @@
+import { Anims } from "../../constants";
 import {
   LevelTemplate, // type
   getLevelTemplate,
@@ -27,6 +28,66 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
         entryNr++;
       }
     }
+  }
+
+  async destroyFireBricks(entry: number) {
+    const queue: number[] = [];
+    const checkedBricks = new Set();
+    const bricksToDestroy = [];
+
+    queue.push(entry);
+    checkedBricks.add(entry);
+    let brickType: string;
+
+    // to make sure the first iteration is always treated as fire brick
+    let i = 0;
+
+    while (queue.length > 0) {
+      const currentBrickNumber = queue.shift();
+      const currentBrick = this.getChildren().find(
+        (brick) => brick.getData("number") === currentBrickNumber
+      );
+      if (currentBrick) {
+        brickType = currentBrick.getData("type");
+        bricksToDestroy.push(currentBrick);
+        if (brickType === "fire" || i === 0) {
+          const neighbours = this.getNeighboringBricks(currentBrickNumber!);
+          for (const neighbour of neighbours) {
+            if (!checkedBricks.has(neighbour)) {
+              queue.push(neighbour);
+              checkedBricks.add(neighbour);
+            }
+          }
+        } else {
+          checkedBricks.add(currentBrick.getData("number"));
+        }
+      }
+      i++;
+    }
+
+    for (const brickObj of bricksToDestroy) {
+      const brick = brickObj as Phaser.Physics.Arcade.Sprite;
+      await new Promise((f) => setTimeout(f, 10));
+      try {
+        brick.play(Anims.burnBrick);
+        brick.on("animationcomplete", () => brick.destroy());
+      } catch (err) {
+        continue;
+      }
+    }
+  }
+
+  getNeighboringBricks(fireBrick: number) {
+    return [
+      fireBrick - 1,
+      fireBrick + 1,
+      fireBrick - 20,
+      fireBrick - 19,
+      fireBrick - 18,
+      fireBrick + 18,
+      fireBrick + 19,
+      fireBrick + 20,
+    ];
   }
 }
 

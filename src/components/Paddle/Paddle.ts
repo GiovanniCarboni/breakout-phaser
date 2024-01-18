@@ -50,6 +50,10 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
       loop: false,
       volume: 0.3,
     });
+
+    //////////////// debug ////////////////
+    // debug cannons
+    // this.addCannons();
   }
 
   update() {
@@ -154,11 +158,13 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
     const cannonR =
       this.cannons.getChildren()[1] as Phaser.Physics.Arcade.Sprite;
 
-    const lBullet = this.bullets.get(cannonL.x, cannonL.y - 5, Sprites.bullet);
+    const lBullet = this.bullets.get(cannonL.x, cannonL.y, Sprites.bullet);
     lBullet.setVelocity(0, -550);
-    const rBullet = this.bullets.get(cannonR.x, cannonR.y - 5, Sprites.bullet);
+    lBullet.setDepth(-1);
+    const rBullet = this.bullets.get(cannonR.x, cannonR.y, Sprites.bullet);
     rBullet.setVelocity(0, -550);
-    
+    rBullet.setDepth(-1);
+
     this.shotSound.play();
   }
 }

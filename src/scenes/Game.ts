@@ -6,6 +6,24 @@ import Powerup, { createPowerup } from "../components/Powerup/Powerup";
 import Powerups, { createPowerups } from "../components/Powerup/Powerups";
 import { Sprites, Events, Sounds, Scenes, Anims } from "../constants";
 
+////////////////////////////////////////////////////////////////////////
+///////////// METHODS //////////////////////////////////////////////////
+/*
+create
+update
+initSounds
+createSmoke
+initLives
+setLives
+addColliders
+addPowerup
+powerupHitPaddle
+ballHitPaddle
+bulletHitBrick
+ballHitBrick
+*/
+///////////////////////////////////////////////////////////////////////
+
 export class Game extends Phaser.Scene {
   private ball!: Ball;
   private paddle!: Paddle;
@@ -14,7 +32,6 @@ export class Game extends Phaser.Scene {
   private level!: number;
   private lives!: number;
   private isStageCleared = false;
-  // private bullets!: Phaser.Physics.Arcade.Group;
   private sounds!: {
     [key: string]:
       | Phaser.Sound.NoAudioSound
@@ -52,7 +69,6 @@ export class Game extends Phaser.Scene {
     this.paddle = createPaddle(this);
     this.bricks = createBricks(this, this.level);
     this.powerups = createPowerups(this);
-    // this.bullets = this.physics.add.group();
 
     this.addColliders();
 
@@ -93,7 +109,12 @@ export class Game extends Phaser.Scene {
     }
 
     // stage cleared
-    if (!this.bricks.getLength() && !this.isStageCleared)
+    if (
+      !this.bricks
+        .getChildren()
+        .some((brick) => brick.getData("type") !== "metal") &&
+      !this.isStageCleared
+    )
       this.isStageCleared = true;
     if (this.isStageCleared) {
       setTimeout(() => {
@@ -101,6 +122,7 @@ export class Game extends Phaser.Scene {
         this.powerups.clear(undefined, true);
         sceneEvents.emit(Events.levelChanged, this.level);
         this.scene.resume();
+        this.bricks.clear(true, true);
         this.bricks = createBricks(this, this.level);
         this.ball.reset(this.paddle.x);
         this.paddle.reset();
@@ -117,8 +139,8 @@ export class Game extends Phaser.Scene {
       brickbreak: this.sound.add(Sounds.brickbreak, { loop: false }),
       lifeLost: this.sound.add(Sounds.lifeLost, { loop: false }),
       fire: this.sound.add(Sounds.fireBrick, { loop: false }),
-      hitWall: this.sound.add(Sounds.hitWall, { loop: false }),
       fireBrickbreak: this.sound.add(Sounds.fireBrickbreak, { loop: false }),
+      hitMetal: this.sound.add(Sounds.hitMetal, { loop: false, volume: 0.3 }),
     };
   }
 
@@ -177,7 +199,7 @@ export class Game extends Phaser.Scene {
   }
 
   addPowerup(x: number, y: number) {
-    const randomValue = Math.ceil(Math.random() * 10);
+    const randomValue = Math.ceil(Math.random() * 5);
     if (randomValue !== 1) return;
     const powerupName = this.powerups.getRandomPowerup();
     const powerup = createPowerup(this, x, y, powerupName).setData(
@@ -238,99 +260,56 @@ export class Game extends Phaser.Scene {
   }
 
   bulletHitBrick(bulletObj: any, brickObj: any) {
+    (bulletObj as Phaser.Physics.Arcade.Sprite).destroy();
     const brick = brickObj as Phaser.Physics.Arcade.Sprite;
     const brickType = brick.getData("type");
 
+    if (brickType === "metal") {
+      this.sounds.hitMetal.play();
+      brick.play(Anims.metalBrick);
+      return;
+    }
     if (brickType === "common") {
       this.sounds.brickbreak.play();
+      brick.play(Anims.commonBrick);
+      brick.disableBody();
+      brick.on("animationcomplete", () => {
+        brick.destroy();
+      });
+      this.addPowerup(brick.x, brick.y);
     }
     if (brickType === "fire") {
       this.sounds.fireBrickbreak.play();
-      this.destroyFireBricks(brick.getData("number"));
       this.createSmoke(bulletObj.x, bulletObj.y);
-    } else {
-      brick.destroy();
+      this.bricks.destroyFireBricks(brick.getData("number"));
+      this.addPowerup(brick.x, brick.y);
     }
-
-    (bulletObj as Phaser.Physics.Arcade.Sprite).destroy();
-    this.addPowerup(brick.x, brick.y);
   }
 
   ballHitBrick(obj1: any, obj2: any) {
     const brick = obj2 as Phaser.Physics.Arcade.Sprite;
     const brickType = brick.getData("type");
     if (brickType === "metal" && !this.ball.isIgnited) {
-      return
+      this.sounds.hitMetal.play();
+      brick.play(Anims.metalBrick);
+      return;
     }
 
-    const entry = brick.getData("number");
-    if (brickType === "common"  && !this.ball.isIgnited) {
+    if (brickType === "common" && !this.ball.isIgnited) {
       this.sounds.brickbreak.play();
-      brick.destroy()
+      brick.play(Anims.commonBrick);
+      brick.disableBody();
+      brick.on("animationcomplete", () => {
+        brick.destroy();
+      });
+      this.addPowerup(brick.x, brick.y);
     }
 
     if (brickType === "fire" || this.ball.isIgnited) {
       this.sounds.fireBrickbreak.play();
-      this.destroyFireBricks(brick.getData("number"));
       this.createSmoke(obj1.x, obj1.y);
-    }
-
-    this.addPowerup(brick.x, brick.y);
-  }
-
-  async destroyFireBricks(entry: number) {
-    const queue: number[] = [];
-    const checkedBricks = new Set();
-    const bricksToDestroy = [];
-
-    queue.push(entry);
-    checkedBricks.add(entry);
-    let brickType: string;
-
-    // to make sure the first iteration is always treated as fire brick
-    let i = 0;
-
-    while (queue.length > 0) {
-      const currentBrickNumber = queue.shift();
-      const currentBrick = this.bricks
-        .getChildren()
-        .find((brick) => brick.getData("number") === currentBrickNumber);
-      if (currentBrick) {
-        brickType = currentBrick.getData("type");
-        bricksToDestroy.push(currentBrick);
-        if (brickType === "fire" || i === 0) {
-          const neighbours = this.getNeighbors(currentBrickNumber!);
-          for (const neighbour of neighbours) {
-            if (!checkedBricks.has(neighbour)) {
-              queue.push(neighbour);
-              checkedBricks.add(neighbour);
-            }
-          }
-        } else {
-          checkedBricks.add(currentBrick.getData("number"));
-        }
-      }
-      i++;
-    }
-
-    for (const brickObj of bricksToDestroy) {
-      const brick = brickObj as Phaser.Physics.Arcade.Sprite;
-      await new Promise((f) => setTimeout(f, 10));
+      this.bricks.destroyFireBricks(brick.getData("number"));
       this.addPowerup(brick.x, brick.y);
-      brick.destroy();
     }
-  }
-
-  getNeighbors(fireBrick: number) {
-    return [
-      fireBrick - 1,
-      fireBrick + 1,
-      fireBrick - 20,
-      fireBrick - 19,
-      fireBrick - 18,
-      fireBrick + 18,
-      fireBrick + 19,
-      fireBrick + 20,
-    ];
   }
 }

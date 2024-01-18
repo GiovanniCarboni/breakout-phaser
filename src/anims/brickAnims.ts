@@ -7,10 +7,10 @@ export const createBricksAnims = (
     key: Anims.commonBrick,
     frames: anims.generateFrameNumbers(Sprites.commonBrick, {
       start: 0,
-      end: 0,
+      end: 4,
     }),
-    frameRate: 1,
-    repeat: 1,
+    frameRate: 30,
+    repeat: 0,
   });
   anims.create({
     key: Anims.fireBrick,
@@ -18,16 +18,25 @@ export const createBricksAnims = (
       start: 0,
       end: 4,
     }),
-    frameRate: 8,
+    frameRate: 6,
     repeat: -1,
   });
   anims.create({
     key: Anims.metalBrick,
     frames: anims.generateFrameNumbers(Sprites.metalBrick, {
       start: 0,
-      end: 0,
+      end: 4,
     }),
-    frameRate: 8,
-    repeat: -1,
+    frameRate: 50,
+    repeat: 0,
+  });
+  anims.create({
+    key: Anims.burnBrick,
+    frames: anims.generateFrameNumbers(Sprites.burnBrick, {
+      start: 0,
+      end: 4,
+    }),
+    frameRate: 20,
+    repeat: 0,
   });
 };

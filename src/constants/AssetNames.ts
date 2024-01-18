@@ -11,6 +11,7 @@ export enum Sprites {
   // brick
   commonBrick = "commonBrick",
   fireBrick = "fireBrick",
+  burnBrick = "burnBrick",
   metalBrick = "metalBrick",
   // powerups
   getLife = "getLife",
@@ -43,7 +44,7 @@ export enum Sounds {
   lifeLost = "lifeLost",
   fireBrick = "fireBrick",
   buttonPress = "buttonPress",
-  hitWall = "hitWall",
+  hitMetal = "hitMetal",
   ballIgnition = "ballIgnition",
   shot = "shot",
 }

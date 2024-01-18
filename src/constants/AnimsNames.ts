@@ -5,6 +5,7 @@ export enum Anims {
   // brick
   commonBrick = "commonBrick",
   fireBrick = "fireBrick",
+  burnBrick = "burnBrick",
   metalBrick = "metalBrick",
   // paddle
   defaultPaddle = "defaultPaddle",

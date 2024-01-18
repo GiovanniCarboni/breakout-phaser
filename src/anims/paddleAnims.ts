@@ -83,6 +83,6 @@ export const createPaddleAnims = (
       start: 0,
       end: 3,
     }),
-    frameRate: 60,
+    frameRate: 40,
   });
 };

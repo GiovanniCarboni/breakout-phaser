@@ -14,11 +14,14 @@ export default class Brick extends Phaser.Physics.Arcade.Sprite {
   init(brickType: number, entryNr: number) {
     switch (brickType) {
       case 1:
-        this.play(Anims.commonBrick);
+        this.setTexture(Sprites.commonBrick);
         this.setData("type", "common");
         break;
       case 2:
-        this.play(Anims.fireBrick);
+        this.setTexture(Sprites.fireBrick);
+        setTimeout(() => {
+          this.play(Anims.fireBrick);
+        }, 74 * Math.ceil(Math.random() * 8));
         this.setData("type", "fire");
         break;
       case 3:
@@ -27,6 +30,7 @@ export default class Brick extends Phaser.Physics.Arcade.Sprite {
         break;
     }
     this.setData("number", entryNr);
+    this.setData("status", "active");
     // this.setImmovable(true);
   }
 }

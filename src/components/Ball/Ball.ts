@@ -5,10 +5,10 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
   private canvasH: number;
   private canvasW: number;
   private startPosition;
-  private hitWallSound!:
-    | Phaser.Sound.NoAudioSound
-    | Phaser.Sound.HTML5AudioSound
-    | Phaser.Sound.WebAudioSound;
+  // private hitWallSound!:
+  //   | Phaser.Sound.NoAudioSound
+  //   | Phaser.Sound.HTML5AudioSound
+  //   | Phaser.Sound.WebAudioSound;
   private ballIgnitionSound!:
     | Phaser.Sound.NoAudioSound
     | Phaser.Sound.HTML5AudioSound
@@ -35,21 +35,25 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
     this.y = this.startPosition.y - this.height;
     this.setCollideWorldBounds(true);
     this.setBounce(1);
-    this.hitWallSound = this.scene.sound.add(Sounds.hitWall, {
-      loop: false,
-      volume: 0.6,
-    });
+    // this.hitWallSound = this.scene.sound.add(Sounds.hitWall, {
+    //   loop: false,
+    //   volume: 0.6,
+    // });
     this.ballIgnitionSound = this.scene.sound.add(Sounds.ballIgnition, {
       loop: false,
     });
+
+    //////////////// debug ////////////////
+    // debug fire ball
+    // this.ignite();
   }
 
   update(paddle: Paddle) {
     if (!this.isMoving) this.x = paddle.x;
 
     // to modify. not reliable. Sound on hit wall
-    if (this.x < 8 || this.x > this.canvasW - 8 || this.y < 8)
-      if (!this.hitWallSound.isPlaying) this.hitWallSound.play();
+    // if (this.x < 8 || this.x > this.canvasW - 8 || this.y < 8)
+    //   if (!this.hitWallSound.isPlaying) this.hitWallSound.play();
 
     // following code only for ignited ball
     if (!this.isIgnited) return;
