@@ -34,6 +34,7 @@ export class Load extends Phaser.Scene {
     );
     this.load.image(Sprites.bullet, "assets/images/paddle/bullet.png");
     // brick
+    this.load.image(Sprites.blankBrick, "assets/images/brick/blank_brick.png");
     this.load.spritesheet(
       Sprites.commonBrick,
       "assets/images/brick/common_brick.png",
@@ -86,13 +87,31 @@ export class Load extends Phaser.Scene {
       "assets/images/powerups/add_shooter.png"
     );
     // ui
-    this.load.image(Sprites.pause, "assets/images/pause.png");
-    this.load.image(Sprites.heart, "assets/images/heart.png");
+    this.load.image(Sprites.pause, "assets/images/UI/pause_button.png");
+    this.load.image(Sprites.heart, "assets/images/UI/heart.png");
+    this.load.image(
+      Sprites.brickSelector,
+      "assets/images/UI/brick_selector.png"
+    );
+    this.load.image(
+      Sprites.brickHighlight,
+      "assets/images/UI/brick_highlight.png"
+    );
+    this.load.spritesheet(
+      Sprites.playButton,
+      "assets/images/UI/play_button.png",
+      {
+        frameWidth: 120,
+        frameHeight: 120,
+      }
+    );
     // text
     this.load.image(Sprites.start, "assets/images/text/start.png");
     this.load.image(Sprites.restart, "assets/images/text/restart.png");
     this.load.image(Sprites.resume, "assets/images/text/resume.png");
     this.load.image(Sprites.backToMenu, "assets/images/text/back_to_menu.png");
+    this.load.image(Sprites.customLevel, "assets/images/text/custom_level.png");
+    this.load.image(Sprites.back, "assets/images/text/back.png");
     this.load.spritesheet(
       Sprites.gameOver,
       "assets/images/text/game_over.png",

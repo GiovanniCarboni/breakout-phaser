@@ -2,6 +2,8 @@ import { Scenes, Sounds, Sprites } from "../constants";
 
 export class Start extends Phaser.Scene {
   private startButton!: Phaser.GameObjects.Sprite;
+  private customLevelButton!: Phaser.GameObjects.Sprite;
+  private buttons!: Phaser.GameObjects.Sprite[];
   private sounds!: {
     [key: string]:
       | Phaser.Sound.NoAudioSound
@@ -13,9 +15,9 @@ export class Start extends Phaser.Scene {
     super({ key: Scenes.start });
   }
 
-  preload() {}
-
   create() {
+    this.scene.run(Scenes.ui);
+
     this.sounds = {
       shuffle: this.sound.add(Sounds.shuffle, { loop: false, volume: 0.2 }),
       btnPressed: this.sound.add(Sounds.buttonPress, {
@@ -26,15 +28,22 @@ export class Start extends Phaser.Scene {
 
     this.cameras.main.setBackgroundColor("#000");
     this.initStartButton();
+    this.initCustomLevelButton();
 
-    for (let button of [this.startButton]) {
+    for (let button of [this.startButton, this.customLevelButton]) {
       button.on("pointerover", () => this.handleMouseOver(button), this);
       button.on("pointerout", () => this.handleMouseOut(button), this);
     }
 
     this.startButton.on("pointerdown", () => {
       this.sounds.btnPressed.play();
-      this.scene.start(Scenes.game);
+      this.scene.start(Scenes.game, { isCustom: false });
+      this.scene.stop();
+    });
+
+    this.customLevelButton.on("pointerdown", () => {
+      this.sounds.btnPressed.play();
+      this.scene.start(Scenes.LevelEditor);
       this.scene.stop();
     });
   }
@@ -42,6 +51,17 @@ export class Start extends Phaser.Scene {
   initStartButton() {
     this.startButton = this.add
       .sprite(this.scale.width / 2, this.scale.height / 2, Sprites.start)
+      .setOrigin(0.5, 0)
+      .setInteractive();
+  }
+  initCustomLevelButton() {
+    this.customLevelButton = this.add
+      .sprite(
+        this.scale.width / 2,
+        this.scale.height / 2 + 80,
+        Sprites.customLevel
+      )
+      .setOrigin(0.5, 0)
       .setInteractive();
   }
 

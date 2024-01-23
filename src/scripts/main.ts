@@ -1,11 +1,11 @@
 import "phaser";
-import { Game, GameOver, Load, Pause, Start, UI } from "../scenes";
+import { Game, GameOver, LevelEditor, Load, Pause, Start, UI } from "../scenes";
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   parent: "game",
   width: 1100,
-  scene: [Load, Start, Game, Pause, UI, GameOver],
+  scene: [Load, Start, Game, Pause, UI, GameOver, LevelEditor],
   physics: {
     default: "arcade",
     arcade: {

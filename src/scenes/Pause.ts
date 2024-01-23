@@ -38,7 +38,6 @@ export class Pause extends Phaser.Scene {
     this.buttons.resumeButton.on("pointerdown", () => {
       this.sounds.btnPressed.play();
       this.scene.resume(Scenes.game);
-      this.scene.resume(Scenes.ui);
       this.scene.stop();
     });
     this.buttons.restartButton.on("pointerdown", () => {

@@ -9,6 +9,7 @@ import { Sprites, Events, Sounds, Scenes, Anims } from "../constants";
 ////////////////////////////////////////////////////////////////////////
 ///////////// METHODS //////////////////////////////////////////////////
 /*
+init
 create
 update
 initSounds
@@ -25,11 +26,12 @@ ballHitBrick
 ///////////////////////////////////////////////////////////////////////
 
 export class Game extends Phaser.Scene {
+  private isCustom: boolean = false;
   private ball!: Ball;
   private paddle!: Paddle;
   private bricks!: Bricks;
   private powerups!: Powerups;
-  private level!: number;
+  private level?: number;
   private lives!: number;
   private isStageCleared = false;
   private sounds!: {
@@ -51,23 +53,30 @@ export class Game extends Phaser.Scene {
     });
   }
 
-  create() {
-    this.scene.run(Scenes.ui);
+  init({ isCustom, template }: { isCustom: boolean; template: number[][] }) {
+    if (isCustom) {
+      this.bricks = createBricks(this, undefined, template);
+      this.isCustom = true;
+      sceneEvents.emit(Events.levelChanged, 0);
+    } else if (!isCustom) {
+      this.level = 1;
+      this.isCustom = false;
+      sceneEvents.emit(Events.levelChanged, this.level);
+      this.bricks = createBricks(this, this.level);
+    }
+  }
 
+  create() {
     this.canvasW = this.scale.width;
     this.canvasH = this.scale.height;
 
     this.physics.world.setBounds(0, 0, this.canvasW, this.canvasH);
     this.physics.world.setBoundsCollision(true, true, true, false);
 
-    this.level = 1;
-    sceneEvents.emit(Events.levelChanged, this.level);
-
     this.initSounds();
     this.initLives();
     this.ball = createBall(this);
     this.paddle = createPaddle(this);
-    this.bricks = createBricks(this, this.level);
     this.powerups = createPowerups(this);
 
     this.addColliders();
@@ -118,18 +127,25 @@ export class Game extends Phaser.Scene {
       this.isStageCleared = true;
     if (this.isStageCleared) {
       setTimeout(() => {
-        this.level++;
         this.powerups.clear(undefined, true);
-        sceneEvents.emit(Events.levelChanged, this.level);
-        this.scene.resume();
         this.bricks.clear(true, true);
-        this.bricks = createBricks(this, this.level);
-        this.ball.reset(this.paddle.x);
-        this.paddle.reset();
-        this.addColliders();
-        this.isStageCleared = false;
+        if (this.isCustom) {
+          this.isStageCleared = false;
+          this.scene.stop();
+          this.scene.start(Scenes.start);
+        }
+        if (!this.isCustom) {
+          this.level!++;
+          sceneEvents.emit(Events.levelChanged, this.level);
+          this.scene.resume(Scenes.game);
+          this.bricks = createBricks(this, this.level);
+          this.ball.reset(this.paddle.x);
+          this.paddle.reset();
+          this.addColliders();
+          this.isStageCleared = false;
+        }
       }, 1000);
-      this.scene.pause();
+      this.scene.pause(Scenes.game);
     }
   }
 
@@ -144,6 +160,7 @@ export class Game extends Phaser.Scene {
     };
   }
 
+  // TODO Move create smoke to Ball
   createSmoke(x: number, y: number) {
     const smoke = this.add.sprite(x, y, Sprites.smoke).play(Anims.smoke);
     smoke.setScale(1.5, 1.5);

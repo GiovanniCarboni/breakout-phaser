@@ -13,6 +13,7 @@ export enum Sprites {
   fireBrick = "fireBrick",
   burnBrick = "burnBrick",
   metalBrick = "metalBrick",
+  blankBrick = "blankBrick",
   // powerups
   getLife = "getLife",
   loseLife = "loseLife",
@@ -23,12 +24,17 @@ export enum Sprites {
   // UI
   heart = "heart",
   pause = "pause",
+  brickSelector = "brickSelector",
+  brickHighlight = "brickHighlight",
+  playButton = "playButton",
   // text
   start = "start",
   restart = "restart",
   resume = "resume",
   backToMenu = "backToMenu",
   gameOver = "gameOver",
+  customLevel = "customLevel",
+  back = "back",
   // others
   smoke = "smoke",
   sparkle = "sparkle",

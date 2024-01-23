@@ -91,8 +91,14 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
   }
 }
 
-export const createBricks = function (scene: Phaser.Scene, level: number) {
+export const createBricks = function (
+  scene: Phaser.Scene,
+  level?: number,
+  template?: number[][]
+) {
   const bricks = new Bricks(scene, { classType: Brick });
-  bricks.fillBricks(scene, getLevelTemplate(level));
+  if (level) bricks.fillBricks(scene, getLevelTemplate(level));
+  // get custom created level
+  else bricks.fillBricks(scene, getLevelTemplate(0, template));
   return bricks;
 };

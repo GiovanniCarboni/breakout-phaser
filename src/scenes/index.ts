@@ -4,5 +4,6 @@ import { Load } from "./Load";
 import { Pause } from "./Pause";
 import { UI } from "./UI";
 import { GameOver } from "./GameOver";
+import { LevelEditor } from "./LevelEditor";
 
-export { Game, Start, Load, Pause, UI, GameOver };
+export { Game, Start, Load, Pause, UI, GameOver, LevelEditor };

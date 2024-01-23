@@ -20,4 +20,8 @@ export enum Anims {
   gameOver = "gameOver",
   // others
   smoke = "smoke",
+  // ui
+  playButtonIdle = "playButtonIdle",
+  playButtonPressed = "playButtonPressed",
+  playButtonHover = "playButtonHover",
 }

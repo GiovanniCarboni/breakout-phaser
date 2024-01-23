@@ -28,10 +28,14 @@ export default class Brick extends Phaser.Physics.Arcade.Sprite {
         this.play(Anims.metalBrick);
         this.setData("type", "metal");
         break;
+      case 9:
+        this.setTexture(Sprites.blankBrick);
+        this.setData("type", "blank");
+        break;
     }
     this.setData("number", entryNr);
     this.setData("status", "active");
-    // this.setImmovable(true);
+    this.setInteractive();
   }
 }
 
@@ -45,5 +49,16 @@ export const createBrick = function (
   scene.add.existing(brick);
   scene.physics.world.enableBody(brick, Phaser.Physics.Arcade.DYNAMIC_BODY);
   brick.init(info.type, info.entryNr);
+
+  /////////////// debug //////////////////////////////////
+  // debug bricks
+  // const text = scene.add.text(x, y, String(info.entryNr), {
+  //   color: "white",
+  //   strokeThickness: 2,
+  //   stroke: "black",
+  //   fontStyle: "bold",
+  // });
+  // text.setOrigin(0.5, 0.5);
+
   return brick;
 };

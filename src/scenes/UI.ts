@@ -18,6 +18,7 @@ export class UI extends Phaser.Scene {
     this.scene.moveBelow(Scenes.pause);
     this.scene.moveBelow(Scenes.start);
     this.scene.moveBelow(Scenes.gameOver);
+    this.scene.moveBelow(Scenes.LevelEditor);
 
     this.canvasW = this.scale.width;
     this.canvasH = this.scale.height;
@@ -29,10 +30,12 @@ export class UI extends Phaser.Scene {
     });
 
     /////////////// LEVEL NUMBER ///////////////////////////////
-    this.stageText = this.add.text(this.canvasW / 2, 15, "Stage 1");
+    this.stageText = this.add.text(this.canvasW / 2, 25, "Stage 1");
+    this.stageText.setOrigin(0.5, 0.5);
 
     sceneEvents.on("levelChanged", (level: number) => {
-      this.stageText.setText(`Stage ${level}`);
+      if (!level) this.stageText.setText("Custom Level");
+      else this.stageText.setText(`Stage ${level}`);
     });
     ////////////// PAUSE BUTTON ////////////////////////////////
     this.pauseBtn = this.add
@@ -53,13 +56,13 @@ export class UI extends Phaser.Scene {
       }, 100);
     });
     this.pauseBtn.on("pointerdown", () => {
-      this.pause(this.scene);
+      if (this.scene.isActive(Scenes.game)) this.pause(this.scene);
     });
   }
 
   pause(scene: Phaser.Scenes.ScenePlugin) {
     scene.moveBelow(Scenes.pause);
-    scene.pause();
+    // scene.pause();
     scene.pause(Scenes.game);
     scene.launch(Scenes.pause);
   }
