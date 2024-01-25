@@ -22,11 +22,20 @@ export enum Sprites {
   igniteBall = "igniteBall",
   addShooter = "addShooter",
   // UI
+  headbar = "headbar",
   heart = "heart",
-  pause = "pause",
   brickSelector = "brickSelector",
   brickHighlight = "brickHighlight",
+  menuBox2 = "menuBox2",
+  menuBox3 = "menuBox3",
+  menuBox4 = "menuBox4",
+  genericButton = "genericButton",
+  mainButton = "mainButton",
   playButton = "playButton",
+  backButton = "backButton",
+  pauseButton = "pauseButton",
+  clearButton = "clearButton",
+  menuHanger = "menuHanger",
   // text
   start = "start",
   restart = "restart",
@@ -34,7 +43,6 @@ export enum Sprites {
   backToMenu = "backToMenu",
   gameOver = "gameOver",
   customLevel = "customLevel",
-  back = "back",
   // others
   smoke = "smoke",
   sparkle = "sparkle",
@@ -53,4 +61,9 @@ export enum Sounds {
   hitMetal = "hitMetal",
   ballIgnition = "ballIgnition",
   shot = "shot",
+}
+
+// FONTS ///////////////////////////////////////////////////////////////////////////
+export enum Fonts {
+  manaspace = "Manaspace",
 }

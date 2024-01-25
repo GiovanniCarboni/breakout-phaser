@@ -22,7 +22,7 @@ export const getLevelTemplate = (
     width: 51,
     height: 20,
     offset: {
-      top: 70,
+      top: 80,
       left: 65,
     },
     padding: 2.7,

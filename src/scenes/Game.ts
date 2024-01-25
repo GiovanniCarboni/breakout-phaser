@@ -1,3 +1,4 @@
+import { WinGame } from "./WinGame";
 import { sceneEvents } from "../events/EventCenter";
 import Ball, { createBall } from "../components/Ball/Ball";
 import Paddle, { createPaddle } from "../components/Paddle/Paddle";
@@ -26,6 +27,7 @@ ballHitBrick
 ///////////////////////////////////////////////////////////////////////
 
 export class Game extends Phaser.Scene {
+  private topEdge!: Phaser.Physics.Arcade.Image;
   private isCustom: boolean = false;
   private ball!: Ball;
   private paddle!: Paddle;
@@ -79,6 +81,12 @@ export class Game extends Phaser.Scene {
     this.paddle = createPaddle(this);
     this.powerups = createPowerups(this);
 
+    //////////////// HEADBAR /////////////////////////////////////
+    this.topEdge = this.physics.add
+      .image(0, 0, Sprites.headbar)
+      .setOrigin(0, 0)
+      .setImmovable(true);
+
     this.addColliders();
 
     // start ball on click
@@ -109,7 +117,6 @@ export class Game extends Phaser.Scene {
 
     // no lives remaining
     if (this.lives < 1) {
-      this.scene.pause(Scenes.ui);
       this.scene.launch(Scenes.gameOver);
       this.scene.stop();
       this.ball.reset(this.paddle.x);
@@ -129,12 +136,18 @@ export class Game extends Phaser.Scene {
       setTimeout(() => {
         this.powerups.clear(undefined, true);
         this.bricks.clear(true, true);
+        this.isStageCleared = false;
         if (this.isCustom) {
-          this.isStageCleared = false;
           this.scene.stop();
-          this.scene.start(Scenes.start);
+          this.scene.start(Scenes.winGame, { isCustom: true });
         }
         if (!this.isCustom) {
+          // if last level
+          if (this.level === 2) {
+            this.scene.stop();
+            this.scene.start(Scenes.winGame, { isCustom: false });
+            return;
+          }
           this.level!++;
           sceneEvents.emit(Events.levelChanged, this.level);
           this.scene.resume(Scenes.game);
@@ -142,7 +155,6 @@ export class Game extends Phaser.Scene {
           this.ball.reset(this.paddle.x);
           this.paddle.reset();
           this.addColliders();
-          this.isStageCleared = false;
         }
       }, 1000);
       this.scene.pause(Scenes.game);
@@ -213,6 +225,7 @@ export class Game extends Phaser.Scene {
       undefined,
       this
     );
+    this.physics.add.collider(this.ball, this.topEdge);
   }
 
   addPowerup(x: number, y: number) {

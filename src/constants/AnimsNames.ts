@@ -24,4 +24,13 @@ export enum Anims {
   playButtonIdle = "playButtonIdle",
   playButtonPressed = "playButtonPressed",
   playButtonHover = "playButtonHover",
+  genericButtonIdle = "genericButtonIdle",
+  genericButtonPressed = "genericButtonPressed",
+  mainButtonIdle = "mainButtonIdle",
+  mainButtonPressed = "mainButtonPressed",
+  backButtonIdle = "backButtonIdle",
+  backButtonPressed = "backButtonPressed",
+  clearButtonIdle = "clearButtonIdle",
+  clearButtonPressed = "clearButtonPressed",
+  clearButtonHover = "clearButtonHover",
 }

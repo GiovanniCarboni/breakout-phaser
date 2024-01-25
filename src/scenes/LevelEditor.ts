@@ -1,13 +1,17 @@
+import { Physics } from "phaser";
 import Brick from "../components/Brick/Brick";
 import { createBricks } from "../components/Brick/Bricks";
-import { Anims, Scenes, Sounds, Sprites } from "../constants";
+import { createBackButton } from "../components/UI/BackButton";
+import { createClearButton } from "../components/UI/ClearButton";
+import { Anims, Fonts, Scenes, Sounds, Sprites } from "../constants";
 
 export class LevelEditor extends Phaser.Scene {
   private slots!: Phaser.Physics.Arcade.Group;
-  private backButton!: Phaser.GameObjects.Sprite;
+  private clearButton!: Phaser.GameObjects.Sprite;
   private playButton!: Phaser.GameObjects.Sprite;
   private selectedBrick?: Phaser.GameObjects.Sprite;
   private brickHighlight?: Phaser.GameObjects.Sprite;
+  private message?: Phaser.GameObjects.Text;
   private sounds!: {
     [key: string]:
       | Phaser.Sound.NoAudioSound
@@ -17,6 +21,11 @@ export class LevelEditor extends Phaser.Scene {
 
   constructor() {
     super({ key: Scenes.LevelEditor });
+  }
+
+  init() {
+    this.selectedBrick = undefined;
+    // should get brick template
   }
 
   create() {
@@ -40,15 +49,16 @@ export class LevelEditor extends Phaser.Scene {
     };
 
     // INIT ELEMENTS
-    this.initBrickSelector();
-    this.initBackButton();
+    createBackButton(135, 50, () => this.scene.start(Scenes.start), this);
     this.slots = createBricks(this, 9);
+    this.initBrickSelector();
     this.initPlayButton();
-
-    // BUTTON ANIMATION
-    for (let button of [this.backButton, this.playButton]) {
-      button.on("pointerout", () => button.setScale(1), this);
-    }
+    this.clearButton = createClearButton(
+      205,
+      50,
+      this.handleClear,
+      this
+    ).setVisible(false);
 
     // SELECT SLOT
     this.slots.children.each((slot: any) => {
@@ -62,6 +72,28 @@ export class LevelEditor extends Phaser.Scene {
         (pointer: Phaser.Input.Pointer) => this.handleSelectSlot(pointer, slot),
         this
       );
+      return true;
+    });
+  }
+
+  update() {
+    this.slots.children.each((slotObj: Phaser.GameObjects.GameObject) => {
+      const slot = slotObj as Brick;
+      if (slot.texture.key !== Sprites.blankBrick) {
+        this.clearButton.setVisible(true);
+        return false;
+      }
+      this.clearButton.setVisible(false);
+      return true;
+    });
+  }
+
+  handleClear() {
+    this.slots.children.each((slotObj: Phaser.GameObjects.GameObject) => {
+      const slot = slotObj as Brick;
+      if (slot.anims.isPlaying) slot.anims.stop();
+      if (slot.texture.key !== Sprites.blankBrick)
+        slot.setTexture(Sprites.blankBrick);
       return true;
     });
   }
@@ -100,8 +132,9 @@ export class LevelEditor extends Phaser.Scene {
       .on("pointerup", () => {
         this.startGame();
       })
-      .on("pointerover", () => {
+      .on("pointerover", (pointer: Phaser.Input.Pointer) => {
         this.playButton.play(Anims.playButtonHover);
+        if (pointer.isDown) this.playButton.play(Anims.playButtonPressed);
       })
       .on(
         "pointerout",
@@ -112,28 +145,6 @@ export class LevelEditor extends Phaser.Scene {
       );
 
     this.playButton.play(Anims.playButtonIdle);
-  }
-
-  initBackButton() {
-    this.backButton = this.add
-      .sprite(80, 30, Sprites.back)
-      .setOrigin(0.5, 0.5)
-      .setInteractive();
-
-    this.backButton.on(
-      "pointerdown",
-      () => {
-        this.sounds.btnPressed.play();
-        this.scene.start(Scenes.start);
-      },
-      this
-    );
-
-    this.backButton.on(
-      "pointerover",
-      () => this.backButton.setScale(1.03),
-      this
-    );
   }
 
   createHighlight(x: number, y: number) {
@@ -161,8 +172,27 @@ export class LevelEditor extends Phaser.Scene {
       });
       template.push([0, ...row, 0]);
     }
+    template.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 
+    // if no breakable briks, prevent scene change
+    if (!template.flat().some((brick) => brick !== 0 && brick !== 3)) {
+      if (this.message) return;
+      this.message = this.add
+        .text(
+          this.scale.width - 120,
+          this.scale.height - 170,
+          "Template must contain at least one breakable brick",
+          { fontFamily: Fonts.manaspace }
+        )
+        .setOrigin(1, 0);
+      setTimeout(() => {
+        this.message!.destroy();
+        this.message = undefined;
+      }, 3000);
+      return;
+    }
     this.scene.start(Scenes.game, { isCustom: true, template });
+    this.scene.stop();
 
     //////////// debug
     // debug outgoing level template

@@ -6,4 +6,5 @@ export enum Scenes {
   load = "load",
   pause = "pause",
   LevelEditor = "levelEditor",
+  winGame = "winGame",
 }

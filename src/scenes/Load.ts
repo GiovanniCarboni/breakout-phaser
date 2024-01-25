@@ -1,8 +1,9 @@
-import { Scenes, Sounds, Sprites } from "../constants";
+import { Fonts, Scenes, Sounds, Sprites } from "../constants";
 import { createBricksAnims } from "../anims/brickAnims";
 import { createPaddleAnims } from "../anims/paddleAnims";
-import { createTextAnims } from "../anims/textAnims";
+import { createUiAnims } from "../anims/uiAnims";
 import { createBallAnims } from "../anims/ballAnims";
+import { WebFontFileLoader } from "../scripts/webfontloader";
 
 export class Load extends Phaser.Scene {
   constructor() {
@@ -87,7 +88,8 @@ export class Load extends Phaser.Scene {
       "assets/images/powerups/add_shooter.png"
     );
     // ui
-    this.load.image(Sprites.pause, "assets/images/UI/pause_button.png");
+    this.load.image(Sprites.headbar, "assets/images/UI/headbar.png");
+    this.load.image(Sprites.pauseButton, "assets/images/UI/pause_button.png");
     this.load.image(Sprites.heart, "assets/images/UI/heart.png");
     this.load.image(
       Sprites.brickSelector,
@@ -105,13 +107,43 @@ export class Load extends Phaser.Scene {
         frameHeight: 120,
       }
     );
+    this.load.spritesheet(
+      Sprites.genericButton,
+      "assets/images/UI/generic_button.png",
+      { frameWidth: 270, frameHeight: 73 }
+    );
+    this.load.spritesheet(
+      Sprites.mainButton,
+      "assets/images/UI/main_button.png",
+      { frameWidth: 270, frameHeight: 73 }
+    );
+    this.load.image(Sprites.menuBox2, "assets/images/UI/menu_box_2.png");
+    this.load.image(Sprites.menuBox3, "assets/images/UI/menu_box_3.png");
+    this.load.image(Sprites.menuBox4, "assets/images/UI/menu_box_4.png");
+    this.load.image(Sprites.menuHanger, "assets/images/UI/menu_hanger.png");
+    this.load.spritesheet(
+      Sprites.backButton,
+      "assets/images/UI/back_button.png",
+      {
+        frameWidth: 80,
+        frameHeight: 33,
+      }
+    );
+    this.load.spritesheet(
+      Sprites.clearButton,
+      "assets/images/UI/clear_button.png",
+      {
+        frameWidth: 33,
+        frameHeight: 33,
+      }
+    );
     // text
     this.load.image(Sprites.start, "assets/images/text/start.png");
     this.load.image(Sprites.restart, "assets/images/text/restart.png");
     this.load.image(Sprites.resume, "assets/images/text/resume.png");
     this.load.image(Sprites.backToMenu, "assets/images/text/back_to_menu.png");
     this.load.image(Sprites.customLevel, "assets/images/text/custom_level.png");
-    this.load.image(Sprites.back, "assets/images/text/back.png");
+
     this.load.spritesheet(
       Sprites.gameOver,
       "assets/images/text/game_over.png",
@@ -139,13 +171,16 @@ export class Load extends Phaser.Scene {
     this.load.audio(Sounds.hitMetal, "assets/sounds/hit_metal.mp3");
     this.load.audio(Sounds.ballIgnition, "assets/sounds/ball_ignition.mp3");
     this.load.audio(Sounds.shot, "assets/sounds/shot.mp3");
+
+    ////////// AUDIO /////////////////////
+    this.load.addFile(new WebFontFileLoader(this.load, [Fonts.manaspace]));
   }
 
   create() {
     createBallAnims(this.anims);
     createBricksAnims(this.anims);
     createPaddleAnims(this.anims);
-    createTextAnims(this.anims);
+    createUiAnims(this.anims);
     this.scene.start(Scenes.start);
   }
 }
