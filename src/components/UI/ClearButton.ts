@@ -1,4 +1,4 @@
-import { Anims, Sounds, Sprites } from "../../constants";
+import { Anims, Sprites } from "../../constants";
 
 export default class ClearButton extends Phaser.GameObjects.Sprite {
   constructor(

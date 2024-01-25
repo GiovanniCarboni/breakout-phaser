@@ -1,4 +1,3 @@
-import { Physics } from "phaser";
 import Brick from "../components/Brick/Brick";
 import { createBricks } from "../components/Brick/Bricks";
 import { createBackButton } from "../components/UI/BackButton";

@@ -1,4 +1,3 @@
-import { WinGame } from "./WinGame";
 import { sceneEvents } from "../events/EventCenter";
 import Ball, { createBall } from "../components/Ball/Ball";
 import Paddle, { createPaddle } from "../components/Paddle/Paddle";

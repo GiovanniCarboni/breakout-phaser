@@ -1,6 +1,4 @@
-import { Fonts } from "./../constants/AssetNames";
-import { Scenes } from "../constants";
-import { Sprites } from "../constants/AssetNames";
+import { Scenes, Fonts, Sprites } from "../constants";
 import { sceneEvents } from "../events/EventCenter";
 import { createPauseButton } from "../components/UI/PauseButton";
 

@@ -1,14 +1,7 @@
 import { createMenu } from "../components/UI/Menu";
-import { Scenes, Sounds, Sprites } from "../constants";
+import { Scenes } from "../constants";
 
 export class Start extends Phaser.Scene {
-  // private sounds!: {
-  //   [key: string]:
-  //     | Phaser.Sound.NoAudioSound
-  //     | Phaser.Sound.HTML5AudioSound
-  //     | Phaser.Sound.WebAudioSound;
-  // };
-
   constructor() {
     super({ key: Scenes.start });
   }
@@ -16,14 +9,6 @@ export class Start extends Phaser.Scene {
   create() {
     this.scene.run(Scenes.ui);
     this.scene.moveAbove(Scenes.ui);
-
-    // this.sounds = {
-    //   shuffle: this.sound.add(Sounds.shuffle, { loop: false, volume: 0.2 }),
-    //   btnPressed: this.sound.add(Sounds.buttonPress, {
-    //     loop: false,
-    //     volume: 0.2,
-    //   }),
-    // };
 
     this.cameras.main.setBackgroundColor("#000");
 
