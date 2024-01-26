@@ -1,3 +1,4 @@
+import { t } from "i18next";
 import Brick from "../components/Brick/Brick";
 import { createBricks } from "../components/Brick/Bricks";
 import { createBackButton } from "../components/UI/BackButton";
@@ -180,7 +181,7 @@ export class LevelEditor extends Phaser.Scene {
         .text(
           this.scale.width - 120,
           this.scale.height - 170,
-          "Template must contain at least one breakable brick",
+          t("Template must contain at least one breakable brick"),
           { fontFamily: Fonts.manaspace }
         )
         .setOrigin(1, 0);

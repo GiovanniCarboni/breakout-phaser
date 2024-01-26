@@ -1,3 +1,4 @@
+import { t } from "i18next";
 import { Anims, Fonts, Sounds, Sprites } from "../../constants";
 
 export default class BackButton extends Phaser.GameObjects.Sprite {
@@ -24,7 +25,7 @@ export default class BackButton extends Phaser.GameObjects.Sprite {
 
   init(onClick: () => void) {
     this.label = this.scene.add
-      .text(this.x, this.y, "Back", { fontFamily: Fonts.manaspace })
+      .text(this.x, this.y, t("Back"), { fontFamily: Fonts.manaspace })
       .setShadow(5, 3, "black", 2)
       .setOrigin(0.5, 0.5);
     this.addListeners(onClick);

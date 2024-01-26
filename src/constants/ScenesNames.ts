@@ -7,4 +7,5 @@ export enum Scenes {
   pause = "pause",
   LevelEditor = "levelEditor",
   winGame = "winGame",
+  languageSelection = "languageSelection",
 }

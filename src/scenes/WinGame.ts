@@ -1,5 +1,6 @@
 import { Scenes } from "../constants";
 import { createMenu } from "../components/UI/Menu";
+import { t } from "i18next";
 
 export class WinGame extends Phaser.Scene {
   private isCustom!: boolean;
@@ -32,9 +33,9 @@ export class WinGame extends Phaser.Scene {
         this.canvasW / 2,
         this.canvasH / 2 - 100,
         [
-          { label: "Restart", onClick: this.handleRestart, isMain: true },
-          { label: "Back to Editor", onClick: this.handleBackToEditor },
-          { label: "Back to Menu", onClick: this.handleBackToMenu },
+          { label: t("Restart"), onClick: this.handleRestart, isMain: true },
+          { label: t("Back to Editor"), onClick: this.handleBackToEditor },
+          { label: t("Back to Menu"), onClick: this.handleBackToMenu },
         ],
         this
       );

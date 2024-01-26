@@ -1,3 +1,4 @@
+import { t } from "i18next";
 import { createMenu } from "../components/UI/Menu";
 import { Anims, Scenes, Sounds, Sprites } from "../constants";
 
@@ -28,8 +29,8 @@ export class GameOver extends Phaser.Scene {
       this.scale.width / 2,
       this.scale.height / 2,
       [
-        { label: "Restart", onClick: this.handleRestart, isMain: true },
-        { label: "Back to Menu", onClick: this.handleBackToMenu },
+        { label: t("Restart"), onClick: this.handleRestart, isMain: true },
+        { label: t("Back to Menu"), onClick: this.handleBackToMenu },
       ],
       this
     );

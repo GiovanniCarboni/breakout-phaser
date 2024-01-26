@@ -36,6 +36,12 @@ export enum Sprites {
   pauseButton = "pauseButton",
   clearButton = "clearButton",
   menuHanger = "menuHanger",
+  languageSelectionBox = "languageSelectionBox",
+  // flags
+  italian = "italian",
+  romanian = "romanian",
+  english = "english",
+  flagHighlight = "flagHighlight",
   // text
   start = "start",
   restart = "restart",

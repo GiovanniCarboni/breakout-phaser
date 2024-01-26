@@ -2,6 +2,7 @@ import "phaser";
 import {
   Game,
   GameOver,
+  LanguageSelection,
   LevelEditor,
   Load,
   Pause,
@@ -9,12 +10,23 @@ import {
   UI,
   WinGame,
 } from "../scenes";
+import { Scenes } from "../constants";
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   parent: "game",
   width: 1100,
-  scene: [Load, Start, Game, Pause, UI, GameOver, LevelEditor, WinGame],
+  scene: [
+    Load,
+    Start,
+    Game,
+    Pause,
+    UI,
+    GameOver,
+    LevelEditor,
+    WinGame,
+    LanguageSelection,
+  ],
   physics: {
     default: "arcade",
     arcade: {
@@ -28,7 +40,13 @@ const config: Phaser.Types.Core.GameConfig = {
   },
 };
 
-new Phaser.Game(config);
+const game = new Phaser.Game(config);
+
+game.events.on("blur", () => {
+  if (!game.scene.isActive(Scenes.game)) return;
+  game.scene.pause(Scenes.game);
+  game.scene.start(Scenes.pause);
+});
 
 // async function connectRadio() {
 //   try {

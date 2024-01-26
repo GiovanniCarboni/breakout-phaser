@@ -4,6 +4,8 @@ import { createPaddleAnims } from "../anims/paddleAnims";
 import { createUiAnims } from "../anims/uiAnims";
 import { createBallAnims } from "../anims/ballAnims";
 import { WebFontFileLoader } from "../scripts/webfontloader";
+import { loadLocale } from "../i18next/i18next";
+import i18next from "i18next";
 
 export class Load extends Phaser.Scene {
   constructor() {
@@ -137,6 +139,18 @@ export class Load extends Phaser.Scene {
         frameHeight: 33,
       }
     );
+    this.load.image(
+      Sprites.languageSelectionBox,
+      "assets/images/UI/language_selection_box.png"
+    );
+    // flags
+    this.load.image(Sprites.italian, "assets/images/flags/italian.png");
+    this.load.image(Sprites.romanian, "assets/images/flags/romanian.png");
+    this.load.image(Sprites.english, "assets/images/flags/english.png");
+    this.load.image(
+      Sprites.flagHighlight,
+      "assets/images/flags/flag_highlight.png"
+    );
     // text
     this.load.image(Sprites.start, "assets/images/text/start.png");
     this.load.image(Sprites.restart, "assets/images/text/restart.png");
@@ -181,6 +195,16 @@ export class Load extends Phaser.Scene {
     createBricksAnims(this.anims);
     createPaddleAnims(this.anims);
     createUiAnims(this.anims);
-    this.scene.start(Scenes.start);
+    
+    loadLocale().then(() => {
+      // user might have local storage disabled
+      const savedLanguage = localStorage?.getItem("Language");
+      if (savedLanguage && savedLanguage.match(/(en|ro|it)/)) {
+        i18next.changeLanguage(savedLanguage);
+        this.scene.start(Scenes.start);
+      } else {
+        this.scene.start(Scenes.languageSelection);
+      }
+    });
   }
 }

@@ -1,6 +1,7 @@
 import { Scenes, Fonts, Sprites } from "../constants";
 import { sceneEvents } from "../events/EventCenter";
 import { createPauseButton } from "../components/UI/PauseButton";
+import { t } from "i18next";
 
 export class UI extends Phaser.Scene {
   private hearts!: Phaser.GameObjects.Group;
@@ -30,14 +31,14 @@ export class UI extends Phaser.Scene {
     });
 
     /////////////// LEVEL NUMBER ///////////////////////////////
-    this.stageText = this.add.text(this.canvasW / 2, 27, "Stage 1", {
+    this.stageText = this.add.text(this.canvasW / 2, 27, `${t("Stage")} 1`, {
       fontFamily: Fonts.manaspace,
     });
     this.stageText.setOrigin(0.5, 0.5);
 
     sceneEvents.on("levelChanged", (level: number) => {
       if (!level) this.stageText.setText("Custom Level");
-      else this.stageText.setText(`Stage ${level}`);
+      else this.stageText.setText(`${t("Stage")} ${level}`);
     });
 
     ////////////// PAUSE BUTTON ////////////////////////////////

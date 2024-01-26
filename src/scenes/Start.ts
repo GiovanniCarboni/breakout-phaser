@@ -1,5 +1,6 @@
 import { createMenu } from "../components/UI/Menu";
 import { Scenes } from "../constants";
+import t from "../i18next/i18next";
 
 export class Start extends Phaser.Scene {
   constructor() {
@@ -16,9 +17,9 @@ export class Start extends Phaser.Scene {
       this.scale.width / 2,
       this.scale.height / 2 - 50,
       [
-        { label: "Start", onClick: this.handleStart, isMain: true },
-        { label: "Custom Level", onClick: this.handleCustomLevel },
-        { label: "Options", onClick: this.handleOptions },
+        { label: t("Start"), onClick: this.handleStart, isMain: true },
+        { label: t("Custom Level"), onClick: this.handleCustomLevel },
+        { label: t("Options"), onClick: this.handleOptions },
       ],
       this
     );

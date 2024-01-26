@@ -1,3 +1,4 @@
+import { t } from "i18next";
 import { createMenu } from "../components/UI/Menu";
 import { Scenes } from "../constants";
 
@@ -15,10 +16,10 @@ export class Pause extends Phaser.Scene {
       this.scale.width / 2,
       this.scale.height / 2 - 250,
       [
-        { label: "Resume", onClick: this.handleResume, isMain: true },
-        { label: "Restart", onClick: this.handleRestart },
-        { label: "Options", onClick: this.handleOptions },
-        { label: "Back to Menu", onClick: this.handleBackToMenu },
+        { label: t("Resume"), onClick: this.handleResume, isMain: true },
+        { label: t("Restart"), onClick: this.handleRestart },
+        { label: t("Options"), onClick: this.handleOptions },
+        { label: t("Back to Menu"), onClick: this.handleBackToMenu },
       ],
       this,
       false
