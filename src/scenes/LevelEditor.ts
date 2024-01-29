@@ -4,6 +4,7 @@ import { createBricks } from "../components/Brick/Bricks";
 import { createBackButton } from "../components/UI/BackButton";
 import { createClearButton } from "../components/UI/ClearButton";
 import { Anims, Fonts, Scenes, Sounds, Sprites } from "../constants";
+import { transition } from "../anims/SceneTransitions";
 
 export class LevelEditor extends Phaser.Scene {
   private slots!: Phaser.Physics.Arcade.Group;
@@ -29,6 +30,8 @@ export class LevelEditor extends Phaser.Scene {
   }
 
   create() {
+    transition("fadeIn", this);
+
     // SET BACKGROUND COLOR
     this.cameras.main.setBackgroundColor("#000");
 
@@ -162,13 +165,14 @@ export class LevelEditor extends Phaser.Scene {
     });
 
     // create level template from displayed bricks
-    const template = [];
+    const template: number[][] = [];
     while (bricks.length !== 0) {
-      const row = bricks.splice(0, 17).map((brick: string) => {
+      const row: number[] = bricks.splice(0, 17).map((brick: string) => {
         if (brick === "commonBrick") return 1;
         if (brick === "fireBrick") return 2;
         if (brick === "metalBrick") return 3;
         if (brick === "blankBrick") return 0;
+        else return 0;
       });
       template.push([0, ...row, 0]);
     }
@@ -176,6 +180,7 @@ export class LevelEditor extends Phaser.Scene {
 
     // if no breakable briks, prevent scene change
     if (!template.flat().some((brick) => brick !== 0 && brick !== 3)) {
+      this.cameras.main.shake(100, 0.005);
       if (this.message) return;
       this.message = this.add
         .text(
@@ -191,8 +196,11 @@ export class LevelEditor extends Phaser.Scene {
       }, 3000);
       return;
     }
-    this.scene.start(Scenes.game, { isCustom: true, template });
-    this.scene.stop();
+
+    transition("fadeOut", this, () => {
+      this.scene.start(Scenes.game, { isCustom: true, template });
+      this.scene.stop();
+    });
 
     //////////// debug
     // debug outgoing level template

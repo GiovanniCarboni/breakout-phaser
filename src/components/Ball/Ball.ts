@@ -1,20 +1,23 @@
+import { createUiAnims } from "./../../anims/uiAnims";
 import { Anims, Sounds, Sprites } from "../../constants";
 import Paddle from "../Paddle/Paddle";
+import Bricks from "../Brick/Bricks";
+import Brick from "../Brick/Brick";
 
 export default class Ball extends Phaser.Physics.Arcade.Sprite {
+  speedIncrement = 20;
+  isIgnited = false;
+  onSlowDownArea = false;
+  slowDownArea!: Phaser.GameObjects.Arc;
+  speed = 600;
+  private isMoving: boolean;
   private canvasH: number;
   private canvasW: number;
   private startPosition;
-  // private hitWallSound!:
-  //   | Phaser.Sound.NoAudioSound
-  //   | Phaser.Sound.HTML5AudioSound
-  //   | Phaser.Sound.WebAudioSound;
   private ballIgnitionSound!:
     | Phaser.Sound.NoAudioSound
     | Phaser.Sound.HTML5AudioSound
     | Phaser.Sound.WebAudioSound;
-  private isMoving: boolean;
-  public isIgnited = false;
   constructor(
     scene: Phaser.Scene,
     x: number,
@@ -26,35 +29,77 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
 
     this.canvasH = scene.scale.height;
     this.canvasW = scene.scale.width;
-    this.startPosition = { x: this.canvasW / 2, y: this.canvasH - 35 };
+    this.startPosition = { x: this.canvasW / 2, y: this.canvasH - 40 };
 
     this.isMoving = false;
+    this.setScale(1.5, 1.5);
   }
 
   init() {
     this.y = this.startPosition.y - this.height;
     this.setCollideWorldBounds(true);
-    this.setBounce(1);
-    // this.hitWallSound = this.scene.sound.add(Sounds.hitWall, {
-    //   loop: false,
-    //   volume: 0.6,
-    // });
+    this.setBounce(1, 1);
+    this.initSlowDownArea();
     this.ballIgnitionSound = this.scene.sound.add(Sounds.ballIgnition, {
       loop: false,
     });
+    this.setData("isSlow", false);
 
     //////////////// debug ////////////////
     // debug fire ball
     // this.ignite();
   }
 
-  update(paddle: Paddle) {
+  update(paddle: Paddle, bricks: Phaser.GameObjects.GameObject[]) {
     if (!this.isMoving) this.x = paddle.x;
 
-    // to modify. not reliable. Sound on hit wall
-    // if (this.x < 8 || this.x > this.canvasW - 8 || this.y < 8)
-    //   if (!this.hitWallSound.isPlaying) this.hitWallSound.play();
+    ///////////////////////////////////////////////////
+    // slow down approaching last brick
+    if (
+      bricks.filter((brick) => brick.getData("type") !== "metal").length === 1
+    ) {
+      if (!this.slowDownArea.getData("created")) {
+        const lastBrick = bricks.find(
+          (brick) => brick.getData("type") !== "metal"
+        ) as Brick;
+        this.slowDownArea.setX(lastBrick.x);
+        this.slowDownArea.setY(lastBrick.y);
+        this.slowDownArea.setData("created", true);
+      }
+    } else if (this.slowDownArea.getData("created")) {
+      this.slowDownArea.setX(-200);
+      this.slowDownArea.setY(-200);
+      this.slowDownArea.setData("created", false);
+    }
+    ///////////////////////////////////////////////////
 
+    ///////////////////////////////////////////////////
+    // set ball speed
+    if (this.onSlowDownArea && this.getData("isSlow") === false) {
+      this.setData("previousSpeed", this.speed);
+      this.setSpeed(200);
+      this.setData("isSlow", true);
+      // this.scene.cameras.main.pan(
+      //   this.scene.scale.width + 100,
+      //   this.scene.scale.height - 100,
+      //   200
+      // );
+      // this.scene.cameras.main.setZoom(1.05, 1.05);
+    }
+    if (!this.onSlowDownArea && this.getData("isSlow") === true) {
+      this.setSpeed(this.getData("previousSpeed"));
+      this.setData("isSlow", false);
+      // this.scene.cameras.main.pan(
+      //   this.scene.scale.width / 2,
+      //   this.scene.scale.height / 2,
+      //   200
+      // );
+      // this.scene.cameras.main.setZoom(1, 1);
+    }
+    this.onSlowDownArea = false;
+    ///////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////
     // following code only for ignited ball
     if (!this.isIgnited) return;
     this.addFireSparkles();
@@ -68,9 +113,35 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
+  initSlowDownArea() {
+    // this.slowDownArea = this.scene.add.circle(-200, -200, 200, 0x6666ff);
+    this.slowDownArea = this.scene.add.circle(-200, -200, 50);
+    this.scene.physics.world.enableBody(
+      this.slowDownArea,
+      Phaser.Physics.Arcade.DYNAMIC_BODY
+    );
+  }
+
   start() {
-    this.setVelocity(100, -380);
+    this.speed = 600;
+    this.setMotion(70);
     this.isMoving = true;
+  }
+
+  setSpeed(speed: number) {
+    let x = this.body?.velocity.x! / this.speed;
+    let y = this.body?.velocity.y! / this.speed;
+    this.speed = speed;
+    x = x * speed;
+    y = y * speed;
+    this.setVelocity(x, y);
+  }
+
+  setMotion(direction: number) {
+    this.setVelocity(
+      Math.cos(Phaser.Math.DegToRad(direction)) * this.speed,
+      Math.sin(Phaser.Math.DegToRad(-direction)) * this.speed
+    );
   }
 
   reset(x: number, y?: number) {
@@ -81,7 +152,6 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
     // reset ball texture
     this.anims.stop();
     this.setTexture(Sprites.ball);
-    this.setScale(1, 1);
     // reset position
     this.body?.reset(x, y || this.startPosition.y - this.height);
   }

@@ -1,6 +1,7 @@
 import i18next from "i18next";
 import { Fonts, Scenes, Sounds, Sprites } from "../constants";
 import { createButton } from "../components/UI/Button";
+import { transition } from "../anims/SceneTransitions";
 
 export class LanguageSelection extends Phaser.Scene {
   private continueButton!: Phaser.GameObjects.Sprite;
@@ -15,6 +16,9 @@ export class LanguageSelection extends Phaser.Scene {
   }
 
   create() {
+    // this.cameras.main.fadeIn(200, 0, 0, 0);
+    transition("fadeIn", this);
+
     this.switchSound = this.sound.add(Sounds.brickbreak, {
       loop: false,
       volume: 0.2,
@@ -98,7 +102,9 @@ export class LanguageSelection extends Phaser.Scene {
       i18next.changeLanguage(langKey);
       // user might have local storage disabled
       localStorage?.setItem("Language", langKey);
-      this.scene.start(Scenes.start);
+      transition("fadeOut", this, () => {
+        this.scene.start(Scenes.start);
+      });
     }
   }
 }

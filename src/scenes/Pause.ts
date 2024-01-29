@@ -1,14 +1,12 @@
 import { t } from "i18next";
 import { createMenu } from "../components/UI/Menu";
 import { Scenes } from "../constants";
+import { transition } from "../anims/SceneTransitions";
 
 export class Pause extends Phaser.Scene {
   constructor() {
     super({ key: Scenes.pause });
   }
-
-  preload() {}
-
   create() {
     this.cameras.main.setBackgroundColor("rgba(0, 0, 0, 0.8)");
 
@@ -31,12 +29,16 @@ export class Pause extends Phaser.Scene {
     this.scene.stop();
   }
   handleRestart() {
-    this.scene.stop(Scenes.game);
-    this.scene.start(Scenes.game);
+    transition("fadeOut", this, () => {
+      this.scene.stop(Scenes.game);
+      this.scene.start(Scenes.game);
+    });
   }
   handleBackToMenu() {
-    this.scene.stop(Scenes.game);
-    this.scene.start(Scenes.start);
+    transition("fadeOut", this, () => {
+      this.scene.stop(Scenes.game);
+      this.scene.start(Scenes.start);
+    });
   }
   handleOptions() {
     // console.log("handle options")

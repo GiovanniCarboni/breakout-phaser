@@ -1,6 +1,7 @@
 import { t } from "i18next";
 import { createMenu } from "../components/UI/Menu";
 import { Anims, Scenes, Sounds, Sprites } from "../constants";
+import { transition } from "../anims/SceneTransitions";
 
 export class GameOver extends Phaser.Scene {
   private sounds!: {
@@ -15,6 +16,8 @@ export class GameOver extends Phaser.Scene {
   }
 
   create() {
+    transition("fadeIn", this);
+
     this.cameras.main.setBackgroundColor("#000");
 
     this.sounds = {
@@ -37,14 +40,18 @@ export class GameOver extends Phaser.Scene {
   }
 
   handleRestart() {
-    this.scene.stop(Scenes.game);
-    this.scene.start(Scenes.game);
+    transition("fadeOut", this, () => {
+      this.scene.stop(Scenes.game);
+      this.scene.start(Scenes.game);
+    });
   }
 
   handleBackToMenu() {
-    this.scene.stop(Scenes.game);
-    this.scene.start(Scenes.start);
-    this.scene.stop();
+    transition("fadeOut", this, () => {
+      this.scene.stop(Scenes.game);
+      this.scene.start(Scenes.start);
+      this.scene.stop();
+    });
   }
 
   initGameOverText() {

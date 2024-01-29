@@ -34,7 +34,7 @@ export const translations = {
       "Start": "Incepe",
       "Custom Level": "Creeaza Nivel",
       "Options": "Optiuni",
-      "Resume": "Continueaza",
+      "Resume": "Continua",
       "Restart": "Reincepe",
       "Back to Menu": "Meniu",
       "Back to Editor": "Inapoi la Editor",

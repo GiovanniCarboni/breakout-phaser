@@ -5,6 +5,8 @@ import Bricks, { createBricks } from "../components/Brick/Bricks";
 import Powerup, { createPowerup } from "../components/Powerup/Powerup";
 import Powerups, { createPowerups } from "../components/Powerup/Powerups";
 import { Sprites, Events, Sounds, Scenes, Anims } from "../constants";
+import { transition } from "../anims/SceneTransitions";
+import Brick from "../components/Brick/Brick";
 
 ////////////////////////////////////////////////////////////////////////
 ///////////// METHODS //////////////////////////////////////////////////
@@ -68,6 +70,10 @@ export class Game extends Phaser.Scene {
   }
 
   create() {
+    transition("fadeIn", this);
+
+    // this.initSlowDownArea();
+
     this.canvasW = this.scale.width;
     this.canvasH = this.scale.height;
 
@@ -101,7 +107,9 @@ export class Game extends Phaser.Scene {
   }
 
   update(_: number, dt: number) {
-    this.ball.update(this.paddle);
+    const bricks = this.bricks.getChildren();
+
+    this.ball.update(this.paddle, bricks);
     this.paddle.update();
 
     // balls falls under
@@ -116,20 +124,21 @@ export class Game extends Phaser.Scene {
 
     // no lives remaining
     if (this.lives < 1) {
-      this.scene.launch(Scenes.gameOver);
+      // transition("fadeOut", this, () => {
       this.scene.stop();
+      this.scene.launch(Scenes.gameOver);
       this.ball.reset(this.paddle.x);
       this.paddle.reset();
       this.powerups.clear(undefined, true);
+      // });
+      return;
     }
 
-    // stage cleared
     if (
-      !this.bricks
-        .getChildren()
-        .some((brick) => brick.getData("type") !== "metal") &&
+      !bricks.some((brick) => brick.getData("type") !== "metal") &&
       !this.isStageCleared
     )
+      // stage cleared
       this.isStageCleared = true;
     if (this.isStageCleared) {
       setTimeout(() => {
@@ -137,14 +146,18 @@ export class Game extends Phaser.Scene {
         this.bricks.clear(true, true);
         this.isStageCleared = false;
         if (this.isCustom) {
+          // transition("fadeOut", this, () => {
           this.scene.stop();
           this.scene.start(Scenes.winGame, { isCustom: true });
+          // });
         }
         if (!this.isCustom) {
           // if last level
           if (this.level === 2) {
+            // transition("fadeOut", this, () => {
             this.scene.stop();
             this.scene.start(Scenes.winGame, { isCustom: false });
+            // });
             return;
           }
           this.level!++;
@@ -224,6 +237,14 @@ export class Game extends Phaser.Scene {
       undefined,
       this
     );
+    // let i = 0;
+    this.physics.add.overlap(
+      this.ball,
+      this.ball.slowDownArea,
+      () => (this.ball.onSlowDownArea = true),
+      undefined,
+      this
+    );
     this.physics.add.collider(this.ball, this.topEdge);
   }
 
@@ -271,6 +292,10 @@ export class Game extends Phaser.Scene {
   }
 
   ballHitPaddle(obj1: any, _: any) {
+    // increment speed
+    if (this.ball.speed <= 900) {
+      this.ball.setSpeed(this.ball.speed + this.ball.speedIncrement);
+    }
     // for overlap
     // this.ball.setVelocityY(-this.ball.body?.velocity.y!);
     if (this.ball.isIgnited) this.createSmoke(this.ball.x, this.ball.y);
@@ -279,12 +304,17 @@ export class Game extends Phaser.Scene {
     let diff = 0;
     if (this.ball.x < this.paddle.x) {
       diff = this.paddle.x - this.ball.x;
-      this.ball.setVelocityX(-10 * diff);
+      // this.ball.setVelocityX(-10 * diff);
+      const degree = 90 + (Math.ceil(diff) > 70 ? 70 : Math.ceil(diff));
+      this.ball.setMotion(degree);
     } else if (this.ball.x > this.paddle.x) {
       diff = this.ball.x - this.paddle.x;
-      this.ball.setVelocityX(10 * diff);
+      // this.ball.setVelocityX(10 * diff);
+      const degree = 90 - (Math.ceil(diff) > 70 ? 70 : Math.ceil(diff));
+      this.ball.setMotion(degree);
     } else {
-      this.ball.setVelocityX(2 + Math.random() * 8);
+      // this.ball.setVelocityX(2 + Math.random() * 8);
+      this.ball.setMotion(100);
     }
   }
 
@@ -319,6 +349,7 @@ export class Game extends Phaser.Scene {
     const brick = obj2 as Phaser.Physics.Arcade.Sprite;
     const brickType = brick.getData("type");
     if (brickType === "metal" && !this.ball.isIgnited) {
+      this.cameras.main.shake(100, 0.005);
       this.sounds.hitMetal.play();
       brick.play(Anims.metalBrick);
       return;

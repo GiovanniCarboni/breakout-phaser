@@ -1,6 +1,7 @@
 import { Scenes } from "../constants";
 import { createMenu } from "../components/UI/Menu";
 import { t } from "i18next";
+import { transition } from "../anims/SceneTransitions";
 
 export class WinGame extends Phaser.Scene {
   private isCustom!: boolean;
@@ -18,6 +19,8 @@ export class WinGame extends Phaser.Scene {
   }
 
   create() {
+    transition("fadeIn", this);
+
     this.cameras.main.setBackgroundColor("#000");
 
     this.add
@@ -54,15 +57,19 @@ export class WinGame extends Phaser.Scene {
   }
 
   handleRestart() {
-    this.scene.stop(Scenes.game);
-    this.scene.start(Scenes.game);
+    transition("fadeOut", this, () => {
+      this.scene.stop(Scenes.game);
+      this.scene.start(Scenes.game);
+    });
   }
   handleBackToEditor() {
     // console.log("back to editor");
   }
   handleBackToMenu() {
-    this.scene.stop(Scenes.game);
-    this.scene.start(Scenes.start);
-    this.scene.stop();
+    transition("fadeOut", this, () => {
+      this.scene.stop(Scenes.game);
+      this.scene.start(Scenes.start);
+      this.scene.stop();
+    });
   }
 }

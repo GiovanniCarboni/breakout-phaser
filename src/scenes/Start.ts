@@ -1,3 +1,4 @@
+import { transition } from "../anims/SceneTransitions";
 import { createMenu } from "../components/UI/Menu";
 import { Scenes } from "../constants";
 import t from "../i18next/i18next";
@@ -8,6 +9,8 @@ export class Start extends Phaser.Scene {
   }
 
   create() {
+    transition("fadeIn", this);
+
     this.scene.run(Scenes.ui);
     this.scene.moveAbove(Scenes.ui);
 
@@ -26,12 +29,16 @@ export class Start extends Phaser.Scene {
   }
 
   handleStart() {
-    this.scene.start(Scenes.game, { isCustom: false });
-    this.scene.stop();
+    transition("fadeOut", this, () => {
+      this.scene.stop();
+      this.scene.start(Scenes.game, { isCustom: false });
+    });
   }
   handleCustomLevel() {
-    this.scene.start(Scenes.LevelEditor);
-    this.scene.stop();
+    transition("fadeOut", this, () => {
+      this.scene.start(Scenes.LevelEditor);
+      this.scene.stop();
+    });
   }
   handleOptions() {
     // console.log("handle options")
