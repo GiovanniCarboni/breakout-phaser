@@ -41,6 +41,8 @@ export class Pause extends Phaser.Scene {
     });
   }
   handleOptions() {
-    // console.log("handle options")
+    transition("fadeOut", this, () => {
+      this.scene.start(Scenes.options, { fromScene: Scenes.pause });
+    });
   }
 }

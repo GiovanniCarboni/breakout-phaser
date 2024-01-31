@@ -12,6 +12,8 @@ export const translations = {
       "Template must contain at least one breakable brick":
         "Template must contain at least one breakable brick",
       "Back": "Back",
+      "Language": "Language",
+      "Volume": "Volume",
     },
   },
   it: {
@@ -27,6 +29,8 @@ export const translations = {
       "Template must contain at least one breakable brick":
         "Il template deve contenre almeno un mattone",
       "Back": "Torna",
+      "Language": "Lingua",
+      "Volume": "Volume",
     },
   },
   ro: {
@@ -42,6 +46,8 @@ export const translations = {
       "Template must contain at least one breakable brick":
         "Template-ul trebuie sa contina macar o caramida",
       "Back": "Inapoi",
+      "Language": "Limba",
+      "Volume": "Volum",
     },
   },
 };

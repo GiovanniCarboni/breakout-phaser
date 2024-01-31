@@ -41,6 +41,9 @@ export class Start extends Phaser.Scene {
     });
   }
   handleOptions() {
-    // console.log("handle options")
+    transition("fadeOut", this, () => {
+      this.scene.stop();
+      this.scene.start(Scenes.options, { fromScene: Scenes.start });
+    });
   }
 }

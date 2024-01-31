@@ -2,32 +2,20 @@ import i18next from "i18next";
 import { Fonts, Scenes, Sounds, Sprites } from "../constants";
 import { createButton } from "../components/UI/Button";
 import { transition } from "../anims/SceneTransitions";
+import LanguageSelector, {
+  createLanguageSelector,
+} from "../components/UI/LanguageSelector";
 
 export class LanguageSelection extends Phaser.Scene {
   private continueButton!: Phaser.GameObjects.Sprite;
-  private selectedFlag?: Phaser.GameObjects.Image;
-  private highlight!: Phaser.GameObjects.Image;
-  private switchSound!:
-    | Phaser.Sound.NoAudioSound
-    | Phaser.Sound.HTML5AudioSound
-    | Phaser.Sound.WebAudioSound;
+  private languageSelector!: LanguageSelector;
+
   constructor() {
     super({ key: Scenes.languageSelection });
   }
 
   create() {
-    // this.cameras.main.fadeIn(200, 0, 0, 0);
     transition("fadeIn", this);
-
-    this.switchSound = this.sound.add(Sounds.brickbreak, {
-      loop: false,
-      volume: 0.2,
-    });
-
-    ///////// HIGHLIGHT //////////////////////////////////////////////
-    this.highlight = this.add
-      .image(0, 0, Sprites.flagHighlight)
-      .setVisible(false);
 
     ///////// BOX ///////////////////////////////////////////////////
     const box = this.add
@@ -39,20 +27,7 @@ export class LanguageSelection extends Phaser.Scene {
       .setDepth(-1);
 
     ///////// FLAGS ////////////////////////////////////////////////
-    const it = this.add
-      .image(box.x - box.width / 2 + 90, box.y, Sprites.italian)
-      .setInteractive();
-    this.addListeners(it, "Italiano");
-
-    const ro = this.add
-      .image(box.x - box.width / 2 + 180, box.y, Sprites.romanian)
-      .setInteractive();
-    this.addListeners(ro, "Romana");
-
-    const en = this.add
-      .image(box.x - box.width / 2 + 270, box.y, Sprites.english)
-      .setInteractive();
-    this.addListeners(en, "English");
+    this.languageSelector = createLanguageSelector(box.x, box.y, this);
 
     ///////// OK BUTTON /////////////////////////////////////////
     this.continueButton = createButton(
@@ -64,26 +39,8 @@ export class LanguageSelection extends Phaser.Scene {
     );
   }
 
-  addListeners(flag: Phaser.GameObjects.Image, label: string) {
-    let labelEl;
-    flag
-      .on("pointerover", () => {
-        labelEl = this.add
-          .text(flag.x, flag.y + 50, label, { fontFamily: Fonts.manaspace })
-          .setOrigin(0.5, 0.5);
-      })
-      .on("pointerout", () => {
-        labelEl!.destroy();
-      })
-      .on("pointerdown", () => {
-        this.switchSound.play();
-        this.selectedFlag = flag;
-        this.highlight.setVisible(true).setX(flag.x).setY(flag.y);
-      });
-  }
-
   handleContinue() {
-    if (!this.selectedFlag) {
+    if (!this.languageSelector.selectedFlag) {
       const message = this.add
         .text(
           this.scale.width - 340,
@@ -98,10 +55,7 @@ export class LanguageSelection extends Phaser.Scene {
         message.destroy();
       }, 2000);
     } else {
-      const langKey = this.selectedFlag.texture.key.slice(0, 2).toLowerCase();
-      i18next.changeLanguage(langKey);
-      // user might have local storage disabled
-      localStorage?.setItem("Language", langKey);
+      this.languageSelector.save();
       transition("fadeOut", this, () => {
         this.scene.start(Scenes.start);
       });

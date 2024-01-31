@@ -1,7 +1,5 @@
-import { createUiAnims } from "./../../anims/uiAnims";
 import { Anims, Sounds, Sprites } from "../../constants";
 import Paddle from "../Paddle/Paddle";
-import Bricks from "../Brick/Bricks";
 import Brick from "../Brick/Brick";
 
 export default class Ball extends Phaser.Physics.Arcade.Sprite {

@@ -7,6 +7,7 @@ import { GameOver } from "./GameOver";
 import { LevelEditor } from "./LevelEditor";
 import { WinGame } from "./WinGame";
 import { LanguageSelection } from "./LanguageSelection";
+import { Options } from "./Options";
 
 export {
   Game,
@@ -18,4 +19,5 @@ export {
   LevelEditor,
   WinGame,
   LanguageSelection,
+  Options,
 };

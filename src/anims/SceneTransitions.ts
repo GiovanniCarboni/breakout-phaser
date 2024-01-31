@@ -1,4 +1,4 @@
-const transitionDuration: number = 400;
+const transitionDuration = 400;
 // let isAlreadyFading = false;
 
 export const transition = (

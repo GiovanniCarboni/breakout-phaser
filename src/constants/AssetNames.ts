@@ -37,6 +37,10 @@ export enum Sprites {
   clearButton = "clearButton",
   menuHanger = "menuHanger",
   languageSelectionBox = "languageSelectionBox",
+  optionsBox = "optionsBox",
+  // volume slider
+  volumeBar = "volumeBar",
+  volumeNob = "volumeNob",
   // flags
   italian = "italian",
   romanian = "romanian",

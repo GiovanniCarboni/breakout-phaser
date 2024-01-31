@@ -28,8 +28,8 @@ ballHitBrick
 ///////////////////////////////////////////////////////////////////////
 
 export class Game extends Phaser.Scene {
-  private topEdge!: Phaser.Physics.Arcade.Image;
   private isCustom: boolean = false;
+  private topEdge!: Phaser.Physics.Arcade.Image;
   private ball!: Ball;
   private paddle!: Paddle;
   private bricks!: Bricks;
@@ -140,24 +140,21 @@ export class Game extends Phaser.Scene {
     )
       // stage cleared
       this.isStageCleared = true;
+
     if (this.isStageCleared) {
       setTimeout(() => {
         this.powerups.clear(undefined, true);
         this.bricks.clear(true, true);
         this.isStageCleared = false;
         if (this.isCustom) {
-          // transition("fadeOut", this, () => {
           this.scene.stop();
           this.scene.start(Scenes.winGame, { isCustom: true });
-          // });
         }
         if (!this.isCustom) {
           // if last level
           if (this.level === 2) {
-            // transition("fadeOut", this, () => {
             this.scene.stop();
             this.scene.start(Scenes.winGame, { isCustom: false });
-            // });
             return;
           }
           this.level!++;
@@ -237,7 +234,6 @@ export class Game extends Phaser.Scene {
       undefined,
       this
     );
-    // let i = 0;
     this.physics.add.overlap(
       this.ball,
       this.ball.slowDownArea,

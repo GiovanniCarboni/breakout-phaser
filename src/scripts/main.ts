@@ -5,6 +5,7 @@ import {
   LanguageSelection,
   LevelEditor,
   Load,
+  Options,
   Pause,
   Start,
   UI,
@@ -26,6 +27,7 @@ const config: Phaser.Types.Core.GameConfig = {
     LevelEditor,
     WinGame,
     LanguageSelection,
+    Options,
   ],
   physics: {
     default: "arcade",

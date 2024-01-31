@@ -143,6 +143,17 @@ export class Load extends Phaser.Scene {
       Sprites.languageSelectionBox,
       "assets/images/UI/language_selection_box.png"
     );
+    this.load.image(Sprites.optionsBox, "assets/images/UI/options_box.png");
+
+    // volume slider
+    this.load.image(
+      Sprites.volumeBar,
+      "assets/images/UI/volume_slider/bar.png"
+    );
+    this.load.image(
+      Sprites.volumeNob,
+      "assets/images/UI/volume_slider/nob.png"
+    );
     // flags
     this.load.image(Sprites.italian, "assets/images/flags/italian.png");
     this.load.image(Sprites.romanian, "assets/images/flags/romanian.png");
@@ -195,7 +206,15 @@ export class Load extends Phaser.Scene {
     createBricksAnims(this.anims);
     createPaddleAnims(this.anims);
     createUiAnims(this.anims);
-    
+
+    const volume = localStorage?.getItem("Volume");
+
+    if (volume !== null) this.sound.volume = +volume!;
+    else {
+      this.sound.volume = 0.5;
+      localStorage?.setItem("Volume", "0.5");
+    }
+
     loadLocale().then(() => {
       // user might have local storage disabled
       const savedLanguage = localStorage?.getItem("Language");
