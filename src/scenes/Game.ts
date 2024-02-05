@@ -1,31 +1,11 @@
 import { sceneEvents } from "../events/EventCenter";
-import Ball, { createBall } from "../components/Ball/Ball";
-import Paddle, { createPaddle } from "../components/Paddle/Paddle";
-import Bricks, { createBricks } from "../components/Brick/Bricks";
-import Powerup, { createPowerup } from "../components/Powerup/Powerup";
-import Powerups, { createPowerups } from "../components/Powerup/Powerups";
+import Ball, { createBall } from "../components/ball/Ball";
+import Paddle, { createPaddle } from "../components/paddle/Paddle";
+import Bricks, { createBricks } from "../components/brick/Bricks";
+import Powerup, { createPowerup } from "../components/powerup/Powerup";
+import Powerups, { createPowerups } from "../components/powerup/Powerups";
 import { Sprites, Events, Sounds, Scenes, Anims } from "../constants";
-import { transition } from "../anims/SceneTransitions";
-import Brick from "../components/Brick/Brick";
-
-////////////////////////////////////////////////////////////////////////
-///////////// METHODS //////////////////////////////////////////////////
-/*
-init
-create
-update
-initSounds
-createSmoke
-initLives
-setLives
-addColliders
-addPowerup
-powerupHitPaddle
-ballHitPaddle
-bulletHitBrick
-ballHitBrick
-*/
-///////////////////////////////////////////////////////////////////////
+import { transition } from "../anims/sceneTransitions";
 
 export class Game extends Phaser.Scene {
   private isCustom: boolean = false;
@@ -56,6 +36,8 @@ export class Game extends Phaser.Scene {
     });
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// INIT
   init({ isCustom, template }: { isCustom: boolean; template: number[][] }) {
     if (isCustom) {
       this.bricks = createBricks(this, undefined, template);
@@ -69,10 +51,12 @@ export class Game extends Phaser.Scene {
     }
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// CREATE
   create() {
     transition("fadeIn", this);
 
-    // this.initSlowDownArea();
+    this.cameras.main.setBackgroundColor("#110702");
 
     this.canvasW = this.scale.width;
     this.canvasH = this.scale.height;
@@ -80,21 +64,35 @@ export class Game extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, this.canvasW, this.canvasH);
     this.physics.world.setBoundsCollision(true, true, true, false);
 
+    //////////////////////////////////////////////////////////////
+    ////// ADD SIDEBARS
+    this.add.sprite(0, 0, Sprites.sideBar).setOrigin(0, 0).setDepth(1);
+    this.add
+      .sprite(this.canvasW, 0, Sprites.sideBar)
+      .setOrigin(1, 0)
+      .setDepth(1);
+
+    //////////////////////////////////////////////////////////////
+    ////// INIT ELEMENTS
     this.initSounds();
     this.initLives();
     this.ball = createBall(this);
     this.paddle = createPaddle(this);
     this.powerups = createPowerups(this);
 
-    //////////////// HEADBAR /////////////////////////////////////
+    //////////////////////////////////////////////////////////////
+    ////// MESSAGE IF CANT SAVE/PLAY
     this.topEdge = this.physics.add
       .image(0, 0, Sprites.headbar)
       .setOrigin(0, 0)
       .setImmovable(true);
 
+    //////////////////////////////////////////////////////////////
+    ////// ADD COLLIDERS
     this.addColliders();
 
-    // start ball on click
+    //////////////////////////////////////////////////////////////
+    ////// START BALL ON CLICK
     [Events.levelChanged, Events.livesChanged].forEach((e) => {
       sceneEvents.on(
         e,
@@ -106,13 +104,15 @@ export class Game extends Phaser.Scene {
     });
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// UPDATE
   update(_: number, dt: number) {
     const bricks = this.bricks.getChildren();
 
     this.ball.update(this.paddle, bricks);
     this.paddle.update();
 
-    // balls falls under
+    ////// BALL FALLS BELOW
     if (this.ball.y > this.canvasH + this.ball.height) {
       if (this.lives > 1) this.sounds.lifeLost.play();
       this.lives--;
@@ -122,25 +122,24 @@ export class Game extends Phaser.Scene {
       this.powerups.clear(undefined, true);
     }
 
-    // no lives remaining
+    ////// NO MORE LIVES
     if (this.lives < 1) {
-      // transition("fadeOut", this, () => {
       this.scene.stop();
       this.scene.launch(Scenes.gameOver);
       this.ball.reset(this.paddle.x);
       this.paddle.reset();
       this.powerups.clear(undefined, true);
-      // });
       return;
     }
 
+    ////// IF LEVEL IS CLEARED
     if (
       !bricks.some((brick) => brick.getData("type") !== "metal") &&
       !this.isStageCleared
     )
-      // stage cleared
       this.isStageCleared = true;
 
+    ////// ADVANCE LEVEL / WIN
     if (this.isStageCleared) {
       setTimeout(() => {
         this.powerups.clear(undefined, true);
@@ -170,6 +169,8 @@ export class Game extends Phaser.Scene {
     }
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// INIT SOUNDS
   initSounds() {
     this.sounds = {
       bounce: this.sound.add(Sounds.bounce, { loop: false }),
@@ -181,15 +182,8 @@ export class Game extends Phaser.Scene {
     };
   }
 
-  // TODO Move create smoke to Ball
-  createSmoke(x: number, y: number) {
-    const smoke = this.add.sprite(x, y, Sprites.smoke).play(Anims.smoke);
-    smoke.setScale(1.5, 1.5);
-    smoke.on("animationcomplete", () => {
-      smoke.destroy();
-    });
-  }
-
+  //////////////////////////////////////////////////////////////
+  ////// INIT LIVES
   initLives() {
     this.lives = 3;
     this.time.addEvent({
@@ -201,10 +195,14 @@ export class Game extends Phaser.Scene {
     });
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// SET LIVES
   setLives() {
     sceneEvents.emit(Events.livesChanged, this.lives);
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// COLLIDERS
   addColliders() {
     this.physics.add.collider(
       this.ball,
@@ -244,6 +242,8 @@ export class Game extends Phaser.Scene {
     this.physics.add.collider(this.ball, this.topEdge);
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// ADD POWERUP
   addPowerup(x: number, y: number) {
     const randomValue = Math.ceil(Math.random() * 5);
     if (randomValue !== 1) return;
@@ -258,6 +258,8 @@ export class Game extends Phaser.Scene {
     });
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// POWERUP HIT BALL
   powerupHitPaddle(_: any, obj2: any) {
     const powerup = obj2 as Powerup;
     switch (powerup.getData("power")) {
@@ -287,33 +289,32 @@ export class Game extends Phaser.Scene {
     powerup.destroy();
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// BALL HIT PADDLE
   ballHitPaddle(obj1: any, _: any) {
     // increment speed
     if (this.ball.speed <= 900) {
       this.ball.setSpeed(this.ball.speed + this.ball.speedIncrement);
     }
-    // for overlap
-    // this.ball.setVelocityY(-this.ball.body?.velocity.y!);
-    if (this.ball.isIgnited) this.createSmoke(this.ball.x, this.ball.y);
+    if (this.ball.isIgnited) this.ball.createSmoke(this.ball.x, this.ball.y);
     this.sounds.bounce.play();
 
     let diff = 0;
     if (this.ball.x < this.paddle.x) {
       diff = this.paddle.x - this.ball.x;
-      // this.ball.setVelocityX(-10 * diff);
       const degree = 90 + (Math.ceil(diff) > 70 ? 70 : Math.ceil(diff));
-      this.ball.setMotion(degree);
+      this.ball.setDegDirection(degree);
     } else if (this.ball.x > this.paddle.x) {
       diff = this.ball.x - this.paddle.x;
-      // this.ball.setVelocityX(10 * diff);
       const degree = 90 - (Math.ceil(diff) > 70 ? 70 : Math.ceil(diff));
-      this.ball.setMotion(degree);
+      this.ball.setDegDirection(degree);
     } else {
-      // this.ball.setVelocityX(2 + Math.random() * 8);
-      this.ball.setMotion(100);
+      this.ball.setDegDirection(100);
     }
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// BULLET HIT BRICK
   bulletHitBrick(bulletObj: any, brickObj: any) {
     (bulletObj as Phaser.Physics.Arcade.Sprite).destroy();
     const brick = brickObj as Phaser.Physics.Arcade.Sprite;
@@ -335,12 +336,14 @@ export class Game extends Phaser.Scene {
     }
     if (brickType === "fire") {
       this.sounds.fireBrickbreak.play();
-      this.createSmoke(bulletObj.x, bulletObj.y);
+      this.ball.createSmoke(bulletObj.x, bulletObj.y);
       this.bricks.destroyFireBricks(brick.getData("number"));
       this.addPowerup(brick.x, brick.y);
     }
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// BALL HIT BRICK
   ballHitBrick(obj1: any, obj2: any) {
     const brick = obj2 as Phaser.Physics.Arcade.Sprite;
     const brickType = brick.getData("type");
@@ -361,9 +364,19 @@ export class Game extends Phaser.Scene {
       this.addPowerup(brick.x, brick.y);
     }
 
+    if (brickType === "ice" && !this.ball.isIgnited) {
+      this.sounds.brickbreak.play();
+      brick.play(Anims.iceBrickBreak);
+      brick.disableBody();
+      brick.on("animationcomplete", () => {
+        // brick.destroy();
+      });
+      this.addPowerup(brick.x, brick.y);
+    }
+
     if (brickType === "fire" || this.ball.isIgnited) {
       this.sounds.fireBrickbreak.play();
-      this.createSmoke(obj1.x, obj1.y);
+      this.ball.createSmoke(obj1.x, obj1.y);
       this.bricks.destroyFireBricks(brick.getData("number"));
       this.addPowerup(brick.x, brick.y);
     }

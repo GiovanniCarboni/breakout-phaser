@@ -16,9 +16,8 @@ export interface LevelTemplate {
 // leave side columns empty!
 export const getLevelTemplate = (
   level: number,
-  template?: number[][]
-): LevelTemplate => {
-  const info = {
+  template?: number[][],
+  info = {
     width: 51,
     height: 20,
     offset: {
@@ -26,8 +25,8 @@ export const getLevelTemplate = (
       left: 65,
     },
     padding: 2.7,
-  };
-
+  }
+): LevelTemplate => {
   let layout: number[][] = [];
 
   if (level) {

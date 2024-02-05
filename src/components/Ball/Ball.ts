@@ -1,6 +1,6 @@
 import { Anims, Sounds, Sprites } from "../../constants";
-import Paddle from "../Paddle/Paddle";
-import Brick from "../Brick/Brick";
+import Paddle from "../paddle/Paddle";
+import Brick from "../brick/Brick";
 
 export default class Ball extends Phaser.Physics.Arcade.Sprite {
   speedIncrement = 20;
@@ -33,6 +33,8 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
     this.setScale(1.5, 1.5);
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// INIT
   init() {
     this.y = this.startPosition.y - this.height;
     this.setCollideWorldBounds(true);
@@ -48,10 +50,11 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
     // this.ignite();
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// UPDATE
   update(paddle: Paddle, bricks: Phaser.GameObjects.GameObject[]) {
     if (!this.isMoving) this.x = paddle.x;
 
-    ///////////////////////////////////////////////////
     // slow down approaching last brick
     if (
       bricks.filter((brick) => brick.getData("type") !== "metal").length === 1
@@ -69,48 +72,35 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
       this.slowDownArea.setY(-200);
       this.slowDownArea.setData("created", false);
     }
-    ///////////////////////////////////////////////////
 
-    ///////////////////////////////////////////////////
     // set ball speed
     if (this.onSlowDownArea && this.getData("isSlow") === false) {
       this.setData("previousSpeed", this.speed);
       this.setSpeed(200);
       this.setData("isSlow", true);
-      // this.scene.cameras.main.pan(
-      //   this.scene.scale.width + 100,
-      //   this.scene.scale.height - 100,
-      //   200
-      // );
-      // this.scene.cameras.main.setZoom(1.05, 1.05);
     }
     if (!this.onSlowDownArea && this.getData("isSlow") === true) {
       this.setSpeed(this.getData("previousSpeed"));
       this.setData("isSlow", false);
-      // this.scene.cameras.main.pan(
-      //   this.scene.scale.width / 2,
-      //   this.scene.scale.height / 2,
-      //   200
-      // );
-      // this.scene.cameras.main.setZoom(1, 1);
     }
     this.onSlowDownArea = false;
-    ///////////////////////////////////////////////////
 
-    ///////////////////////////////////////////////////
-    // following code only for ignited ball
-    if (!this.isIgnited) return;
-    this.addFireSparkles();
-    // adjust angle based on trajectory
-    if (this.isMoving) {
-      const angle = Phaser.Math.Angle.BetweenPoints(this, {
-        x: this.x + this.body?.velocity.x!,
-        y: this.y + this.body?.velocity.y!,
-      });
-      this.setAngle(Phaser.Math.RadToDeg(angle) - 90);
+    // if ball ignited
+    if (this.isIgnited) {
+      this.addFireSparkles();
+      // adjust angle based on trajectory
+      if (this.isMoving) {
+        const angle = Phaser.Math.Angle.BetweenPoints(this, {
+          x: this.x + this.body?.velocity.x!,
+          y: this.y + this.body?.velocity.y!,
+        });
+        this.setAngle(Phaser.Math.RadToDeg(angle) - 90);
+      }
     }
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// CREATE SLOW DOWN AREA
   initSlowDownArea() {
     // this.slowDownArea = this.scene.add.circle(-200, -200, 200, 0x6666ff);
     this.slowDownArea = this.scene.add.circle(-200, -200, 50);
@@ -120,12 +110,16 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
     );
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// START BALL
   start() {
     this.speed = 600;
-    this.setMotion(70);
+    this.setDegDirection(70);
     this.isMoving = true;
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// CHANGE BALL SPEED
   setSpeed(speed: number) {
     let x = this.body?.velocity.x! / this.speed;
     let y = this.body?.velocity.y! / this.speed;
@@ -135,14 +129,19 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
     this.setVelocity(x, y);
   }
 
-  setMotion(direction: number) {
+  //////////////////////////////////////////////////////////////
+  ////// SET BALL DIRECTION (degrees)
+  setDegDirection(direction: number) {
     this.setVelocity(
       Math.cos(Phaser.Math.DegToRad(direction)) * this.speed,
       Math.sin(Phaser.Math.DegToRad(-direction)) * this.speed
     );
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// RESET BALL (POSITION, SPEED, TEXTURE)
   reset(x: number, y?: number) {
+    // speed
     this.isMoving = false;
     this.isIgnited = false;
     this.setVelocity(0);
@@ -154,11 +153,15 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
     this.body?.reset(x, y || this.startPosition.y - this.height);
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// STOP BALL
   stopMovement() {
     this.setVelocity(0);
     this.isMoving = false;
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// IGNITE BALL
   ignite() {
     if (this.isIgnited) return;
     this.setScale(1.5, 1.5);
@@ -167,6 +170,18 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
     this.ballIgnitionSound.play();
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// CREATE SMOKE
+  createSmoke(x: number, y: number) {
+    const smoke = this.scene.add.sprite(x, y, Sprites.smoke).play(Anims.smoke);
+    smoke.setScale(1.5, 1.5);
+    smoke.on("animationcomplete", () => {
+      smoke.destroy();
+    });
+  }
+
+  //////////////////////////////////////////////////////////////
+  ////// ADD SPARKLES (IGNITED BALL ONLY)
   addFireSparkles() {
     const randomValue = Math.ceil(Math.random() * 7);
     if (randomValue === 1 && this.isMoving) {

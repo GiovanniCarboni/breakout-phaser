@@ -70,6 +70,14 @@ export class Load extends Phaser.Scene {
         frameHeight: 20,
       }
     );
+    this.load.spritesheet(
+      Sprites.iceBrick,
+      "assets/images/brick/ice_brick.png",
+      {
+        frameWidth: 51,
+        frameHeight: 20,
+      }
+    );
     // powerups
     this.load.image(Sprites.getLife, "assets/images/powerups/get_life.png");
     this.load.image(Sprites.loseLife, "assets/images/powerups/lose_life.png");
@@ -144,6 +152,25 @@ export class Load extends Phaser.Scene {
       "assets/images/UI/language_selection_box.png"
     );
     this.load.image(Sprites.optionsBox, "assets/images/UI/options_box.png");
+    this.load.spritesheet(
+      Sprites.arrowButton,
+      "assets/images/UI/arrow_button.png",
+      {
+        frameHeight: 100,
+        frameWidth: 80,
+      }
+    );
+    this.load.spritesheet(
+      Sprites.titleFrame,
+      "assets/images/UI/title_frame.png",
+      {
+        frameWidth: 270,
+        frameHeight: 73,
+      }
+    );
+    this.load.image(Sprites.sideBar, "assets/images/UI/side_bar.png");
+    this.load.image(Sprites.dot, "assets/images/UI/dot.png");
+    this.load.image(Sprites.dotHighlight, "assets/images/UI/dot_highlight.png");
 
     // volume slider
     this.load.image(

@@ -8,11 +8,12 @@ import { LevelEditor } from "./LevelEditor";
 import { WinGame } from "./WinGame";
 import { LanguageSelection } from "./LanguageSelection";
 import { Options } from "./Options";
+import { CreatedLevels } from "./CreatedLevels";
 
-export {
+export const scene = [
+  Load,
   Game,
   Start,
-  Load,
   Pause,
   UI,
   GameOver,
@@ -20,4 +21,5 @@ export {
   WinGame,
   LanguageSelection,
   Options,
-};
+  CreatedLevels,
+];

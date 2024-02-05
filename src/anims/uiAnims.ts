@@ -41,8 +41,8 @@ export const createUiAnims = (anims: Phaser.Animations.AnimationManager) => {
   anims.create({
     key: Anims.mainButtonPressed,
     frames: anims.generateFrameNumbers(Sprites.mainButton, {
-      start: 1,
-      end: 1,
+      start: 0,
+      end: 0,
     }),
   });
   anims.create({
@@ -93,5 +93,43 @@ export const createUiAnims = (anims: Phaser.Animations.AnimationManager) => {
       start: 2,
       end: 2,
     }),
+  });
+  anims.create({
+    key: Anims.arrowButtonIdle,
+    frames: anims.generateFrameNumbers(Sprites.arrowButton, {
+      start: 0,
+      end: 0,
+    }),
+  });
+  anims.create({
+    key: Anims.arrowButtonHover,
+    frames: anims.generateFrameNumbers(Sprites.arrowButton, {
+      start: 1,
+      end: 1,
+    }),
+  });
+  anims.create({
+    key: Anims.arrowButtonPressed,
+    frames: anims.generateFrameNumbers(Sprites.arrowButton, {
+      start: 2,
+      end: 2,
+    }),
+  });
+  anims.create({
+    key: Anims.arrowButtonDisabled,
+    frames: anims.generateFrameNumbers(Sprites.arrowButton, {
+      start: 3,
+      end: 3,
+    }),
+  });
+  anims.create({
+    key: Anims.titleFrame,
+    frames: anims.generateFrameNumbers(Sprites.titleFrame, {
+      start: 0,
+      end: 4,
+    }),
+    frameRate: 7,
+    repeat: -1,
+    yoyo: true,
   });
 };

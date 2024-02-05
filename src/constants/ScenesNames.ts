@@ -9,4 +9,5 @@ export enum Scenes {
   winGame = "winGame",
   languageSelection = "languageSelection",
   options = "options",
+  createdLevels = "createdLevels",
 }

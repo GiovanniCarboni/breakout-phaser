@@ -7,6 +7,8 @@ export enum Anims {
   fireBrick = "fireBrick",
   burnBrick = "burnBrick",
   metalBrick = "metalBrick",
+  iceBrickIdle = "iceBrickIdle",
+  iceBrickBreak = "iceBrickBreak",
   // paddle
   defaultPaddle = "defaultPaddle",
   longPaddle = "longPaddle",
@@ -33,4 +35,9 @@ export enum Anims {
   clearButtonIdle = "clearButtonIdle",
   clearButtonPressed = "clearButtonPressed",
   clearButtonHover = "clearButtonHover",
+  arrowButtonIdle = "arrowButtonIdle",
+  arrowButtonHover = "arrowButtonHover",
+  arrowButtonPressed = "arrowButtonPressed",
+  arrowButtonDisabled = "arrowButtonDisabled",
+  titleFrame = "titleFrame",
 }

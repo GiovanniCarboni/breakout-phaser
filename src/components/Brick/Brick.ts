@@ -11,6 +11,17 @@ export default class Brick extends Phaser.Physics.Arcade.Sprite {
     super(scene, x, y, texture, frame);
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// CREATE BRICK HIGHLIGHT
+  static createHighlight(x: number, y: number, scene: Phaser.Scene) {
+    return scene.add
+      .sprite(x, y, Sprites.brickHighlight)
+      .setOrigin(0.5, 0.5)
+      .setDepth(-1);
+  }
+
+  //////////////////////////////////////////////////////////////
+  ////// INIT BRICK
   init(brickType: number, entryNr: number) {
     switch (brickType) {
       case 1:
@@ -27,6 +38,13 @@ export default class Brick extends Phaser.Physics.Arcade.Sprite {
       case 3:
         this.play(Anims.metalBrick);
         this.setData("type", "metal");
+        break;
+      case 4:
+        this.setTexture(Sprites.iceBrick);
+        setTimeout(() => {
+          this.play(Anims.iceBrickIdle);
+        }, 74 * Math.ceil(Math.random() * 8));
+        this.setData("type", "ice");
         break;
       case 9:
         this.setTexture(Sprites.blankBrick);

@@ -20,6 +20,7 @@ export const createBricksAnims = (
     }),
     frameRate: 6,
     repeat: -1,
+    yoyo: true,
   });
   anims.create({
     key: Anims.metalBrick,
@@ -38,5 +39,19 @@ export const createBricksAnims = (
     }),
     frameRate: 20,
     repeat: 0,
+  });
+  anims.create({
+    key: Anims.iceBrickIdle,
+    frames: anims.generateFrameNumbers(Sprites.iceBrick, {
+      start: 0,
+      end: 3,
+    }),
+    frameRate: 1,
+    repeat: -1,
+  });
+  anims.create({
+    key: Anims.iceBrickBreak,
+    frames: anims.generateFrameNumbers(Sprites.iceBrick, { start: 4, end: 9 }),
+    frameRate: 40,
   });
 };

@@ -1,7 +1,7 @@
 import { Scenes } from "../constants";
 import { createMenu } from "../components/UI/Menu";
 import { t } from "i18next";
-import { transition } from "../anims/SceneTransitions";
+import { transition } from "../anims/sceneTransitions";
 
 export class WinGame extends Phaser.Scene {
   private isCustom!: boolean;

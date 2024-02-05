@@ -25,6 +25,8 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
     this.canvasW = scene.scale.width;
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// INIT
   init() {
     this.x = this.canvasW / 2;
     this.y = this.canvasH - 30;
@@ -56,6 +58,8 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
     // this.addCannons();
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// UPDATE
   update() {
     if (this.x < 0 + this.width / 2) this.x = 0 + this.width / 2;
     if (this.x > this.canvasW - this.width / 2)
@@ -74,6 +78,8 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// RESET PADDLE (POSITION, SIZE, REMOVES POWERUPS)
   reset() {
     this.x = this.canvasW / 2;
     this.play(Anims.defaultPaddle);
@@ -82,10 +88,12 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
 
     if (this.cannons.getLength()) {
       this.removeCannons();
-      this.scene.input.off("pointerdown", this.handleShooting, this);
+      this.scene.input.off("pointerdown", this.handleShoot, this);
     }
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// HANDLE PADDLE MOVE (MOUSE)
   handleInput(pointer: Phaser.Input.Pointer) {
     const paddlePosition =
       pointer.x > this.canvasW - this.width / 2
@@ -96,6 +104,8 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
     this.x = paddlePosition || this.canvasW / 2;
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// EXPAND PADDLES
   expand() {
     if (this.paddleLength === 3) return;
     if (this.paddleLength === 2) {
@@ -115,6 +125,8 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
     this.paddleLength++;
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// SHRINK PADDLE
   shrink() {
     if (this.paddleLength === 1) return;
     if (this.paddleLength === 2) {
@@ -134,18 +146,24 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
     this.paddleLength--;
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// ADD SHOOTER POWERUP
   addCannons() {
     if (this.cannons.getLength()) return;
     this.cannons.get(this.x, this.y, Sprites.cannon);
     this.cannons.get(this.x, this.y, Sprites.cannon);
-    this.scene.input.on("pointerdown", this.handleShooting, this);
+    this.scene.input.on("pointerdown", this.handleShoot, this);
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// REMOVE SHOOTER POWERUP
   removeCannons() {
     this.cannons.clear(true, true);
   }
 
-  handleShooting() {
+  //////////////////////////////////////////////////////////////
+  ////// HANDLE SHOOT
+  handleShoot() {
     if (this.bullets.countActive() >= 5) return;
 
     this.cannons.children.each((child, i) => {

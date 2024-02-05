@@ -1,4 +1,4 @@
-import { Anims, Fonts, Sounds, Sprites } from "../../constants";
+import { Anims, Fonts, Sounds, Sprites } from "../../../constants";
 
 export default class Button extends Phaser.GameObjects.Sprite {
   private sounds!: {
@@ -29,17 +29,22 @@ export default class Button extends Phaser.GameObjects.Sprite {
     };
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// INIT BUTTON
   init(label: string, onClick: () => void, isMain?: boolean) {
     const y = this.y;
-    if (isMain) this.setTexture(Sprites.mainButton);
+    if (isMain) this.play(Anims.mainButtonIdle);
 
     // label
     const textEl = this.scene.add
-      .text(this.x, y, label)
+      .text(this.x, y, label, {
+        fontFamily: Fonts.manaspace,
+        fontSize: 22,
+        strokeThickness: 3,
+        stroke: "#000",
+        color: "#e9e9e9",
+      })
       .setOrigin(0.5, 0.5)
-      .setFontFamily(Fonts.manaspace)
-      .setFontSize(22)
-      .setColor("#e9e9e9")
       .setShadow(5, 3, "black", 2);
 
     // event listeners

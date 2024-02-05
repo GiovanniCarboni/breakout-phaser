@@ -14,6 +14,7 @@ export enum Sprites {
   burnBrick = "burnBrick",
   metalBrick = "metalBrick",
   blankBrick = "blankBrick",
+  iceBrick = "iceBrick",
   // powerups
   getLife = "getLife",
   loseLife = "loseLife",
@@ -38,6 +39,11 @@ export enum Sprites {
   menuHanger = "menuHanger",
   languageSelectionBox = "languageSelectionBox",
   optionsBox = "optionsBox",
+  arrowButton = "arrowButton",
+  titleFrame = "titleFrame",
+  sideBar = "sideBar",
+  dot = "dot",
+  dotHighlight = "dotHighlight",
   // volume slider
   volumeBar = "volumeBar",
   volumeNob = "volumeNob",

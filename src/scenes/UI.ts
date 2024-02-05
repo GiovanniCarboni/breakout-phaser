@@ -1,6 +1,6 @@
 import { Scenes, Fonts, Sprites } from "../constants";
 import { sceneEvents } from "../events/EventCenter";
-import { createPauseButton } from "../components/UI/PauseButton";
+import { createPauseButton } from "../components/UI/button/PauseButton";
 import { t } from "i18next";
 
 export class UI extends Phaser.Scene {

@@ -1,5 +1,5 @@
 import { Sprites } from "../../constants";
-import { createButton } from "./Button";
+import { createButton } from "./button/Button";
 
 export default class Menu extends Phaser.GameObjects.Sprite {
   constructor(
@@ -42,11 +42,11 @@ export default class Menu extends Phaser.GameObjects.Sprite {
     if (buttonsNr === 2) {
       this.setTexture(Sprites.menuBox2);
     }
-    if (hangerOn) {
-      this.scene.add
-        .image(this.x, this.y, Sprites.menuHanger)
-        .setOrigin(0.5, 1);
-    }
+    // if (hangerOn) {
+    //   this.scene.add
+    //     .image(this.x, this.y, Sprites.menuHanger)
+    //     .setOrigin(0.5, 1);
+    // }
   }
 }
 

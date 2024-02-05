@@ -1,4 +1,4 @@
-import { Sprites } from "./../../constants";
+import { Sprites } from "../../constants";
 import Powerup from "./Powerup";
 
 export default class Powerups extends Phaser.Physics.Arcade.Group {

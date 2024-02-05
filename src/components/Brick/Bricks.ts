@@ -10,6 +10,33 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
     super(scene.physics.world, config);
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// GET NUMBER[][] TEMPLATE FROM BRICKS GROUP
+  static getTemplateFromBricks(bricksRepresentation: Bricks) {
+    const bricks: string[] = [];
+    bricksRepresentation.children.each((brickObj: any) => {
+      bricks.push((brickObj as Brick).texture.key);
+      return true;
+    });
+
+    let template: number[][] = [];
+    while (bricks.length !== 0) {
+      const row: number[] = bricks.splice(0, 17).map((brick: string) => {
+        if (brick === "commonBrick") return 1;
+        if (brick === "fireBrick") return 2;
+        if (brick === "metalBrick") return 3;
+        if (brick === "blankBrick") return 0;
+        else return 0;
+      });
+      template.push([0, ...row, 0]);
+    }
+    template.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+
+    return template;
+  }
+
+  //////////////////////////////////////////////////////////////
+  ////// CREATE BRICKS
   fillBricks(scene: Phaser.Scene, template: LevelTemplate) {
     const { info, layout } = template;
     let entryNr = 0;
@@ -30,6 +57,8 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
     }
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// DESTROY FIRE BRICKS (CHAIN REACTION)
   async destroyFireBricks(entry: number) {
     const queue: number[] = [];
     const checkedBricks = new Set();
@@ -77,6 +106,8 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
     }
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// GET 8 NEIGHBORING BRICKS
   getNeighboringBricks(fireBrick: number) {
     return [
       fireBrick - 1,
@@ -94,11 +125,12 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
 export const createBricks = function (
   scene: Phaser.Scene,
   level?: number,
-  template?: number[][]
+  template?: number[][],
+  info?: any
 ) {
   const bricks = new Bricks(scene, { classType: Brick });
   if (level) bricks.fillBricks(scene, getLevelTemplate(level));
-  // get custom created level
-  else bricks.fillBricks(scene, getLevelTemplate(0, template));
+  // use custom level
+  else bricks.fillBricks(scene, getLevelTemplate(0, template, info));
   return bricks;
 };

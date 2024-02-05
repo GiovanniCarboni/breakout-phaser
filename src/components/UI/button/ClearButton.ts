@@ -1,4 +1,4 @@
-import { Anims, Sprites } from "../../constants";
+import { Anims, Sprites } from "../../../constants";
 
 export default class ClearButton extends Phaser.GameObjects.Sprite {
   constructor(
@@ -12,6 +12,8 @@ export default class ClearButton extends Phaser.GameObjects.Sprite {
     this.setOrigin(0.5, 0.5).setInteractive();
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// INIT CLEAR BUTTON
   init(onClick: () => void) {
     this.on("pointerdown", () => {
       this.play(Anims.clearButtonPressed);

@@ -14,6 +14,10 @@ export const translations = {
       "Back": "Back",
       "Language": "Language",
       "Volume": "Volume",
+      "Edit": "Edit",
+      "Delete": "Delete",
+      "New": "New",
+      "Save": "Save",
     },
   },
   it: {
@@ -31,6 +35,10 @@ export const translations = {
       "Back": "Torna",
       "Language": "Lingua",
       "Volume": "Volume",
+      "Edit": "Modifica",
+      "Delete": "Elimina",
+      "New": "Nuovo",
+      "Save": "Salva",
     },
   },
   ro: {
@@ -48,6 +56,10 @@ export const translations = {
       "Back": "Inapoi",
       "Language": "Limba",
       "Volume": "Volum",
+      "Edit": "Editeaza",
+      "Delete": "Sterge",
+      "New": "Nou",
+      "Save": "Salveaza",
     },
   },
 };

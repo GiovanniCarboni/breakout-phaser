@@ -1,7 +1,7 @@
 import { t } from "i18next";
-import { Anims, Fonts, Sounds, Sprites } from "../../constants";
+import { Anims, Fonts, Sounds, Sprites } from "../../../constants";
 
-export default class BackButton extends Phaser.GameObjects.Sprite {
+export default class SmallButton extends Phaser.GameObjects.Sprite {
   private label!: Phaser.GameObjects.Text;
   private pressSound!:
     | Phaser.Sound.NoAudioSound
@@ -23,14 +23,18 @@ export default class BackButton extends Phaser.GameObjects.Sprite {
     });
   }
 
-  init(onClick: () => void) {
+  //////////////////////////////////////////////////////////////
+  ////// INIT SMALL BUTTON
+  init(label: string, onClick: () => void) {
     this.label = this.scene.add
-      .text(this.x, this.y, t("Back"), { fontFamily: Fonts.manaspace })
+      .text(this.x, this.y, label, { fontFamily: Fonts.manaspace })
       .setShadow(5, 3, "black", 2)
       .setOrigin(0.5, 0.5);
     this.addListeners(onClick);
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// ADD SMALL BUTTON INPUT LISTENERS (MOUSE)
   addListeners(onClick: () => void) {
     const labelLift = 1;
     const defaultLabelY = this.label.y;
@@ -60,14 +64,15 @@ export default class BackButton extends Phaser.GameObjects.Sprite {
   }
 }
 
-export const createBackButton = (
+export const createSmallButton = (
   x: number,
   y: number,
+  label: string,
   onClick: () => void,
   scene: Phaser.Scene
 ) => {
-  const button = new BackButton(scene, x, y, Sprites.backButton);
+  const button = new SmallButton(scene, x, y, Sprites.backButton);
   scene.add.existing(button);
-  button.init(onClick.bind(scene));
+  button.init(label, onClick.bind(scene));
   return button;
 };

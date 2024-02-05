@@ -1,6 +1,6 @@
 import { t } from "i18next";
-import { transition } from "../anims/SceneTransitions";
-import { createBackButton } from "../components/UI/BackButton";
+import { transition } from "../anims/sceneTransitions";
+import { createSmallButton } from "../components/UI/button/SmallButton";
 import { Fonts, Scenes, Sprites } from "../constants";
 import LanguageSelector, {
   createLanguageSelector,
@@ -43,9 +43,10 @@ export class Options extends Phaser.Scene {
       .setDepth(-1);
 
     /////// BACK BUTTON /////////////////////////////////////////////
-    createBackButton(
+    createSmallButton(
       120,
       this.scale.height - 140,
+      t("Back"),
       () => {
         transition("fadeOut", this, () => {
           this.scene.stop();

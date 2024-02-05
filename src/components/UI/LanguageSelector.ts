@@ -13,6 +13,8 @@ export default class LanguageSelector extends Phaser.GameObjects.Group {
     super(scene);
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// INIT SELECTOR
   init(x: number, y: number, onChange?: () => void) {
     ///////// HIGHLIGHT //////////////////////////////////////////////
     this.highlight = this.scene.add
@@ -47,6 +49,8 @@ export default class LanguageSelector extends Phaser.GameObjects.Group {
     }
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// SAVE SELECTION TO LOCAL STORAGE
   save() {
     if (!this.selectedFlag) return;
     const langKey = this.selectedFlag.texture.key.slice(0, 2).toLowerCase();
@@ -55,6 +59,8 @@ export default class LanguageSelector extends Phaser.GameObjects.Group {
     localStorage?.setItem("Language", langKey);
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// ADD FLAG INPUT LISTENERS
   addListeners(
     flag: Phaser.GameObjects.Sprite,
     label: string,
@@ -77,6 +83,8 @@ export default class LanguageSelector extends Phaser.GameObjects.Group {
       });
   }
 
+  //////////////////////////////////////////////////////////////
+  ////// SELECT (HIGHLIGHT) FLAG
   selectFlag(flag: Phaser.GameObjects.Sprite) {
     this.selectedFlag = flag;
     this.highlight.setVisible(true).setX(flag.x).setY(flag.y);

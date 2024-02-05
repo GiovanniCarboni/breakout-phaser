@@ -1,7 +1,7 @@
 import i18next from "i18next";
 import { Fonts, Scenes, Sounds, Sprites } from "../constants";
-import { createButton } from "../components/UI/Button";
-import { transition } from "../anims/SceneTransitions";
+import { createButton } from "../components/UI/button/Button";
+import { transition } from "../anims/sceneTransitions";
 import LanguageSelector, {
   createLanguageSelector,
 } from "../components/UI/LanguageSelector";

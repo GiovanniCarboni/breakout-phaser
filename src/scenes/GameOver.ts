@@ -1,7 +1,7 @@
 import { t } from "i18next";
 import { createMenu } from "../components/UI/Menu";
 import { Anims, Scenes, Sounds, Sprites } from "../constants";
-import { transition } from "../anims/SceneTransitions";
+import { transition } from "../anims/sceneTransitions";
 
 export class GameOver extends Phaser.Scene {
   private sounds!: {

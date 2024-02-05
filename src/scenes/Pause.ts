@@ -1,7 +1,7 @@
 import { t } from "i18next";
 import { createMenu } from "../components/UI/Menu";
 import { Scenes } from "../constants";
-import { transition } from "../anims/SceneTransitions";
+import { transition } from "../anims/sceneTransitions";
 
 export class Pause extends Phaser.Scene {
   constructor() {

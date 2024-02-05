@@ -1,4 +1,4 @@
-import { Sounds, Sprites } from "../../constants";
+import { Sounds, Sprites } from "../../../constants";
 
 export default class PauseButton extends Phaser.GameObjects.Sprite {
   private pressSound!:
