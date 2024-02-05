@@ -10,7 +10,7 @@ import { LanguageSelection } from "./LanguageSelection";
 import { Options } from "./Options";
 import { CreatedLevels } from "./CreatedLevels";
 
-export const scene = [
+export {
   Load,
   Game,
   Start,
@@ -22,4 +22,4 @@ export const scene = [
   LanguageSelection,
   Options,
   CreatedLevels,
-];
+};
