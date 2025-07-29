@@ -44,7 +44,7 @@ export class Game extends Phaser.Scene {
       this.isCustom = true;
       sceneEvents.emit(Events.levelChanged, 0);
     } else if (!isCustom) {
-      this.level = 1;
+      this.level = 3;
       this.isCustom = false;
       sceneEvents.emit(Events.levelChanged, this.level);
       this.bricks = createBricks(this, this.level);
@@ -340,6 +340,16 @@ export class Game extends Phaser.Scene {
       this.bricks.destroyFireBricks(brick.getData("number"));
       this.addPowerup(brick.x, brick.y);
     }
+    if (brickType === "ice") {
+      this.sounds.brickbreak.play();
+      const hits = brick.getData("hits")
+      if (hits === 1) return (brick.disableBody(), brick.destroy())
+      brick.play(Anims.iceBrickBreak);
+      brick.on("animationcomplete", () => {
+        brick.setData("hits", 1)
+      });
+      this.addPowerup(brick.x, brick.y);
+    }
   }
 
   //////////////////////////////////////////////////////////////
@@ -366,10 +376,11 @@ export class Game extends Phaser.Scene {
 
     if (brickType === "ice" && !this.ball.isIgnited) {
       this.sounds.brickbreak.play();
+      const hits = brick.getData("hits")
+      if (hits === 1) return (brick.disableBody(), brick.destroy())
       brick.play(Anims.iceBrickBreak);
-      brick.disableBody();
       brick.on("animationcomplete", () => {
-        // brick.destroy();
+        brick.setData("hits", 1)
       });
       this.addPowerup(brick.x, brick.y);
     }

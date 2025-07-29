@@ -22,11 +22,14 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
     let template: number[][] = [];
     while (bricks.length !== 0) {
       const row: number[] = bricks.splice(0, 17).map((brick: string) => {
-        if (brick === "commonBrick") return 1;
-        if (brick === "fireBrick") return 2;
-        if (brick === "metalBrick") return 3;
-        if (brick === "blankBrick") return 0;
-        else return 0;
+        switch(brick) {
+          case "commonBrick": return 1;
+          case "fireBrick": return 2;
+          case "metalBrick": return 3;
+          case "iceBrick": return 4;
+          case "blankBrick": return 0;
+          default: return 0
+        }
       });
       template.push([0, ...row, 0]);
     }

@@ -41,6 +41,7 @@ export default class Brick extends Phaser.Physics.Arcade.Sprite {
         break;
       case 4:
         this.setTexture(Sprites.iceBrick);
+        this.setData("hits", 0)
         setTimeout(() => {
           this.play(Anims.iceBrickIdle);
         }, 74 * Math.ceil(Math.random() * 8));

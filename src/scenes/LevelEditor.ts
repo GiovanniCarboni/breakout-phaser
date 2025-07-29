@@ -344,7 +344,11 @@ export class LevelEditor extends Phaser.Scene {
       this.scale.height - 110,
       Sprites.metalBrick
     );
-    for (let brick of [commonBrick, fireBrick, metalBrick]) {
+    const iceBrick = this.add
+      .sprite(240, this.scale.height - 70,
+      Sprites.iceBrick
+    )
+    for (let brick of [commonBrick, fireBrick, metalBrick, iceBrick]) {
       brick.setInteractive();
       brick.setOrigin(0.5, 0.5);
     }
@@ -354,23 +358,26 @@ export class LevelEditor extends Phaser.Scene {
       "pointerdown",
       () => {
         this.handleSelectBrick(commonBrick, Sprites.commonBrick);
-      },
-      this
+      }, this
     );
     fireBrick.on(
       "pointerdown",
       () => {
         this.handleSelectBrick(fireBrick, Sprites.fireBrick);
-      },
-      this
+      }, this
     );
     metalBrick.on(
       "pointerdown",
       () => {
         this.handleSelectBrick(metalBrick, Sprites.metalBrick);
-      },
-      this
+      }, this
     );
+    iceBrick.on(
+      "pointerdown",
+      () => {
+        this.handleSelectBrick(iceBrick, Sprites.iceBrick)
+      }, this
+    )
 
     // UNSELECT BRICK
     this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
