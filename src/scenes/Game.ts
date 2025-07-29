@@ -1,11 +1,11 @@
 import { sceneEvents } from "../events/EventCenter";
-import Ball, { createBall } from "../components/ball/Ball";
-import Paddle, { createPaddle } from "../components/paddle/Paddle";
-import Bricks, { createBricks } from "../components/brick/Bricks";
-import Powerup, { createPowerup } from "../components/powerup/Powerup";
-import Powerups, { createPowerups } from "../components/powerup/Powerups";
+import Ball, { createBall } from "../components/Ball/Ball";
+import Paddle, { createPaddle } from "../components/Paddle/Paddle";
+import Bricks, { createBricks } from "../components/Brick/Bricks";
+import Powerup, { createPowerup } from "../components/Powerup/Powerup";
+import Powerups, { createPowerups } from "../components/Powerup/Powerups";
 import { Sprites, Events, Sounds, Scenes, Anims } from "../constants";
-import { transition } from "../anims/sceneTransitions";
+import { transition } from "../anims/SceneTransitions";
 
 export class Game extends Phaser.Scene {
   private isCustom: boolean = false;
@@ -44,7 +44,7 @@ export class Game extends Phaser.Scene {
       this.isCustom = true;
       sceneEvents.emit(Events.levelChanged, 0);
     } else if (!isCustom) {
-      this.level = 3;
+      this.level = 1;
       this.isCustom = false;
       sceneEvents.emit(Events.levelChanged, this.level);
       this.bricks = createBricks(this, this.level);
@@ -151,7 +151,7 @@ export class Game extends Phaser.Scene {
         }
         if (!this.isCustom) {
           // if last level
-          if (this.level === 2) {
+          if (this.level === 3) {
             this.scene.stop();
             this.scene.start(Scenes.winGame, { isCustom: false });
             return;

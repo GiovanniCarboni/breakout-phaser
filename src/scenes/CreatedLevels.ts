@@ -1,7 +1,7 @@
 import { t } from "i18next";
-import { transition } from "../anims/sceneTransitions";
-import Brick from "../components/brick/Brick";
-import Bricks, { createBricks } from "../components/brick/Bricks";
+import { transition } from "../anims/SceneTransitions";
+import Brick from "../components/Brick/Brick";
+import Bricks, { createBricks } from "../components/Brick/Bricks";
 import { createSmallButton } from "../components/UI/button/SmallButton";
 import Button, { createButton } from "../components/UI/button/Button";
 import { Anims, Scenes, Sprites } from "../constants";

@@ -1,5 +1,5 @@
 import { t } from "i18next";
-import { transition } from "../anims/sceneTransitions";
+import { transition } from "../anims/SceneTransitions";
 import { createSmallButton } from "../components/UI/button/SmallButton";
 import { Fonts, Scenes, Sprites } from "../constants";
 import LanguageSelector, {

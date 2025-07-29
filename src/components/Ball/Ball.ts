@@ -1,6 +1,6 @@
 import { Anims, Sounds, Sprites } from "../../constants";
-import Paddle from "../paddle/Paddle";
-import Brick from "../brick/Brick";
+import Paddle from "../Paddle/Paddle";
+import Brick from "../Brick/Brick";
 
 export default class Ball extends Phaser.Physics.Arcade.Sprite {
   speedIncrement = 20;

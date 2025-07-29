@@ -1,4 +1,4 @@
-import { transition } from "../anims/sceneTransitions";
+import { transition } from "../anims/SceneTransitions";
 import { createMenu } from "../components/UI/Menu";
 import { Anims, Fonts, Scenes, Sprites } from "../constants";
 import t from "../i18next/i18next";

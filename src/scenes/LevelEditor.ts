@@ -1,10 +1,10 @@
 import { t } from "i18next";
-import Brick from "../components/brick/Brick";
-import Bricks, { createBricks } from "../components/brick/Bricks";
+import Brick from "../components/Brick/Brick";
+import Bricks, { createBricks } from "../components/Brick/Bricks";
 import { createSmallButton } from "../components/UI/button/SmallButton";
 import { createClearButton } from "../components/UI/button/ClearButton";
 import { Anims, Fonts, Scenes, Sounds, Sprites } from "../constants";
-import { transition } from "../anims/sceneTransitions";
+import { transition } from "../anims/SceneTransitions";
 
 export class LevelEditor extends Phaser.Scene {
   private levelId?: number;
