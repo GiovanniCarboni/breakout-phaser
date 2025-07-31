@@ -1,4 +1,4 @@
-import { Fonts, Scenes, Sounds, Sprites } from "../constants";
+import { Fonts, Scenes, Sounds, Sprites, StorageKeys } from "../constants";
 import { createBricksAnims } from "../anims/brickAnims";
 import { createPaddleAnims } from "../anims/paddleAnims";
 import { createUiAnims } from "../anims/uiAnims";
@@ -6,6 +6,7 @@ import { createBallAnims } from "../anims/ballAnims";
 import { WebFontFileLoader } from "../scripts/webfontloader";
 import { loadLocale } from "../i18next/i18next";
 import i18next from "i18next";
+import { storage } from "../utils/gneral";
 
 export class Load extends Phaser.Scene {
   constructor() {
@@ -234,17 +235,17 @@ export class Load extends Phaser.Scene {
     createPaddleAnims(this.anims);
     createUiAnims(this.anims);
 
-    const volume = localStorage?.getItem("Volume");
+    const volume = storage.get(StorageKeys.volume)
 
     if (volume !== null) this.sound.volume = +volume!;
     else {
       this.sound.volume = 0.5;
-      localStorage?.setItem("Volume", "0.5");
+      storage.set(StorageKeys.volume, "0.5");
     }
 
     loadLocale().then(() => {
       // user might have local storage disabled
-      const savedLanguage = localStorage?.getItem("Language");
+      const savedLanguage = storage.get(StorageKeys.language)
       if (savedLanguage && savedLanguage.match(/(en|ro|it)/)) {
         i18next.changeLanguage(savedLanguage);
         this.scene.start(Scenes.start);

@@ -3,8 +3,9 @@ import Brick from "../components/Brick/Brick";
 import Bricks, { createBricks } from "../components/Brick/Bricks";
 import { createSmallButton } from "../components/UI/button/SmallButton";
 import { createClearButton } from "../components/UI/button/ClearButton";
-import { Anims, Fonts, Scenes, Sounds, Sprites } from "../constants";
+import { Anims, Fonts, Scenes, Sounds, Sprites, StorageKeys } from "../constants";
 import { transition } from "../anims/SceneTransitions";
+import { storage } from "../utils/gneral";
 
 export class LevelEditor extends Phaser.Scene {
   private levelId?: number;
@@ -152,7 +153,7 @@ export class LevelEditor extends Phaser.Scene {
   //////////////////////////////////////////////////////////////
   ////// HANDLE BACK
   handleBack() {
-    const savedData = localStorage?.getItem("createdLevels");
+    const savedData = storage.get(StorageKeys.createdLevels)
     transition("fadeOut", this, () => {
       if (savedData) {
         this.scene.start(Scenes.createdLevels);
@@ -211,23 +212,18 @@ export class LevelEditor extends Phaser.Scene {
   //////////////////////////////////////////////////////////////
   ////// SAVE TO LOCAL STORAGE
   saveToStorage() {
-    const data = localStorage?.getItem("createdLevels");
+    const data = storage.get(StorageKeys.createdLevels)
 
     // if no levels in local storage
     if (!data) {
-      localStorage?.setItem(
-        "createdLevels",
-        JSON.stringify([
-          {
-            id: Date.now(),
-            template: Bricks.getTemplateFromBricks(this.slots),
-          },
-        ])
-      );
-      // if there are levels in local storage
-    } else {
-      const savedLevels: { id: number; template: number[][] }[] =
-        JSON.parse(data);
+      storage.set(StorageKeys.createdLevels, [
+        {
+          id: Date.now(),
+          template: Bricks.getTemplateFromBricks(this.slots),
+        },
+      ])
+    } else { // if there are levels in local storage
+      const savedLevels: { id: number; template: number[][] }[] = data
       let existingLevelIndex;
       const existingLevel = savedLevels.find((level, i) => {
         if (level.id === this.levelId) existingLevelIndex = i;
@@ -237,19 +233,14 @@ export class LevelEditor extends Phaser.Scene {
       if (data && existingLevel && existingLevelIndex !== null) {
         savedLevels[existingLevelIndex!].template =
           Bricks.getTemplateFromBricks(this.slots);
-        localStorage?.setItem("createdLevels", JSON.stringify(savedLevels));
-        // if this is a new level
-      } else {
-        localStorage?.setItem(
-          "createdLevels",
-          JSON.stringify([
-            ...savedLevels,
-            {
-              id: this.levelId,
-              template: Bricks.getTemplateFromBricks(this.slots),
-            },
-          ])
-        );
+        storage.set(StorageKeys.createdLevels, savedLevels)
+      } else { // if this is a new level
+        storage.set(StorageKeys.createdLevels, [...savedLevels,
+          {
+            id: this.levelId,
+            template: Bricks.getTemplateFromBricks(this.slots)
+          }
+        ])
       }
     }
   }

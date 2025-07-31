@@ -1,5 +1,6 @@
 import i18next from "i18next";
-import { Fonts, Sounds, Sprites } from "../../constants";
+import { Fonts, Sounds, Sprites, StorageKeys } from "../../constants";
+import { storage } from "../../utils/gneral";
 
 export default class LanguageSelector extends Phaser.GameObjects.Group {
   selectedFlag?: Phaser.GameObjects.Sprite;
@@ -41,7 +42,7 @@ export default class LanguageSelector extends Phaser.GameObjects.Group {
       volume: 0.2,
     });
 
-    const savedLanguage = localStorage?.getItem("Language");
+    const savedLanguage = storage.get(StorageKeys.language)
     if (savedLanguage && savedLanguage.match(/(en|ro|it)/)) {
       savedLanguage === "en" && this.selectFlag(en);
       savedLanguage === "ro" && this.selectFlag(ro);
@@ -56,7 +57,7 @@ export default class LanguageSelector extends Phaser.GameObjects.Group {
     const langKey = this.selectedFlag.texture.key.slice(0, 2).toLowerCase();
     i18next.changeLanguage(langKey);
     // user might have local storage disabled
-    localStorage?.setItem("Language", langKey);
+    storage.set(StorageKeys.language, langKey)
   }
 
   //////////////////////////////////////////////////////////////

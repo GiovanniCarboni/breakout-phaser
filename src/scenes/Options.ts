@@ -1,10 +1,11 @@
 import { t } from "i18next";
 import { transition } from "../anims/SceneTransitions";
 import { createSmallButton } from "../components/UI/button/SmallButton";
-import { Fonts, Scenes, Sprites } from "../constants";
+import { Fonts, Scenes, Sprites, StorageKeys } from "../constants";
 import LanguageSelector, {
   createLanguageSelector,
 } from "../components/UI/LanguageSelector";
+import { storage } from "../utils/gneral";
 
 export class Options extends Phaser.Scene {
   private fromScene!: string;
@@ -173,10 +174,7 @@ export class Options extends Phaser.Scene {
     this.input.on("pointerup", () => {
       this.input.off("pointermove");
       // save volume to local storage
-      localStorage?.setItem(
-        "Volume",
-        (Math.round(this.sound.volume * 1000) / 1000).toString()
-      );
+      storage.set(StorageKeys.volume, (Math.round(this.sound.volume * 1000) / 1000).toString());
       // this.volumeFill.width = this.nob.x - this.volumeFill.x;
     });
   }

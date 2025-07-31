@@ -4,7 +4,8 @@ import Brick from "../components/Brick/Brick";
 import Bricks, { createBricks } from "../components/Brick/Bricks";
 import { createSmallButton } from "../components/UI/button/SmallButton";
 import Button, { createButton } from "../components/UI/button/Button";
-import { Anims, Scenes, Sprites } from "../constants";
+import { Anims, Scenes, Sprites, StorageKeys } from "../constants";
+import { storage } from "../utils/gneral";
 
 export class CreatedLevels extends Phaser.Scene {
   private templates!: { id: number; template: number[][] }[];
@@ -22,7 +23,7 @@ export class CreatedLevels extends Phaser.Scene {
   create() {
     //////////////////////////////////////////////////////////////
     ////// SKIP TO EDITOR IF NO SAVED DATA
-    const data = localStorage?.getItem("createdLevels");
+    const data = storage.get(StorageKeys.createdLevels)
     if (!data) {
       this.scene.start(Scenes.LevelEditor, {
         id: undefined,
@@ -31,7 +32,7 @@ export class CreatedLevels extends Phaser.Scene {
       this.scene.stop();
       return;
     } else {
-      this.templates = JSON.parse(data);
+      this.templates = data
       this.currentlyDisplayed = 0;
     }
 
@@ -170,16 +171,16 @@ export class CreatedLevels extends Phaser.Scene {
   //////////////////////////////////////////////////////////////
   ////// HANDLE DELETE
   handleDelete() {
-    const savedLevels = localStorage?.getItem("createdLevels");
+    const savedLevels = storage.get(StorageKeys.createdLevels)
     if (savedLevels) {
-      const newSavedLevels = JSON.parse(savedLevels).filter(
+      const newSavedLevels = savedLevels.filter(
         (level: { id: number }) => level.id !== this.currentLevelId
       );
       if (newSavedLevels.length === 0) {
-        localStorage.removeItem("createdLevels");
+        storage.remove(StorageKeys.createdLevels);
         this.scene.start(Scenes.start).stop();
       } else {
-        localStorage?.setItem("createdLevels", JSON.stringify(newSavedLevels));
+        storage.set(StorageKeys.createdLevels, newSavedLevels);
         this.scene.start(Scenes.start).stop();
       }
     }
