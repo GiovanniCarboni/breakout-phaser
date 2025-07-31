@@ -1,7 +1,8 @@
-import { Scenes } from "../constants";
+import { Fonts, Scenes, StorageKeys } from "../constants";
 import { createMenu } from "../components/UI/Menu";
 import { t } from "i18next";
 import { transition } from "../anims/SceneTransitions";
+import { storage } from "../utils/gneral";
 
 export class WinGame extends Phaser.Scene {
   private isCustom!: boolean;
@@ -24,7 +25,7 @@ export class WinGame extends Phaser.Scene {
     this.cameras.main.setBackgroundColor("#000");
 
     this.add
-      .text(this.canvasW / 2, 160, "You Win!", {
+      .text(this.canvasW / 2, 160, "You Win", {
         fontFamily: "Manaspace",
         fontSize: 52,
       })
@@ -44,6 +45,7 @@ export class WinGame extends Phaser.Scene {
       );
     }
     if (!this.isCustom) {
+      this.initBestScore()
       createMenu(
         this.canvasW / 2,
         this.canvasH / 2,
@@ -54,6 +56,18 @@ export class WinGame extends Phaser.Scene {
         this
       );
     }
+  }
+  
+  initBestScore() {
+    const bestScore = storage.get(StorageKeys.bestScore)
+    if (!bestScore) return
+    const labelText = `${t("Best Score")}: ${bestScore}`
+    const label = this.add
+      .text(this.scale.width / 2, 220, labelText, {
+        fontFamily: Fonts.manaspace,
+        fontSize: 20
+      })
+      .setOrigin(0.5, 0.5);
   }
 
   handleRestart() {

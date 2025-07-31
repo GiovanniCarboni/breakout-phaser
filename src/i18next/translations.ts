@@ -18,6 +18,7 @@ export const translations = {
       "Delete": "Delete",
       "New": "New",
       "Save": "Save",
+      "Best score": "Best score",
     },
   },
   it: {
@@ -39,6 +40,7 @@ export const translations = {
       "Delete": "Elimina",
       "New": "Nuovo",
       "Save": "Salva",
+      "Best score": "Miglior punteggio",
     },
   },
   ro: {
@@ -60,6 +62,7 @@ export const translations = {
       "Delete": "Sterge",
       "New": "Nou",
       "Save": "Salveaza",
+      "Best score": "Cel mai mare scor",      
     },
   },
 };

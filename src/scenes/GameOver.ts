@@ -1,7 +1,8 @@
 import { t } from "i18next";
 import { createMenu } from "../components/UI/Menu";
-import { Anims, Scenes, Sounds, Sprites } from "../constants";
+import { Anims, Fonts, Scenes, Sounds, Sprites, StorageKeys } from "../constants";
 import { transition } from "../anims/SceneTransitions";
+import { storage } from "../utils/gneral";
 
 export class GameOver extends Phaser.Scene {
   private sounds!: {
@@ -28,6 +29,7 @@ export class GameOver extends Phaser.Scene {
 
     this.initGameOverText();
 
+    this.initBestScore()
     createMenu(
       this.scale.width / 2,
       this.scale.height / 2,
@@ -37,6 +39,18 @@ export class GameOver extends Phaser.Scene {
       ],
       this
     );
+  }
+
+  initBestScore() {
+    const bestScore = storage.get(StorageKeys.bestScore)
+    if (!bestScore) return
+    const labelText = `${t("Best score")}: ${bestScore}`
+    const label = this.add
+      .text(this.scale.width / 2, 260, labelText, {
+        fontFamily: Fonts.manaspace,
+        fontSize: 20
+      })
+      .setOrigin(0.5, 0.5);
   }
 
   handleRestart() {

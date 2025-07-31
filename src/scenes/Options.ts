@@ -174,7 +174,7 @@ export class Options extends Phaser.Scene {
     this.input.on("pointerup", () => {
       this.input.off("pointermove");
       // save volume to local storage
-      storage.set(StorageKeys.volume, (Math.round(this.sound.volume * 1000) / 1000).toString());
+      storage.set(StorageKeys.volume, (Math.round(this.sound.volume * 1000) / 1000).toString())
       // this.volumeFill.width = this.nob.x - this.volumeFill.x;
     });
   }

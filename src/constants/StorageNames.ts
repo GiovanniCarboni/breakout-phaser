@@ -1,5 +1,6 @@
 export enum StorageKeys {
     createdLevels = "createdLevels",
     language = "language",
-    volume = "volume"
+    volume = "volume",
+    bestScore = "bestScore",
 }

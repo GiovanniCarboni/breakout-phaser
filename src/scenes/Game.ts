@@ -4,8 +4,9 @@ import Paddle, { createPaddle } from "../components/Paddle/Paddle";
 import Bricks, { createBricks } from "../components/Brick/Bricks";
 import Powerup, { createPowerup } from "../components/Powerup/Powerup";
 import Powerups, { createPowerups } from "../components/Powerup/Powerups";
-import { Sprites, Events, Sounds, Scenes, Anims } from "../constants";
+import { Sprites, Events, Sounds, Scenes, Anims, StorageKeys } from "../constants";
 import { transition } from "../anims/SceneTransitions";
+import { storage } from "../utils/gneral";
 
 export class Game extends Phaser.Scene {
   private isCustom: boolean = false;
@@ -150,6 +151,7 @@ export class Game extends Phaser.Scene {
           this.scene.start(Scenes.winGame, { isCustom: true });
         }
         if (!this.isCustom) {
+          this.saveBestScore(this.level)
           // if last level
           if (this.level === 3) {
             this.scene.stop();
@@ -166,6 +168,14 @@ export class Game extends Phaser.Scene {
         }
       }, 1000);
       this.scene.pause(Scenes.game);
+    }
+  }
+
+  saveBestScore(newLevel: number|undefined) {
+    const currentLevel = newLevel || 0
+    const savedLevel = storage.get(StorageKeys.bestScore)
+    if ((savedLevel && +currentLevel > +savedLevel) || !savedLevel) {
+      storage.set(StorageKeys.bestScore, currentLevel)
     }
   }
 
