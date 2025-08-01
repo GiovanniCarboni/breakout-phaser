@@ -15,6 +15,7 @@ export class LevelEditor extends Phaser.Scene {
   private selectedBrick?: Phaser.GameObjects.Sprite;
   private brickHighlight?: Phaser.GameObjects.Sprite;
   private message?: Phaser.GameObjects.Text;
+  private messageTimeout?: ReturnType<typeof setTimeout>;
   private sounds!: {
     [key: string]:
       | Phaser.Sound.NoAudioSound
@@ -185,25 +186,37 @@ export class LevelEditor extends Phaser.Scene {
     this.handleBack();
   }
 
+  // ///////////////////////////////////////////////////////////
+  ////// DISPLAY MESSAGE
+  displayMessage(msg: string, shake = false) {
+    shake && this.cameras.main.shake(100, 0.005)
+    if (this.message && this.message.text === msg) return
+    const removeMsg = () => {
+      this.message?.destroy()
+      this.message = undefined
+      this.messageTimeout = undefined
+    }
+    if (this.message) {
+      clearTimeout(this.messageTimeout)
+      removeMsg()
+    }
+    this.message = this.add
+      .text(
+        this.scale.width - 120,
+        this.scale.height - 170,
+        msg,
+        { fontFamily: Fonts.manaspace }
+      )
+      .setOrigin(1, 0)
+    this.messageTimeout = setTimeout(removeMsg, 3000)
+  }
+
   //////////////////////////////////////////////////////////////
   ////// MESSAGE IF CAN'T SAVE/PLAY
   canSave(): boolean {
     const template: number[][] = Bricks.getTemplateFromBricks(this.slots);
     if (!template.flat().some((brick) => brick !== 0 && brick !== 3)) {
-      this.cameras.main.shake(100, 0.005);
-      if (this.message) return false;
-      this.message = this.add
-        .text(
-          this.scale.width - 120,
-          this.scale.height - 170,
-          t("Template must contain at least one breakable brick"),
-          { fontFamily: Fonts.manaspace }
-        )
-        .setOrigin(1, 0);
-      setTimeout(() => {
-        this.message!.destroy();
-        this.message = undefined;
-      }, 3000);
+      this.displayMessage(t("Template must contain at least one breakable brick"), true)
       return false;
     }
     return true;
@@ -321,54 +334,36 @@ export class LevelEditor extends Phaser.Scene {
       .sprite(0, this.scale.height, Sprites.brickSelector)
       .setOrigin(0, 1)
       .setDepth(-1);
-    // CREATE SELECTABLE BRICKS
-    const commonBrick = this.add.sprite(
-      160,
-      this.scale.height - 110,
-      Sprites.commonBrick
-    );
-    const fireBrick = this.add
-      .sprite(160, this.scale.height - 70, Sprites.fireBrick)
-      .play(Anims.fireBrick);
-    const metalBrick = this.add.sprite(
-      240,
-      this.scale.height - 110,
-      Sprites.metalBrick
-    );
-    const iceBrick = this.add
-      .sprite(240, this.scale.height - 70,
-      Sprites.iceBrick
-    )
-    for (let brick of [commonBrick, fireBrick, metalBrick, iceBrick]) {
-      brick.setInteractive();
-      brick.setOrigin(0.5, 0.5);
-    }
 
-    // SELECT BRICK
-    commonBrick.on(
-      "pointerdown",
-      () => {
-        this.handleSelectBrick(commonBrick, Sprites.commonBrick);
-      }, this
-    );
-    fireBrick.on(
-      "pointerdown",
-      () => {
-        this.handleSelectBrick(fireBrick, Sprites.fireBrick);
-      }, this
-    );
-    metalBrick.on(
-      "pointerdown",
-      () => {
-        this.handleSelectBrick(metalBrick, Sprites.metalBrick);
-      }, this
-    );
-    iceBrick.on(
-      "pointerdown",
-      () => {
-        this.handleSelectBrick(iceBrick, Sprites.iceBrick)
-      }, this
-    )
+    const canvasH = this.scale.height
+    const bestScore = storage.get(StorageKeys.bestScore)
+
+    const bricks = [
+      { x: 160, y: canvasH - 110, sprite: Sprites.commonBrick },
+      { x: 160, y: canvasH - 70, sprite: Sprites.fireBrick, play: Anims.fireBrick },
+      { x: 240, y: canvasH - 110, sprite: Sprites.metalBrick },
+      { x: 240, y: canvasH - 70, sprite: Sprites.iceBrick }
+    ].map((brick, i) => i > bestScore ? {
+      ...brick,
+      sprite: Sprites.lockedBrick,
+      play: null,
+    } : brick)
+
+    // create selectable bricks
+    bricks.forEach(brick => {
+      const brickEl = this.add.sprite(
+        brick.x,
+        brick.y,
+        brick.sprite
+      )
+      if (brick.play) brickEl.play(brick.play)
+      brickEl.setInteractive()
+      brickEl.setOrigin(0.5, 0.5)
+      brickEl.on("pointerdown", brick.sprite === Sprites.lockedBrick 
+        ? () => this.displayMessage(t("You need to clear more stages to unlock this brick"))
+        : () => this.handleSelectBrick(brickEl, brick.sprite)
+      )
+    })
 
     // UNSELECT BRICK
     this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {

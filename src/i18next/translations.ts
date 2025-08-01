@@ -19,6 +19,7 @@ export const translations = {
       "New": "New",
       "Save": "Save",
       "Best score": "Best score",
+      "You need to clear more stages to unlock this brick": "You need to clear more stages to unlock this brick",
     },
   },
   it: {
@@ -41,6 +42,7 @@ export const translations = {
       "New": "Nuovo",
       "Save": "Salva",
       "Best score": "Miglior punteggio",
+      "You need to clear more stages to unlock this brick": "Supera piu livelli per sbloccare questo mattone"
     },
   },
   ro: {
@@ -62,7 +64,8 @@ export const translations = {
       "Delete": "Sterge",
       "New": "Nou",
       "Save": "Salveaza",
-      "Best score": "Cel mai mare scor",      
+      "Best score": "Cel mai mare scor",
+      "You need to clear more stages to unlock this brick": "Completeaza mai multe nivele pentru a debloca aceasta caramida"    
     },
   },
 };

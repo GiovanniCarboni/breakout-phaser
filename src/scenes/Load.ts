@@ -39,6 +39,7 @@ export class Load extends Phaser.Scene {
     this.load.image(Sprites.bullet, "assets/images/paddle/bullet.png");
     // brick
     this.load.image(Sprites.blankBrick, "assets/images/brick/blank_brick.png");
+    this.load.image(Sprites.lockedBrick, "assets/images/brick/locked_brick.png");
     this.load.spritesheet(
       Sprites.commonBrick,
       "assets/images/brick/common_brick.png",

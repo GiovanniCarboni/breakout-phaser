@@ -10,6 +10,7 @@ export enum Sprites {
   bullet = "bullet",
   // brick
   commonBrick = "commonBrick",
+  lockedBrick = "lockedBrick",
   fireBrick = "fireBrick",
   burnBrick = "burnBrick",
   metalBrick = "metalBrick",

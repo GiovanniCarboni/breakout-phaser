@@ -31,7 +31,9 @@ export default class Brick extends Phaser.Physics.Arcade.Sprite {
       case 2:
         this.setTexture(Sprites.fireBrick);
         setTimeout(() => {
-          this.play(Anims.fireBrick);
+          try { // brick might not exist anymore
+            this.play(Anims.fireBrick);
+          } catch {}
         }, 74 * Math.ceil(Math.random() * 8));
         this.setData("type", "fire");
         break;
