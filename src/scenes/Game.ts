@@ -126,7 +126,7 @@ export class Game extends Phaser.Scene {
     ////// NO MORE LIVES
     if (this.lives < 1) {
       this.scene.stop();
-      this.scene.launch(Scenes.gameOver);
+      this.scene.launch(Scenes.gameOver, { isCustom: this.isCustom });
       this.ball.reset(this.paddle.x);
       this.paddle.reset();
       this.powerups.clear(undefined, true);

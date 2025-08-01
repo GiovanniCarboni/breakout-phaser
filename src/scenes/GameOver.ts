@@ -5,6 +5,9 @@ import { transition } from "../anims/SceneTransitions";
 import { storage } from "../utils/gneral";
 
 export class GameOver extends Phaser.Scene {
+  isCustom = false
+  canvasH!: number
+  canvasW!: number
   private sounds!: {
     [key: string]:
       | Phaser.Sound.NoAudioSound
@@ -14,6 +17,13 @@ export class GameOver extends Phaser.Scene {
 
   constructor() {
     super({ key: Scenes.gameOver });
+  }
+
+  init({ isCustom }: { isCustom: boolean }) {
+    this.canvasH = this.scale.height
+    this.canvasW = this.scale.width
+    if (isCustom) this.isCustom = true
+    else if (!isCustom) this.isCustom = false
   }
 
   create() {
@@ -32,13 +42,18 @@ export class GameOver extends Phaser.Scene {
     this.initBestScore()
     createMenu(
       this.scale.width / 2,
-      this.scale.height / 2,
-      [
+      this.isCustom ? this.canvasH / 2 - 60 : this.canvasH / 2,
+      this.isCustom ? [
+          { label: t("Restart"), onClick: this.handleRestart, isMain: true },
+          { label: t("Back to Editor"), onClick: this.handleBackToEditor },
+          { label: t("Back to Menu"), onClick: this.handleBackToMenu },
+        ]
+      : [
         { label: t("Restart"), onClick: this.handleRestart, isMain: true },
         { label: t("Back to Menu"), onClick: this.handleBackToMenu },
       ],
       this
-    );
+    )
   }
 
   initBestScore() {
@@ -58,6 +73,14 @@ export class GameOver extends Phaser.Scene {
       this.scene.stop(Scenes.game);
       this.scene.start(Scenes.game);
     });
+  }
+
+  handleBackToEditor() {
+    transition("fadeOut", this, () => {
+      this.scene.stop(Scenes.game)
+      this.scene.start(Scenes.createdLevels)
+      this.scene.stop()
+    })
   }
 
   handleBackToMenu() {

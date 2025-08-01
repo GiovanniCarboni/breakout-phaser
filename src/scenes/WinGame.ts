@@ -77,7 +77,11 @@ export class WinGame extends Phaser.Scene {
     });
   }
   handleBackToEditor() {
-    // console.log("back to editor");
+    transition("fadeOut", this, () => {
+      this.scene.stop(Scenes.game)
+      this.scene.start(Scenes.createdLevels)
+      this.scene.stop()
+    })
   }
   handleBackToMenu() {
     transition("fadeOut", this, () => {
