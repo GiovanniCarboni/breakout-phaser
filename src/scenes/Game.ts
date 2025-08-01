@@ -142,32 +142,35 @@ export class Game extends Phaser.Scene {
 
     ////// ADVANCE LEVEL / WIN
     if (this.isStageCleared) {
-      setTimeout(() => {
-        this.powerups.clear(undefined, true);
-        this.bricks.clear(true, true);
-        this.isStageCleared = false;
-        if (this.isCustom) {
-          this.scene.stop();
-          this.scene.start(Scenes.winGame, { isCustom: true });
-        }
-        if (!this.isCustom) {
-          this.saveBestScore(this.level)
-          // if last level
-          if (this.level === 3) {
-            this.scene.stop();
-            this.scene.start(Scenes.winGame, { isCustom: false });
-            return;
-          }
-          this.level!++;
-          sceneEvents.emit(Events.levelChanged, this.level);
-          this.scene.resume(Scenes.game);
-          this.bricks = createBricks(this, this.level);
-          this.ball.reset(this.paddle.x);
-          this.paddle.reset();
-          this.addColliders();
-        }
-      }, 1000);
+      setTimeout(() => this.onStageCleared(), 1000)
       this.scene.pause(Scenes.game);
+    }
+  }
+
+  onStageCleared() {
+    this.powerups.clear(undefined, true);
+    this.bricks.clear(true, true);
+    this.paddle.bullets.clear(true, true)
+    this.isStageCleared = false;
+    if (this.isCustom) {
+      this.scene.stop();
+      this.scene.start(Scenes.winGame, { isCustom: true });
+    }
+    if (!this.isCustom) {
+      this.saveBestScore(this.level)
+      // if last level
+      if (this.level === 3) {
+        this.scene.stop();
+        this.scene.start(Scenes.winGame, { isCustom: false });
+        return;
+      }
+      this.level!++;
+      sceneEvents.emit(Events.levelChanged, this.level);
+      this.scene.resume(Scenes.game);
+      this.bricks = createBricks(this, this.level);
+      this.ball.reset(this.paddle.x);
+      this.paddle.reset();
+      this.addColliders();
     }
   }
 

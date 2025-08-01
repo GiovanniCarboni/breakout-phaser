@@ -15,7 +15,7 @@ export class LevelEditor extends Phaser.Scene {
   private selectedBrick?: Phaser.GameObjects.Sprite;
   private brickHighlight?: Phaser.GameObjects.Sprite;
   private message?: Phaser.GameObjects.Text;
-  private messageTimeout?: ReturnType<typeof setTimeout>;
+  private messageTimeout?: Phaser.Time.TimerEvent;
   private sounds!: {
     [key: string]:
       | Phaser.Sound.NoAudioSound
@@ -156,6 +156,7 @@ export class LevelEditor extends Phaser.Scene {
   handleBack() {
     const savedData = storage.get(StorageKeys.createdLevels)
     transition("fadeOut", this, () => {
+      this.message = undefined
       if (savedData) {
         this.scene.start(Scenes.createdLevels);
         this.scene.stop();
@@ -197,7 +198,7 @@ export class LevelEditor extends Phaser.Scene {
       this.messageTimeout = undefined
     }
     if (this.message) {
-      clearTimeout(this.messageTimeout)
+      this.messageTimeout?.remove()
       removeMsg()
     }
     this.message = this.add
@@ -208,7 +209,7 @@ export class LevelEditor extends Phaser.Scene {
         { fontFamily: Fonts.manaspace }
       )
       .setOrigin(1, 0)
-    this.messageTimeout = setTimeout(removeMsg, 3000)
+    this.messageTimeout = this.time.delayedCall(3000, removeMsg)
   }
 
   //////////////////////////////////////////////////////////////
@@ -322,6 +323,7 @@ export class LevelEditor extends Phaser.Scene {
     const template: number[][] = Bricks.getTemplateFromBricks(this.slots);
     this.saveToStorage();
     transition("fadeOut", this, () => {
+      this.message = undefined
       this.scene.start(Scenes.game, { isCustom: true, template });
       this.scene.stop();
     });

@@ -12,3 +12,5 @@ export const storage = {
         localStorage?.removeItem(id)
     }
 }
+
+export const sleep = async (ms: number) => await new Promise((x) => setTimeout(x, ms))

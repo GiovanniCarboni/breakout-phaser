@@ -3,6 +3,7 @@ import {
   LevelTemplate, // type
   getLevelTemplate,
 } from "../../templates/levelTemplates";
+import { sleep } from "../../utils/gneral";
 import Brick, { createBrick } from "./Brick";
 
 export default class Bricks extends Phaser.Physics.Arcade.Group {
@@ -99,7 +100,7 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
 
     for (const brickObj of bricksToDestroy) {
       const brick = brickObj as Phaser.Physics.Arcade.Sprite;
-      await new Promise((f) => setTimeout(f, 10));
+      await sleep(10)
       try {
         brick.play(Anims.burnBrick);
         brick.on("animationcomplete", () => brick.destroy());

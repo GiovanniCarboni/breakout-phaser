@@ -30,11 +30,10 @@ export default class Brick extends Phaser.Physics.Arcade.Sprite {
         break;
       case 2:
         this.setTexture(Sprites.fireBrick);
-        setTimeout(() => {
-          try { // brick might not exist anymore
-            this.play(Anims.fireBrick);
-          } catch {}
-        }, 74 * Math.ceil(Math.random() * 8));
+        this.scene.time.delayedCall(
+          74 * Math.ceil(Math.random() * 8),
+          () => this.play(Anims.fireBrick)
+        )
         this.setData("type", "fire");
         break;
       case 3:
@@ -44,9 +43,10 @@ export default class Brick extends Phaser.Physics.Arcade.Sprite {
       case 4:
         this.setTexture(Sprites.iceBrick);
         this.setData("hits", 0)
-        setTimeout(() => {
-          this.play(Anims.iceBrickIdle);
-        }, 74 * Math.ceil(Math.random() * 8));
+        this.scene.time.delayedCall(
+          74 * Math.ceil(Math.random() * 8),
+          () => this.play(Anims.iceBrickIdle)
+        )
         this.setData("type", "ice");
         break;
       case 9:

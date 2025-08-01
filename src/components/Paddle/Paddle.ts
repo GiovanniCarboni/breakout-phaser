@@ -43,9 +43,7 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
       classType: Phaser.Physics.Arcade.Image,
       maxSize: 6,
       createCallback: (go) => {
-        setTimeout(() => {
-          go.destroy();
-        }, 1500);
+        this.scene.time.delayedCall(1500, () => go.destroy())
       },
     });
     this.shotSound = this.scene.sound.add(Sounds.shot, {

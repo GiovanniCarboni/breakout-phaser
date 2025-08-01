@@ -51,9 +51,7 @@ export class LanguageSelection extends Phaser.Scene {
           }
         )
         .setOrigin(1, 0.5);
-      setTimeout(() => {
-        message.destroy();
-      }, 2000);
+      this.time.delayedCall(2000, () => message.destroy())
     } else {
       this.languageSelector.save();
       transition("fadeOut", this, () => {
