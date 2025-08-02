@@ -81,6 +81,7 @@ export class Load extends Phaser.Scene {
       }
     );
     // powerups
+    this.load.image(Sprites.speedUpBall, "assets/images/powerups/speed_up_ball.png")
     this.load.image(Sprites.getLife, "assets/images/powerups/get_life.png");
     this.load.image(Sprites.loseLife, "assets/images/powerups/lose_life.png");
     this.load.image(

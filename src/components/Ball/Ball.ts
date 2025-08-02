@@ -5,6 +5,7 @@ import Brick from "../Brick/Brick";
 export default class Ball extends Phaser.Physics.Arcade.Sprite {
   speedIncrement = 20;
   isIgnited = false;
+  isSpedUp = false
   onSlowDownArea = false;
   slowDownArea!: Phaser.GameObjects.Arc;
   speed = 600;
@@ -144,6 +145,7 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
     // speed
     this.isMoving = false;
     this.isIgnited = false;
+    this.isSpedUp = false
     this.setVelocity(0);
     this.setAngle(0);
     // reset ball texture
@@ -158,6 +160,14 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
   stopMovement() {
     this.setVelocity(0);
     this.isMoving = false;
+  }
+
+  //////////////////////////////////////////////////////////////
+  ////// SPEED UP BALL
+  speedUp() {
+    if (this.isSpedUp) return
+    this.setSpeed(1200)
+    this.isSpedUp = true
   }
 
   //////////////////////////////////////////////////////////////

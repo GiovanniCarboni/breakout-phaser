@@ -298,6 +298,9 @@ export class Game extends Phaser.Scene {
       case Sprites.addShooter:
         this.paddle.addCannons();
         break;
+      case Sprites.speedUpBall:
+        this.ball.speedUp()
+        break
     }
     powerup.destroy();
   }

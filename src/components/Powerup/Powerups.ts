@@ -3,6 +3,7 @@ import Powerup from "./Powerup";
 
 export default class Powerups extends Phaser.Physics.Arcade.Group {
   private powerups = [
+    Sprites.speedUpBall,
     Sprites.loseLife,
     Sprites.getLife,
     Sprites.expandPaddle,
