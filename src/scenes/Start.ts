@@ -46,10 +46,11 @@ export class Start extends Phaser.Scene {
 
     createMenu(
       this.scale.width / 2,
-      this.scale.height / 2 - 80,
+      this.scale.height / 2 - 160,
       [
         { label: t("Start"), onClick: this.handleStart, isMain: true },
         { label: t("Custom Level"), onClick: this.handleCustomLevel },
+        { label: t("Power-Ups"), onClick: this.handlePowerups},
         { label: t("Options"), onClick: this.handleOptions },
       ],
       this
@@ -73,5 +74,11 @@ export class Start extends Phaser.Scene {
       this.scene.stop();
       this.scene.start(Scenes.options, { fromScene: Scenes.start });
     });
+  }
+  handlePowerups() {
+    transition("fadeOut", this, () => {
+      this.scene.stop()
+      this.scene.start(Scenes.powerups)
+    })
   }
 }

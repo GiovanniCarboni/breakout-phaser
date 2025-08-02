@@ -24,6 +24,7 @@ export enum Sprites {
   shrinkPaddle = "shrinkPaddle",
   igniteBall = "igniteBall",
   addShooter = "addShooter",
+  notYetDiscovered = "notYetDiscovered",
   // UI
   headbar = "headbar",
   heart = "heart",

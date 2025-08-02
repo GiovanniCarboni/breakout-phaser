@@ -1,16 +1,17 @@
-import { Sprites } from "../../constants";
+import { Sprites, StorageKeys } from "../../constants";
+import { storage } from "../../utils/gneral";
 import Powerup from "./Powerup";
 
 export default class Powerups extends Phaser.Physics.Arcade.Group {
   private powerups = [
-    Sprites.speedUpBall,
-    Sprites.loseLife,
-    Sprites.getLife,
-    Sprites.expandPaddle,
-    Sprites.shrinkPaddle,
-    Sprites.igniteBall,
-    Sprites.addShooter,
-  ];
+    { sprite: Sprites.speedUpBall, desc: 'Fast Ball' },
+    { sprite: Sprites.loseLife, desc: 'Kill Paddle' },
+    { sprite: Sprites.shrinkPaddle, desc: 'Shrink Paddle' },
+    { sprite: Sprites.getLife, desc: 'Extra Life' },
+    { sprite: Sprites.expandPaddle, desc: 'Expand Paddle' },
+    { sprite: Sprites.igniteBall, desc: 'FireBall' },
+    { sprite: Sprites.addShooter, desc: 'Shooting Paddle' }
+  ]
 
   constructor(scene: Phaser.Scene, config: any) {
     super(scene.physics.world, config);
@@ -24,8 +25,17 @@ export default class Powerups extends Phaser.Physics.Arcade.Group {
     });
   }
 
+  getAll() {
+    return this.powerups
+  }
+
   getRandomPowerup() {
-    return this.powerups[Math.floor(Math.random() * this.powerups.length)];
+    const randomPowerup = this.powerups[Math.floor(Math.random() * this.powerups.length)].sprite
+    const discoveredPowerups = storage.get(StorageKeys.discoveredPowerups) || []
+    if (!discoveredPowerups.find((x: string) => x === randomPowerup)) {
+      storage.set(StorageKeys.discoveredPowerups, [...discoveredPowerups, randomPowerup])
+    }
+    return randomPowerup
   }
 }
 

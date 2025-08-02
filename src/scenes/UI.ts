@@ -19,6 +19,7 @@ export class UI extends Phaser.Scene {
     this.scene.moveBelow(Scenes.gameOver);
     this.scene.moveBelow(Scenes.LevelEditor);
     this.scene.moveBelow(Scenes.winGame);
+    this.scene.moveBelow(Scenes.powerups)
     this.scene.moveAbove(Scenes.game);
 
     this.canvasW = this.scale.width;

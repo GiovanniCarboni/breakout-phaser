@@ -20,6 +20,17 @@ export const translations = {
       "Save": "Save",
       "Best score": "Best score",
       "You need to clear more stages to unlock this brick": "You need to clear more stages to unlock this brick",
+      "Power-Ups": "Power-Ups",
+      "Not yet discovered": "Not yet discovered",
+      "Play more to discover all power-ups": "Play more to discover all power-ups",
+      // powerups
+      "Fast Ball": "Fast Ball",
+      "Kill Paddle": "Kill Paddle",
+      "Shrink Paddle": "Shrink Paddle",
+      "Extra Life": "Extra Life",
+      "Expand Paddle": "Expand Paddle",
+      "FireBall": "FireBall",
+      "Shooting Paddle": "Shooting Paddle",
     },
   },
   it: {
@@ -42,7 +53,18 @@ export const translations = {
       "New": "Nuovo",
       "Save": "Salva",
       "Best score": "Miglior punteggio",
-      "You need to clear more stages to unlock this brick": "Supera piu livelli per sbloccare questo mattone"
+      "You need to clear more stages to unlock this brick": "Supera piu livelli per sbloccare questo mattone",
+      "Power-Ups": "Power-Ups",
+      "Not yet discovered": "Non ancora trovato",
+      "Play more to discover all power-ups": "Gioca di piu per scoprire tutti i powerup",
+      // powerups
+      "Fast Ball": "Palla Veloce",
+      "Kill Paddle": "Distruggi Paddle",
+      "Shrink Paddle": "Rimpicciolisci Paddle",
+      "Extra Life": "Vita Extra",
+      "Expand Paddle": "Ingrandisci Paddle",
+      "FireBall": "Palla di Fuoco",
+      "Shooting Paddle": "Paddle Armato",
     },
   },
   ro: {
@@ -65,7 +87,18 @@ export const translations = {
       "New": "Nou",
       "Save": "Salveaza",
       "Best score": "Cel mai mare scor",
-      "You need to clear more stages to unlock this brick": "Completeaza mai multe nivele pentru a debloca aceasta caramida"    
+      "You need to clear more stages to unlock this brick": "Completeaza mai multe nivele pentru a debloca aceasta caramida",
+      "Power-Ups": "Power-Ups",
+      "Not yet discovered": "Inca negasit",
+      "Play more to discover all power-ups": "Joaca mai mult sa gasesti toate powerups-urile",
+      // powerups
+      "Fast Ball": "Minge Rapida",
+      "Kill Paddle": "Distruge Paddle",
+      "Shrink Paddle": "Micsoreaza Paddle",
+      "Extra Life": "Viata Aditionala",
+      "Expand Paddle": "Mareste Paddle",
+      "FireBall": "Minge de Foc",
+      "Shooting Paddle": "Paddle cu Tiroi",
     },
   },
 };

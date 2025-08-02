@@ -10,4 +10,5 @@ export enum Scenes {
   languageSelection = "languageSelection",
   options = "options",
   createdLevels = "createdLevels",
+  powerups = "powerups"
 }
