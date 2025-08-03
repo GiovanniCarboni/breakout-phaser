@@ -171,6 +171,20 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
   }
 
   //////////////////////////////////////////////////////////////
+  ////// SET SPEED BASED ON INCLINATION PERCENTAGE
+  setSpeedOnInclPerc(inclinationPercentage: number) {
+    if (inclinationPercentage < 30 && this.speed > 750) {
+      this.setSpeed(this.speed - 130)
+    } else if (inclinationPercentage < 50 && this.speed < 1200 ) {
+      this.setSpeed(this.speed + 50)
+    } else if (inclinationPercentage < 70 && this.speed < 1350) {
+      this.setSpeed(this.speed + 100)
+    } else if (this.speed < 1600) {
+      this.setSpeed(this.speed + 210)
+    }
+  }
+
+  //////////////////////////////////////////////////////////////
   ////// IGNITE BALL
   ignite() {
     if (this.isIgnited) return;

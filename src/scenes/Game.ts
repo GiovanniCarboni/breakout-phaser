@@ -315,18 +315,24 @@ export class Game extends Phaser.Scene {
     if (this.ball.isIgnited) this.ball.createSmoke(this.ball.x, this.ball.y);
     this.sounds.bounce.play();
 
-    let diff = 0;
+    const diff = Math.abs(this.paddle.x - this.ball.x);
     if (this.ball.x < this.paddle.x) {
-      diff = this.paddle.x - this.ball.x;
       const degree = 90 + (Math.ceil(diff) > 70 ? 70 : Math.ceil(diff));
       this.ball.setDegDirection(degree);
+      this.ball.setSpeedOnInclPerc(this.calcInclinationPercentage(degree))
     } else if (this.ball.x > this.paddle.x) {
-      diff = this.ball.x - this.paddle.x;
       const degree = 90 - (Math.ceil(diff) > 70 ? 70 : Math.ceil(diff));
       this.ball.setDegDirection(degree);
+      this.ball.setSpeedOnInclPerc(this.calcInclinationPercentage(degree))
     } else {
       this.ball.setDegDirection(100);
+      this.ball.setSpeedOnInclPerc(0)
     }
+  }
+
+  calcInclinationPercentage(degree: number) {
+    const diff = Math.abs(degree - 90)
+    return Math.ceil((diff / 90) * 100)
   }
 
   //////////////////////////////////////////////////////////////
@@ -374,7 +380,7 @@ export class Game extends Phaser.Scene {
     const brick = obj2 as Phaser.Physics.Arcade.Sprite;
     const brickType = brick.getData("type");
     if (brickType === "metal" && !this.ball.isIgnited) {
-      this.cameras.main.shake(100, 0.005);
+      // this.cameras.main.shake(100, 0.005);
       this.sounds.hitMetal.play();
       brick.play(Anims.metalBrick);
       return;
