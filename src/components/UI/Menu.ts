@@ -1,5 +1,5 @@
-import { Sprites } from "../../constants";
-import { createButton } from "./button/Button";
+import { Sprites } from "../../constants"
+import { createButton } from "./button/Button"
 
 export default class Menu extends Phaser.GameObjects.Sprite {
   constructor(
@@ -9,8 +9,8 @@ export default class Menu extends Phaser.GameObjects.Sprite {
     texture: string,
     frame?: string
   ) {
-    super(scene, x, y, texture, frame);
-    this.setOrigin(0.5, 0).setDepth(-1);
+    super(scene, x, y, texture, frame)
+    this.setOrigin(0.5, 0).setDepth(-1)
   }
 
   init(
@@ -18,9 +18,9 @@ export default class Menu extends Phaser.GameObjects.Sprite {
     buttons: { label: string; onClick: () => void; isMain?: boolean }[],
     hangerOn: boolean = true
   ) {
-    this.initMenuFrame(buttons.length, hangerOn);
+    this.initMenuFrame(buttons.length, hangerOn)
     buttons.forEach((button, i) => {
-      const y = this.y + 100 * (i + 1);
+      const y = this.y + 100 * (i + 1)
       createButton(
         this.x,
         y,
@@ -28,24 +28,24 @@ export default class Menu extends Phaser.GameObjects.Sprite {
         button.onClick,
         scene,
         button.isMain
-      );
-    });
+      )
+    })
   }
 
   initMenuFrame(buttonsNr: number, hangerOn: boolean = true) {
     if (buttonsNr === 4) {
-      this.setTexture(Sprites.menuBox4);
+      this.setTexture(Sprites.menuBox4)
     }
     if (buttonsNr === 3) {
-      this.setTexture(Sprites.menuBox3);
+      this.setTexture(Sprites.menuBox3)
     }
     if (buttonsNr === 2) {
-      this.setTexture(Sprites.menuBox2);
+      this.setTexture(Sprites.menuBox2)
     }
     // if (hangerOn) {
     //   this.scene.add
     //     .image(this.x, this.y, Sprites.menuHanger)
-    //     .setOrigin(0.5, 1);
+    //     .setOrigin(0.5, 1)
     // }
   }
 }
@@ -57,8 +57,8 @@ export const createMenu = (
   scene: Phaser.Scene,
   hangerOn: boolean = true
 ) => {
-  const menu = new Menu(scene, x, y, Sprites.menuBox2);
-  scene.add.existing(menu);
-  menu.init(scene, buttons, hangerOn);
-  return menu;
-};
+  const menu = new Menu(scene, x, y, Sprites.menuBox2)
+  scene.add.existing(menu)
+  menu.init(scene, buttons, hangerOn)
+  return menu
+}

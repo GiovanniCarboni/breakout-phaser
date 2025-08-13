@@ -1,4 +1,4 @@
-import { Anims, Sprites } from "../constants";
+import { Anims, Sprites } from "../constants"
 
 export const createBricksAnims = (
   anims: Phaser.Animations.AnimationManager
@@ -11,7 +11,7 @@ export const createBricksAnims = (
     }),
     frameRate: 30,
     repeat: 0,
-  });
+  })
   anims.create({
     key: Anims.fireBrick,
     frames: anims.generateFrameNumbers(Sprites.fireBrick, {
@@ -21,7 +21,7 @@ export const createBricksAnims = (
     frameRate: 6,
     repeat: -1,
     yoyo: true,
-  });
+  })
   anims.create({
     key: Anims.metalBrick,
     frames: anims.generateFrameNumbers(Sprites.metalBrick, {
@@ -30,7 +30,7 @@ export const createBricksAnims = (
     }),
     frameRate: 50,
     repeat: 0,
-  });
+  })
   anims.create({
     key: Anims.burnBrick,
     frames: anims.generateFrameNumbers(Sprites.burnBrick, {
@@ -39,7 +39,7 @@ export const createBricksAnims = (
     }),
     frameRate: 20,
     repeat: 0,
-  });
+  })
   anims.create({
     key: Anims.iceBrickIdle,
     frames: anims.generateFrameNumbers(Sprites.iceBrick, {
@@ -48,12 +48,12 @@ export const createBricksAnims = (
     }),
     frameRate: 1,
     repeat: -1,
-  });
+  })
   anims.create({
     key: Anims.iceBrickBreak,
     frames: anims.generateFrameNumbers(Sprites.iceBrick, { start: 4, end: 9 }),
     frameRate: 40,
-  });
+  })
   anims.create({
     key: Anims.rockBrickBreak,
     frames: anims.generateFrameNumbers(Sprites.rockBrick, {
@@ -62,4 +62,4 @@ export const createBricksAnims = (
     }),
     frameRate: 40
   })
-};
+}

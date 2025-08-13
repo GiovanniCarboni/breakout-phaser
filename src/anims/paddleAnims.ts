@@ -1,4 +1,4 @@
-import { Anims, Sprites } from "../constants";
+import { Anims, Sprites } from "../constants"
 
 export const createPaddleAnims = (
   anims: Phaser.Animations.AnimationManager
@@ -13,7 +13,7 @@ export const createPaddleAnims = (
     }),
     frameRate: 8,
     repeat: -1,
-  });
+  })
   anims.create({
     key: Anims.longPaddle,
     frames: anims.generateFrameNames(Sprites.paddle, {
@@ -24,7 +24,7 @@ export const createPaddleAnims = (
     }),
     frameRate: 8,
     repeat: -1,
-  });
+  })
   anims.create({
     key: Anims.shortPaddle,
     frames: anims.generateFrameNames(Sprites.paddle, {
@@ -35,7 +35,7 @@ export const createPaddleAnims = (
     }),
     frameRate: 8,
     repeat: -1,
-  });
+  })
   anims.create({
     key: Anims.paddleGetsLonger1,
     frames: anims.generateFrameNames(Sprites.paddle, {
@@ -45,7 +45,7 @@ export const createPaddleAnims = (
       suffix: ".png",
     }),
     frameRate: 60,
-  });
+  })
   anims.create({
     key: Anims.paddleGetsLonger2,
     frames: anims.generateFrameNames(Sprites.paddle, {
@@ -55,7 +55,7 @@ export const createPaddleAnims = (
       suffix: ".png",
     }),
     frameRate: 60,
-  });
+  })
   anims.create({
     key: Anims.paddleGetsShorter1,
     frames: anims.generateFrameNames(Sprites.paddle, {
@@ -65,7 +65,7 @@ export const createPaddleAnims = (
       suffix: ".png",
     }),
     frameRate: 60,
-  });
+  })
   anims.create({
     key: Anims.paddleGetsShorter2,
     frames: anims.generateFrameNames(Sprites.paddle, {
@@ -75,7 +75,7 @@ export const createPaddleAnims = (
       suffix: ".png",
     }),
     frameRate: 60,
-  });
+  })
 
   anims.create({
     key: Anims.shoot,
@@ -84,5 +84,5 @@ export const createPaddleAnims = (
       end: 3,
     }),
     frameRate: 40,
-  });
-};
+  })
+}

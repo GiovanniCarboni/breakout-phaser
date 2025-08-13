@@ -1,13 +1,13 @@
-import * as WebFontLoader from "../scripts/webfontloader";
+import * as WebFontLoader from "../scripts/webfontloader"
 
-export default window.WebFont;
+export default window.WebFont
 
 export class WebFontFileLoader extends Phaser.Loader.File {
-  private fontNames: string[];
+  private fontNames: string[]
 
   constructor(loader: Phaser.Loader.LoaderPlugin, fontNames: string[]) {
-    super(loader, { type: "webfont", key: fontNames.toString() });
-    this.fontNames = fontNames;
+    super(loader, { type: "webfont", key: fontNames.toString() })
+    this.fontNames = fontNames
   }
 
   load() {
@@ -17,14 +17,14 @@ export class WebFontFileLoader extends Phaser.Loader.File {
       },
       active: () => {
         // files loaded
-        this.loader.nextFile(this, true);
+        this.loader.nextFile(this, true)
       },
       inactive: () => {
         // font load failed
         // for example browser does not support
-        console.warn("Failed to load fonts");
-        this.loader.nextFile(this, false);
+        console.warn("Failed to load fonts")
+        this.loader.nextFile(this, false)
       },
-    });
+    })
   }
 }

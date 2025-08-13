@@ -1,4 +1,4 @@
-import { Anims, Sprites } from "../../../constants";
+import { Anims, Sprites } from "../../../constants"
 
 export default class ClearButton extends Phaser.GameObjects.Sprite {
   constructor(
@@ -8,27 +8,27 @@ export default class ClearButton extends Phaser.GameObjects.Sprite {
     texture: string,
     frame?: string
   ) {
-    super(scene, x, y, texture, frame);
-    this.setOrigin(0.5, 0.5).setInteractive();
+    super(scene, x, y, texture, frame)
+    this.setOrigin(0.5, 0.5).setInteractive()
   }
 
   //////////////////////////////////////////////////////////////
   ////// INIT CLEAR BUTTON
   init(onClick: () => void) {
     this.on("pointerdown", () => {
-      this.play(Anims.clearButtonPressed);
-    });
+      this.play(Anims.clearButtonPressed)
+    })
     this.on("pointerup", () => {
-      onClick();
-      this.play(Anims.clearButtonHover);
-    });
+      onClick()
+      this.play(Anims.clearButtonHover)
+    })
     this.on("pointerover", (pointer: Phaser.Input.Pointer) => {
-      this.play(Anims.clearButtonHover);
-      if (pointer.isDown) this.play(Anims.clearButtonPressed);
-    });
+      this.play(Anims.clearButtonHover)
+      if (pointer.isDown) this.play(Anims.clearButtonPressed)
+    })
     this.on("pointerout", () => {
-      this.play(Anims.clearButtonIdle);
-    });
+      this.play(Anims.clearButtonIdle)
+    })
   }
 }
 
@@ -38,8 +38,8 @@ export const createClearButton = (
   onClick: () => void,
   scene: Phaser.Scene
 ) => {
-  const clearButton = new ClearButton(scene, x, y, Sprites.clearButton);
-  scene.add.existing(clearButton);
-  clearButton.init(onClick.bind(scene));
-  return clearButton;
-};
+  const clearButton = new ClearButton(scene, x, y, Sprites.clearButton)
+  scene.add.existing(clearButton)
+  clearButton.init(onClick.bind(scene))
+  return clearButton
+}

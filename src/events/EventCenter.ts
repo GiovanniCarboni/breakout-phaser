@@ -1,1 +1,1 @@
-export const sceneEvents = new Phaser.Events.EventEmitter();
+export const sceneEvents = new Phaser.Events.EventEmitter()

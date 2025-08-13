@@ -1,39 +1,39 @@
-import { transition } from "../anims/SceneTransitions";
-import { createMenu } from "../components/UI/Menu";
-import { Anims, Fonts, Scenes, Sprites } from "../constants";
-import t from "../i18next/i18next";
+import { transition } from "../anims/SceneTransitions"
+import { createMenu } from "../components/UI/Menu"
+import { Anims, Fonts, Scenes, Sprites } from "../constants"
+import t from "../i18next/i18next"
 
 export class Start extends Phaser.Scene {
   constructor() {
-    super({ key: Scenes.start });
+    super({ key: Scenes.start })
   }
 
   create() {
-    transition("fadeIn", this);
+    transition("fadeIn", this)
 
-    this.scene.run(Scenes.ui);
-    this.scene.moveAbove(Scenes.ui);
+    this.scene.run(Scenes.ui)
+    this.scene.moveAbove(Scenes.ui)
 
-    this.cameras.main.setBackgroundColor("#110702");
+    this.cameras.main.setBackgroundColor("#110702")
 
     //////////////////////////////////////////////////////////
     ////// GAME FRAME
-    this.add.image(0, 0, Sprites.sideBar).setOrigin(0, 0);
-    this.add.image(this.scale.width, 0, Sprites.sideBar).setOrigin(1, 0);
+    this.add.image(0, 0, Sprites.sideBar).setOrigin(0, 0)
+    this.add.image(this.scale.width, 0, Sprites.sideBar).setOrigin(1, 0)
     this.add
       .image(0, 0, Sprites.sideBar)
       .setOrigin(1, 0)
-      .setRotation(Phaser.Math.DegToRad(-90));
+      .setRotation(Phaser.Math.DegToRad(-90))
     this.add
       .image(0, this.scale.height, Sprites.sideBar)
       .setOrigin(0, 0)
-      .setRotation(Phaser.Math.DegToRad(-90));
+      .setRotation(Phaser.Math.DegToRad(-90))
     ///////////////////////////////////////////////////////////
 
     // const titleFrame = this.add
     //   .sprite(this.scale.width / 2, 180, Sprites.titleFrame)
     //   .setScale(2)
-    //   .play(Anims.titleFrame);
+    //   .play(Anims.titleFrame)
     // this.add
     //   .text(titleFrame.x, titleFrame.y, "Brick Quest", {
     //     fontFamily: Fonts.manaspace,
@@ -42,7 +42,7 @@ export class Start extends Phaser.Scene {
     //     stroke: "#000",
     //     color: "#e9e9e9",
     //   })
-    //   .setOrigin(0.5, 0.5);
+    //   .setOrigin(0.5, 0.5)
 
     createMenu(
       this.scale.width / 2,
@@ -54,26 +54,26 @@ export class Start extends Phaser.Scene {
         { label: t("Options"), onClick: this.handleOptions },
       ],
       this
-    );
+    )
   }
 
   handleStart() {
     transition("fadeOut", this, () => {
-      this.scene.stop();
-      this.scene.start(Scenes.game, { isCustom: false });
-    });
+      this.scene.stop()
+      this.scene.start(Scenes.game, { isCustom: false })
+    })
   }
   handleCustomLevel() {
     transition("fadeOut", this, () => {
-      this.scene.start(Scenes.createdLevels);
-      this.scene.stop();
-    });
+      this.scene.start(Scenes.createdLevels)
+      this.scene.stop()
+    })
   }
   handleOptions() {
     transition("fadeOut", this, () => {
-      this.scene.stop();
-      this.scene.start(Scenes.options, { fromScene: Scenes.start });
-    });
+      this.scene.stop()
+      this.scene.start(Scenes.options, { fromScene: Scenes.start })
+    })
   }
   handlePowerups() {
     transition("fadeOut", this, () => {

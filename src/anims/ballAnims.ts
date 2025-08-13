@@ -1,4 +1,4 @@
-import { Anims, Sprites } from "../constants";
+import { Anims, Sprites } from "../constants"
 
 export const createBallAnims = (anims: Phaser.Animations.AnimationManager) => {
   anims.create({
@@ -9,7 +9,7 @@ export const createBallAnims = (anims: Phaser.Animations.AnimationManager) => {
     }),
     frameRate: 30,
     repeat: -1,
-  });
+  })
   anims.create({
     key: Anims.smoke,
     frames: anims.generateFrameNumbers(Sprites.smoke, {
@@ -17,5 +17,5 @@ export const createBallAnims = (anims: Phaser.Animations.AnimationManager) => {
       end: 0,
     }),
     frameRate: 30,
-  });
-};
+  })
+}

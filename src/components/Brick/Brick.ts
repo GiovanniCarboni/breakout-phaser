@@ -1,4 +1,4 @@
-import { Sprites, Anims } from "../../constants";
+import { Sprites, Anims } from "../../constants"
 
 export default class Brick extends Phaser.Physics.Arcade.Sprite {
   constructor(
@@ -8,7 +8,7 @@ export default class Brick extends Phaser.Physics.Arcade.Sprite {
     texture: string,
     frame?: string
   ) {
-    super(scene, x, y, texture, frame);
+    super(scene, x, y, texture, frame)
   }
 
   //////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@ export default class Brick extends Phaser.Physics.Arcade.Sprite {
     return scene.add
       .sprite(x, y, Sprites.brickHighlight)
       .setOrigin(0.5, 0.5)
-      .setDepth(-1);
+      .setDepth(-1)
   }
 
   //////////////////////////////////////////////////////////////
@@ -25,42 +25,42 @@ export default class Brick extends Phaser.Physics.Arcade.Sprite {
   init(brickType: number, entryNr: number) {
     switch (brickType) {
       case 1:
-        this.setTexture(Sprites.commonBrick);
-        this.setData("type", "common");
-        break;
+        this.setTexture(Sprites.commonBrick)
+        this.setData("type", "common")
+        break
       case 2:
-        this.setTexture(Sprites.fireBrick);
+        this.setTexture(Sprites.fireBrick)
         this.scene.time.delayedCall(
           74 * Math.ceil(Math.random() * 8),
           () => this.play(Anims.fireBrick)
         )
-        this.setData("type", "fire");
-        break;
+        this.setData("type", "fire")
+        break
       case 3:
-        this.play(Anims.metalBrick);
-        this.setData("type", "metal");
-        break;
+        this.play(Anims.metalBrick)
+        this.setData("type", "metal")
+        break
       case 4:
-        this.setTexture(Sprites.iceBrick);
+        this.setTexture(Sprites.iceBrick)
         this.setData("hits", 0)
         this.scene.time.delayedCall(
           74 * Math.ceil(Math.random() * 8),
           () => this.play(Anims.iceBrickIdle)
         )
-        this.setData("type", "ice");
-        break;
+        this.setData("type", "ice")
+        break
       case 5:
         this.setTexture(Sprites.rockBrick)
         this.setData("type", "rock")
         break
       case 9:
-        this.setTexture(Sprites.blankBrick);
-        this.setData("type", "blank");
-        break;
+        this.setTexture(Sprites.blankBrick)
+        this.setData("type", "blank")
+        break
     }
-    this.setData("number", entryNr);
-    this.setData("status", "active");
-    this.setInteractive();
+    this.setData("number", entryNr)
+    this.setData("status", "active")
+    this.setInteractive()
   }
 }
 
@@ -70,10 +70,10 @@ export const createBrick = function (
   y: number,
   info: { type: number; entryNr: number }
 ) {
-  const brick = new Brick(scene, x, y, Sprites.commonBrick);
-  scene.add.existing(brick);
-  scene.physics.world.enableBody(brick, Phaser.Physics.Arcade.DYNAMIC_BODY);
-  brick.init(info.type, info.entryNr);
+  const brick = new Brick(scene, x, y, Sprites.commonBrick)
+  scene.add.existing(brick)
+  scene.physics.world.enableBody(brick, Phaser.Physics.Arcade.DYNAMIC_BODY)
+  brick.init(info.type, info.entryNr)
 
   /////////////// debug //////////////////////////////////
   // debug bricks
@@ -82,8 +82,8 @@ export const createBrick = function (
   //   strokeThickness: 2,
   //   stroke: "black",
   //   fontStyle: "bold",
-  // });
-  // text.setOrigin(0.5, 0.5);
+  // })
+  // text.setOrigin(0.5, 0.5)
 
-  return brick;
-};
+  return brick
+}

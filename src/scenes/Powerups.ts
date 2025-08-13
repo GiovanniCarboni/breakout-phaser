@@ -1,8 +1,8 @@
-import { t } from "i18next";
-import { Fonts, Scenes, Sprites, StorageKeys } from "../constants";
-import { createSmallButton } from "../components/UI/button/SmallButton";
-import { createPowerups } from "../components/Powerup/Powerups";
-import { storage } from "../utils/gneral";
+import { t } from "i18next"
+import { Fonts, Scenes, Sprites, StorageKeys } from "../constants"
+import { createSmallButton } from "../components/UI/button/SmallButton"
+import { createPowerups } from "../components/Powerup/Powerups"
+import { storage } from "../utils/gneral"
 
 export class Powerups extends Phaser.Scene {
 
@@ -11,7 +11,7 @@ export class Powerups extends Phaser.Scene {
   }
 
   create() {
-    this.cameras.main.setBackgroundColor("#110702");
+    this.cameras.main.setBackgroundColor("#110702")
     this.createHeader()
     this.createBackBtn()
     this.createPowerups()

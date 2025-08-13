@@ -1,28 +1,28 @@
-import { Fonts, Scenes, StorageKeys } from "../constants";
-import { createMenu } from "../components/UI/Menu";
-import { t } from "i18next";
-import { transition } from "../anims/SceneTransitions";
-import { storage } from "../utils/gneral";
+import { Fonts, Scenes, StorageKeys } from "../constants"
+import { createMenu } from "../components/UI/Menu"
+import { t } from "i18next"
+import { transition } from "../anims/SceneTransitions"
+import { storage } from "../utils/gneral"
 
 export class WinGame extends Phaser.Scene {
-  private isCustom!: boolean;
-  private canvasH!: number;
-  private canvasW!: number;
+  private isCustom!: boolean
+  private canvasH!: number
+  private canvasW!: number
   constructor() {
-    super({ key: Scenes.winGame });
+    super({ key: Scenes.winGame })
   }
 
   init({ isCustom }: { isCustom: boolean }) {
-    this.canvasH = this.scale.height;
-    this.canvasW = this.scale.width;
-    if (isCustom) this.isCustom = true;
-    else if (!isCustom) this.isCustom = false;
+    this.canvasH = this.scale.height
+    this.canvasW = this.scale.width
+    if (isCustom) this.isCustom = true
+    else if (!isCustom) this.isCustom = false
   }
 
   create() {
-    transition("fadeIn", this);
+    transition("fadeIn", this)
 
-    this.cameras.main.setBackgroundColor("#000");
+    this.cameras.main.setBackgroundColor("#000")
 
     this.add
       .text(this.canvasW / 2, 160, "You Win", {
@@ -30,7 +30,7 @@ export class WinGame extends Phaser.Scene {
         fontSize: 52,
       })
       .setColor("#e9e9e9")
-      .setOrigin(0.5, 0.5);
+      .setOrigin(0.5, 0.5)
 
     if (this.isCustom) {
       createMenu(
@@ -42,7 +42,7 @@ export class WinGame extends Phaser.Scene {
           { label: t("Back to Menu"), onClick: this.handleBackToMenu },
         ],
         this
-      );
+      )
     }
     if (!this.isCustom) {
       this.initBestScore()
@@ -54,7 +54,7 @@ export class WinGame extends Phaser.Scene {
           { label: "Back to Menu", onClick: this.handleBackToMenu },
         ],
         this
-      );
+      )
     }
   }
   
@@ -67,14 +67,14 @@ export class WinGame extends Phaser.Scene {
         fontFamily: Fonts.manaspace,
         fontSize: 20
       })
-      .setOrigin(0.5, 0.5);
+      .setOrigin(0.5, 0.5)
   }
 
   handleRestart() {
     transition("fadeOut", this, () => {
-      this.scene.stop(Scenes.game);
-      this.scene.start(Scenes.game);
-    });
+      this.scene.stop(Scenes.game)
+      this.scene.start(Scenes.game)
+    })
   }
   handleBackToEditor() {
     transition("fadeOut", this, () => {
@@ -85,9 +85,9 @@ export class WinGame extends Phaser.Scene {
   }
   handleBackToMenu() {
     transition("fadeOut", this, () => {
-      this.scene.stop(Scenes.game);
-      this.scene.start(Scenes.start);
-      this.scene.stop();
-    });
+      this.scene.stop(Scenes.game)
+      this.scene.start(Scenes.start)
+      this.scene.stop()
+    })
   }
 }

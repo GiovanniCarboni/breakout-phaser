@@ -1,8 +1,8 @@
-import { t } from "i18next";
-import { createMenu } from "../components/UI/Menu";
-import { Anims, Fonts, Scenes, Sounds, Sprites, StorageKeys } from "../constants";
-import { transition } from "../anims/SceneTransitions";
-import { storage } from "../utils/gneral";
+import { t } from "i18next"
+import { createMenu } from "../components/UI/Menu"
+import { Anims, Fonts, Scenes, Sounds, Sprites, StorageKeys } from "../constants"
+import { transition } from "../anims/SceneTransitions"
+import { storage } from "../utils/gneral"
 
 export class GameOver extends Phaser.Scene {
   isCustom = false
@@ -12,11 +12,11 @@ export class GameOver extends Phaser.Scene {
     [key: string]:
       | Phaser.Sound.NoAudioSound
       | Phaser.Sound.HTML5AudioSound
-      | Phaser.Sound.WebAudioSound;
-  };
+      | Phaser.Sound.WebAudioSound
+  }
 
   constructor() {
-    super({ key: Scenes.gameOver });
+    super({ key: Scenes.gameOver })
   }
 
   init({ isCustom }: { isCustom: boolean }) {
@@ -27,17 +27,17 @@ export class GameOver extends Phaser.Scene {
   }
 
   create() {
-    transition("fadeIn", this);
+    transition("fadeIn", this)
 
-    this.cameras.main.setBackgroundColor("#000");
+    this.cameras.main.setBackgroundColor("#000")
 
     this.sounds = {
       gameOver: this.sound.add(Sounds.gameOver, { loop: false }),
-    };
+    }
 
-    this.sounds.gameOver.play();
+    this.sounds.gameOver.play()
 
-    this.initGameOverText();
+    this.initGameOverText()
 
     this.initBestScore()
     createMenu(
@@ -65,14 +65,14 @@ export class GameOver extends Phaser.Scene {
         fontFamily: Fonts.manaspace,
         fontSize: 20
       })
-      .setOrigin(0.5, 0.5);
+      .setOrigin(0.5, 0.5)
   }
 
   handleRestart() {
     transition("fadeOut", this, () => {
-      this.scene.stop(Scenes.game);
-      this.scene.start(Scenes.game);
-    });
+      this.scene.stop(Scenes.game)
+      this.scene.start(Scenes.game)
+    })
   }
 
   handleBackToEditor() {
@@ -85,10 +85,10 @@ export class GameOver extends Phaser.Scene {
 
   handleBackToMenu() {
     transition("fadeOut", this, () => {
-      this.scene.stop(Scenes.game);
-      this.scene.start(Scenes.start);
-      this.scene.stop();
-    });
+      this.scene.stop(Scenes.game)
+      this.scene.start(Scenes.start)
+      this.scene.stop()
+    })
   }
 
   initGameOverText() {
@@ -98,6 +98,6 @@ export class GameOver extends Phaser.Scene {
         this.scale.height / 2 - 180,
         Sprites.gameOver
       )
-      .play(Anims.gameOver);
+      .play(Anims.gameOver)
   }
 }

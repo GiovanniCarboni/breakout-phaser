@@ -1,30 +1,30 @@
-import { t } from "i18next";
-import { transition } from "../anims/SceneTransitions";
-import { createSmallButton } from "../components/UI/button/SmallButton";
-import { Fonts, Scenes, Sprites, StorageKeys } from "../constants";
+import { t } from "i18next"
+import { transition } from "../anims/SceneTransitions"
+import { createSmallButton } from "../components/UI/button/SmallButton"
+import { Fonts, Scenes, Sprites, StorageKeys } from "../constants"
 import LanguageSelector, {
   createLanguageSelector,
-} from "../components/UI/LanguageSelector";
-import { storage } from "../utils/gneral";
+} from "../components/UI/LanguageSelector"
+import { storage } from "../utils/gneral"
 
 export class Options extends Phaser.Scene {
-  private fromScene!: string;
-  private languageSelector!: LanguageSelector;
-  private bar!: Phaser.GameObjects.Sprite;
-  private nob!: Phaser.GameObjects.Sprite;
-  private volumeFill!: Phaser.GameObjects.Rectangle;
+  private fromScene!: string
+  private languageSelector!: LanguageSelector
+  private bar!: Phaser.GameObjects.Sprite
+  private nob!: Phaser.GameObjects.Sprite
+  private volumeFill!: Phaser.GameObjects.Rectangle
 
   constructor() {
-    super({ key: Scenes.options });
+    super({ key: Scenes.options })
   }
 
   init({ fromScene }: { fromScene: string }) {
-    this.fromScene = fromScene;
+    this.fromScene = fromScene
   }
 
   create() {
-    // transition("fadeIn", this);
-    this.cameras.main.setBackgroundColor("#000");
+    // transition("fadeIn", this)
+    this.cameras.main.setBackgroundColor("#000")
 
     /////// HEADING /////////////////////////////////////////////
     this.add
@@ -32,7 +32,7 @@ export class Options extends Phaser.Scene {
         fontFamily: Fonts.manaspace,
         fontSize: 30,
       })
-      .setOrigin(0.5, 0.5);
+      .setOrigin(0.5, 0.5)
 
     /////// MENU FRAME /////////////////////////////////////////////
     this.add
@@ -41,7 +41,7 @@ export class Options extends Phaser.Scene {
         this.scale.height / 2 - 10,
         Sprites.optionsBox
       )
-      .setDepth(-1);
+      .setDepth(-1)
 
     /////// BACK BUTTON /////////////////////////////////////////////
     createSmallButton(
@@ -50,23 +50,23 @@ export class Options extends Phaser.Scene {
       t("Back"),
       () => {
         transition("fadeOut", this, () => {
-          this.scene.stop();
-          this.scene.start(this.fromScene);
-        });
+          this.scene.stop()
+          this.scene.start(this.fromScene)
+        })
       },
       this
-    );
+    )
 
     /////// LANGUAGE SELECTOR /////////////////////////////////////////////
-    this.initLanguageSelector();
+    this.initLanguageSelector()
 
     /////// VOLUME SLIDER /////////////////////////////////////////////
-    this.initVolumeSlider();
+    this.initVolumeSlider()
   }
 
   update() {
     // update volume fill
-    this.volumeFill.width = this.nob.x - this.volumeFill.x;
+    this.volumeFill.width = this.nob.x - this.volumeFill.x
   }
 
   /////// LANGUAGE SELECTOR /////////////////////////////////////////////
@@ -75,17 +75,17 @@ export class Options extends Phaser.Scene {
       .text(this.scale.width / 2 - 120, 280, t("Language"), {
         fontFamily: Fonts.manaspace,
       })
-      .setOrigin(1, 0.5);
+      .setOrigin(1, 0.5)
 
     this.languageSelector = createLanguageSelector(
       label.x + 160,
       label.y,
       this,
       () => {
-        this.languageSelector.save();
-        this.scene.stop().start();
+        this.languageSelector.save()
+        this.scene.stop().start()
       }
-    );
+    )
   }
 
   /////// VOLUME SLIDER /////////////////////////////////////////////
@@ -96,9 +96,9 @@ export class Options extends Phaser.Scene {
       .setOrigin(0, 0)
       .setX(this.bar.x - this.bar.width / 2 + 15)
       .setY(this.bar.y - 3)
-      .setFillStyle(0x916857);
-    this.volumeFill.width = this.nob.x - this.volumeFill.x;
-    this.volumeFill.height = this.bar.height - 4;
+      .setFillStyle(0x916857)
+    this.volumeFill.width = this.nob.x - this.volumeFill.x
+    this.volumeFill.height = this.bar.height - 4
   }
 
   initVolumeSlider() {
@@ -111,12 +111,12 @@ export class Options extends Phaser.Scene {
       .setInteractive()
       .on("pointerdown", () => {
         if (this.sound.volume > 0) {
-          this.sound.volume = 0;
+          this.sound.volume = 0
         } else {
-          this.sound.volume = 1;
+          this.sound.volume = 1
         }
-        this.scene.stop().start();
-      });
+        this.scene.stop().start()
+      })
 
     /////// volume bar /////////////////////////////////////////////
     this.bar = this.add
@@ -124,17 +124,17 @@ export class Options extends Phaser.Scene {
       .setInteractive()
       .on("pointerdown", (pointer: Phaser.Input.Pointer) => {
         if (pointer.x < barEndX && pointer.x > barStartX) {
-          this.nob.x = pointer.x;
+          this.nob.x = pointer.x
           const position =
-            (this.nob.x - (this.bar.x - this.bar.width / 2)) / this.bar.width;
-          let volume = Math.round(position * 1000) / 1000;
-          if (position < 0.1) volume = 0;
-          if (position > 0.9) volume = 1;
-          this.sound.volume = volume;
+            (this.nob.x - (this.bar.x - this.bar.width / 2)) / this.bar.width
+          let volume = Math.round(position * 1000) / 1000
+          if (position < 0.1) volume = 0
+          if (position > 0.9) volume = 1
+          this.sound.volume = volume
         }
-      });
-    const barStartX = this.bar.x - this.bar.width / 2 + 15;
-    const barEndX = this.bar.x + this.bar.width / 2 - 15;
+      })
+    const barStartX = this.bar.x - this.bar.width / 2 + 15
+    const barEndX = this.bar.x + this.bar.width / 2 - 15
 
     /////// volume knob /////////////////////////////////////////////
     const nobX =
@@ -146,36 +146,36 @@ export class Options extends Phaser.Scene {
             this.sound.volume * this.bar.width <=
           barStartX
         ? barStartX
-        : this.bar.x - this.bar.width / 2 + this.sound.volume * this.bar.width;
+        : this.bar.x - this.bar.width / 2 + this.sound.volume * this.bar.width
 
     this.nob = this.add
       .sprite(nobX, label.y, Sprites.volumeNob)
       .setInteractive()
-      .setDepth(2);
+      .setDepth(2)
 
     /////// volume fill /////////////////////////////////////////////
-    this.initVolumeFill();
+    this.initVolumeFill()
 
     /////// knob listeners /////////////////////////////////////////////
     this.nob.on("pointerdown", () => {
       this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
         if (pointer.isDown && pointer.x < barEndX && pointer.x > barStartX) {
-          this.nob.x = pointer.x;
+          this.nob.x = pointer.x
           const position =
-            (this.nob.x - (this.bar.x - this.bar.width / 2)) / this.bar.width;
-          let volume = Math.round(position * 1000) / 1000;
-          if (position < 0.1) volume = 0;
-          if (position > 0.9) volume = 1;
-          this.sound.volume = volume;
+            (this.nob.x - (this.bar.x - this.bar.width / 2)) / this.bar.width
+          let volume = Math.round(position * 1000) / 1000
+          if (position < 0.1) volume = 0
+          if (position > 0.9) volume = 1
+          this.sound.volume = volume
         }
-      });
-    });
+      })
+    })
 
     this.input.on("pointerup", () => {
-      this.input.off("pointermove");
+      this.input.off("pointermove")
       // save volume to local storage
       storage.set(StorageKeys.volume, (Math.round(this.sound.volume * 1000) / 1000).toString())
-      // this.volumeFill.width = this.nob.x - this.volumeFill.x;
-    });
+      // this.volumeFill.width = this.nob.x - this.volumeFill.x
+    })
   }
 }

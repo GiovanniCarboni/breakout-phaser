@@ -101,4 +101,4 @@ export const translations = {
       "Shooting Paddle": "Paddle cu Tiroi",
     },
   },
-};
+}

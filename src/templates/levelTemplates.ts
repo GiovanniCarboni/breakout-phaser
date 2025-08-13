@@ -1,16 +1,16 @@
-const levels = require("./levels.json");
+const levels = require("./levels.json")
 
 export interface LevelTemplate {
-  layout: number[][];
+  layout: number[][]
   info: {
-    width: number;
-    height: number;
+    width: number
+    height: number
     offset: {
-      top: number;
-      left: number;
-    };
-    padding: number;
-  };
+      top: number
+      left: number
+    }
+    padding: number
+  }
 }
 
 // leave side columns empty!
@@ -27,19 +27,19 @@ export const getLevelTemplate = (
     padding: 2.7,
   }
 ): LevelTemplate => {
-  let layout: number[][] = [];
+  let layout: number[][] = []
 
   if (level) {
-    layout = levels[`level-${level}`];
-    if (level === 9) layout = levels["blank-template"];
-    if (!layout) layout = levels["test"];
+    layout = levels[`level-${level}`]
+    if (level === 9) layout = levels["blank-template"]
+    if (!layout) layout = levels["test"]
   }
   if (template) {
-    layout = template;
+    layout = template
   }
 
   return {
     layout,
     info,
-  };
-};
+  }
+}

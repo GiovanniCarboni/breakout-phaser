@@ -1,14 +1,14 @@
-import { t } from "i18next";
-import { createMenu } from "../components/UI/Menu";
-import { Scenes } from "../constants";
-import { transition } from "../anims/SceneTransitions";
+import { t } from "i18next"
+import { createMenu } from "../components/UI/Menu"
+import { Scenes } from "../constants"
+import { transition } from "../anims/SceneTransitions"
 
 export class Pause extends Phaser.Scene {
   constructor() {
-    super({ key: Scenes.pause });
+    super({ key: Scenes.pause })
   }
   create() {
-    this.cameras.main.setBackgroundColor("rgba(0, 0, 0, 0.8)");
+    this.cameras.main.setBackgroundColor("rgba(0, 0, 0, 0.8)")
 
     createMenu(
       this.scale.width / 2,
@@ -21,28 +21,28 @@ export class Pause extends Phaser.Scene {
       ],
       this,
       false
-    );
+    )
   }
 
   handleResume() {
-    this.scene.resume(Scenes.game);
-    this.scene.stop();
+    this.scene.resume(Scenes.game)
+    this.scene.stop()
   }
   handleRestart() {
     transition("fadeOut", this, () => {
-      this.scene.stop(Scenes.game);
-      this.scene.start(Scenes.game);
-    });
+      this.scene.stop(Scenes.game)
+      this.scene.start(Scenes.game)
+    })
   }
   handleBackToMenu() {
     transition("fadeOut", this, () => {
-      this.scene.stop(Scenes.game);
-      this.scene.start(Scenes.start);
-    });
+      this.scene.stop(Scenes.game)
+      this.scene.start(Scenes.start)
+    })
   }
   handleOptions() {
     transition("fadeOut", this, () => {
-      this.scene.start(Scenes.options, { fromScene: Scenes.pause });
-    });
+      this.scene.start(Scenes.options, { fromScene: Scenes.pause })
+    })
   }
 }

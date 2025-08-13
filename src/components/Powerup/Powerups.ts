@@ -1,6 +1,6 @@
-import { Sprites, StorageKeys } from "../../constants";
-import { storage } from "../../utils/gneral";
-import Powerup from "./Powerup";
+import { Sprites, StorageKeys } from "../../constants"
+import { storage } from "../../utils/gneral"
+import Powerup from "./Powerup"
 
 export default class Powerups extends Phaser.Physics.Arcade.Group {
   private powerups = [
@@ -14,15 +14,15 @@ export default class Powerups extends Phaser.Physics.Arcade.Group {
   ]
 
   constructor(scene: Phaser.Scene, config: any) {
-    super(scene.physics.world, config);
+    super(scene.physics.world, config)
   }
 
   addPowerup(powerup: Powerup, velocity: { x: number; y: number }) {
-    this.add(powerup);
+    this.add(powerup)
     powerup.init({
       x: velocity.x,
       y: velocity.y,
-    });
+    })
   }
 
   getAll() {
@@ -40,6 +40,6 @@ export default class Powerups extends Phaser.Physics.Arcade.Group {
 }
 
 export const createPowerups = function (scene: Phaser.Scene) {
-  const powerups = new Powerups(scene, { classType: Powerup });
-  return powerups;
-};
+  const powerups = new Powerups(scene, { classType: Powerup })
+  return powerups
+}

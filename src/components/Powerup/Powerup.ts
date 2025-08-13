@@ -6,13 +6,13 @@ export default class Powerup extends Phaser.Physics.Arcade.Sprite {
     texture: string,
     frame?: string
   ) {
-    super(scene, x, y, texture, frame);
+    super(scene, x, y, texture, frame)
   }
 
   init(velocity: { x: number; y: number }) {
-    this.setCollideWorldBounds();
-    this.setBounce(1);
-    this.setVelocity(velocity.x, velocity.y);
+    this.setCollideWorldBounds()
+    this.setBounce(1)
+    this.setVelocity(velocity.x, velocity.y)
   }
 }
 
@@ -22,8 +22,8 @@ export const createPowerup = (
   y: number,
   texture: string
 ) => {
-  const powerup = new Powerup(scene, x, y, texture);
-  scene.add.existing(powerup);
-  scene.physics.world.enableBody(powerup, Phaser.Physics.Arcade.DYNAMIC_BODY);
-  return powerup;
-};
+  const powerup = new Powerup(scene, x, y, texture)
+  scene.add.existing(powerup)
+  scene.physics.world.enableBody(powerup, Phaser.Physics.Arcade.DYNAMIC_BODY)
+  return powerup
+}

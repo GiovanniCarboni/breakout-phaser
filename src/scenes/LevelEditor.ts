@@ -1,86 +1,86 @@
-import { t } from "i18next";
-import Brick from "../components/Brick/Brick";
-import Bricks, { createBricks } from "../components/Brick/Bricks";
-import { createSmallButton } from "../components/UI/button/SmallButton";
-import { createClearButton } from "../components/UI/button/ClearButton";
-import { Anims, Fonts, Scenes, Sounds, Sprites, StorageKeys } from "../constants";
-import { transition } from "../anims/SceneTransitions";
-import { storage } from "../utils/gneral";
+import { t } from "i18next"
+import Brick from "../components/Brick/Brick"
+import Bricks, { createBricks } from "../components/Brick/Bricks"
+import { createSmallButton } from "../components/UI/button/SmallButton"
+import { createClearButton } from "../components/UI/button/ClearButton"
+import { Anims, Fonts, Scenes, Sounds, Sprites, StorageKeys } from "../constants"
+import { transition } from "../anims/SceneTransitions"
+import { storage } from "../utils/gneral"
 
 export class LevelEditor extends Phaser.Scene {
-  private levelId?: number;
-  private slots!: Bricks;
-  private clearButton!: Phaser.GameObjects.Sprite;
-  private playButton!: Phaser.GameObjects.Sprite;
-  private selectedBrick?: Phaser.GameObjects.Sprite;
-  private brickHighlight?: Phaser.GameObjects.Sprite;
-  private message?: Phaser.GameObjects.Text;
-  private messageTimeout?: Phaser.Time.TimerEvent;
+  private levelId?: number
+  private slots!: Bricks
+  private clearButton!: Phaser.GameObjects.Sprite
+  private playButton!: Phaser.GameObjects.Sprite
+  private selectedBrick?: Phaser.GameObjects.Sprite
+  private brickHighlight?: Phaser.GameObjects.Sprite
+  private message?: Phaser.GameObjects.Text
+  private messageTimeout?: Phaser.Time.TimerEvent
   private sounds!: {
     [key: string]:
       | Phaser.Sound.NoAudioSound
       | Phaser.Sound.HTML5AudioSound
-      | Phaser.Sound.WebAudioSound;
-  };
+      | Phaser.Sound.WebAudioSound
+  }
 
   constructor() {
-    super({ key: Scenes.LevelEditor });
+    super({ key: Scenes.LevelEditor })
   }
 
   //////////////////////////////////////////////////////////////
   ////// INIT
   init(data: { id: number; template: number[][] }) {
-    this.selectedBrick = undefined;
+    this.selectedBrick = undefined
 
     // there no incoming template (blank page)
     if (!data.template && !data.id) {
-      this.slots = createBricks(this, 9);
-      this.levelId = Date.now();
+      this.slots = createBricks(this, 9)
+      this.levelId = Date.now()
       // there is an incoming template
     } else {
-      this.levelId = data.id;
+      this.levelId = data.id
       this.slots = createBricks(
         this,
         undefined,
         data.template.map((row, i) =>
           row.map((num, j) => {
-            if (i === 0) return 0;
-            if (j === 0) return 0;
-            if (j === 18) return 0;
-            return num === 0 ? 9 : num;
+            if (i === 0) return 0
+            if (j === 0) return 0
+            if (j === 18) return 0
+            return num === 0 ? 9 : num
           })
         )
-      );
+      )
     }
   }
 
   //////////////////////////////////////////////////////////////
   ////// CREATE
   create() {
-    transition("fadeIn", this);
+    transition("fadeIn", this)
 
     // set background color
-    this.cameras.main.setBackgroundColor("#110702");
+    this.cameras.main.setBackgroundColor("#110702")
 
     // remove menu on right click
-    this.input.mouse?.disableContextMenu();
+    this.input.mouse?.disableContextMenu()
 
     // init elements
-    this.initBrickSelector();
-    this.initPlayButton();
+    this.initBrickSelector()
+    this.initPlayButton()
 
     //////////////////////////////////////////////////////////
     ////// GAME FRAME
-    this.add.image(0, 0, Sprites.sideBar).setOrigin(0, 0);
-    this.add.image(this.scale.width, 0, Sprites.sideBar).setOrigin(1, 0);
+    this.add.image(0, 0, Sprites.sideBar).setOrigin(0, 0)
+    this.add.image(this.scale.width, 0, Sprites.sideBar).setOrigin(1, 0)
     this.add
       .image(0, 0, Sprites.sideBar)
       .setOrigin(1, 0)
-      .setRotation(Phaser.Math.DegToRad(-90));
+      .setRotation(Phaser.Math.DegToRad(-90))
     this.add
       .image(0, this.scale.height, Sprites.sideBar)
       .setOrigin(0, 0)
-      .setRotation(Phaser.Math.DegToRad(-90));
+      .setRotation(Phaser.Math.DegToRad(-90))
     ///////////////////////////////////////////////////////////
 
     //////////////////////////////////////////////////////////////
@@ -95,11 +95,11 @@ export class LevelEditor extends Phaser.Scene {
         loop: false,
         volume: 0.2,
       }),
-    };
+    }
 
     //////////////////////////////////////////////////////////////
     ////// BACK BUTTON
-    createSmallButton(135, 50, t("Back"), this.handleBack, this);
+    createSmallButton(135, 50, t("Back"), this.handleBack, this)
 
     //////////////////////////////////////////////////////////////
     ////// CLEAR BUTTON
@@ -108,7 +108,7 @@ export class LevelEditor extends Phaser.Scene {
       50,
       this.handleClear,
       this
-    ).setVisible(false);
+    ).setVisible(false)
 
     //////////////////////////////////////////////////////////////
     ////// SELECT SLOT
@@ -117,14 +117,14 @@ export class LevelEditor extends Phaser.Scene {
         "pointerover",
         (pointer: Phaser.Input.Pointer) => this.handleSelectSlot(pointer, slot),
         this
-      );
+      )
       slot.on(
         "pointerdown",
         (pointer: Phaser.Input.Pointer) => this.handleSelectSlot(pointer, slot),
         this
-      );
-      return true;
-    });
+      )
+      return true
+    })
 
     //////////////////////////////////////////////////////////////
     ////// SAVE BUTTON
@@ -134,21 +134,21 @@ export class LevelEditor extends Phaser.Scene {
       t("Save"),
       this.handleSave,
       this
-    );
+    )
   }
 
   //////////////////////////////////////////////////////////////
   ////// UPDATE
   update() {
     this.slots.children.each((slotObj) => {
-      const slot = slotObj as Brick;
+      const slot = slotObj as Brick
       if (slot.texture.key !== Sprites.blankBrick) {
-        this.clearButton.setVisible(true);
-        return false;
+        this.clearButton.setVisible(true)
+        return false
       }
-      this.clearButton.setVisible(false);
-      return true;
-    });
+      this.clearButton.setVisible(false)
+      return true
+    })
   }
 
   //////////////////////////////////////////////////////////////
@@ -158,33 +158,33 @@ export class LevelEditor extends Phaser.Scene {
     transition("fadeOut", this, () => {
       this.message = undefined
       if (savedData) {
-        this.scene.start(Scenes.createdLevels);
-        this.scene.stop();
+        this.scene.start(Scenes.createdLevels)
+        this.scene.stop()
       } else {
-        this.scene.start(Scenes.start);
-        this.scene.stop();
+        this.scene.start(Scenes.start)
+        this.scene.stop()
       }
-    });
+    })
   }
 
   //////////////////////////////////////////////////////////////
   ////// HANDLE CLEAR
   handleClear() {
     this.slots.children.each((slotObj) => {
-      const slot = slotObj as Brick;
-      if (slot.anims.isPlaying) slot.anims.stop();
+      const slot = slotObj as Brick
+      if (slot.anims.isPlaying) slot.anims.stop()
       if (slot.texture.key !== Sprites.blankBrick)
-        slot.setTexture(Sprites.blankBrick);
-      return true;
-    });
+        slot.setTexture(Sprites.blankBrick)
+      return true
+    })
   }
 
   //////////////////////////////////////////////////////////////
   ////// HANDLE SAVE
   handleSave() {
-    if (!this.canSave()) return;
-    this.saveToStorage();
-    this.handleBack();
+    if (!this.canSave()) return
+    this.saveToStorage()
+    this.handleBack()
   }
 
   // ///////////////////////////////////////////////////////////
@@ -215,12 +215,12 @@ export class LevelEditor extends Phaser.Scene {
   //////////////////////////////////////////////////////////////
   ////// MESSAGE IF CAN'T SAVE/PLAY
   canSave(): boolean {
-    const template: number[][] = Bricks.getTemplateFromBricks(this.slots);
+    const template: number[][] = Bricks.getTemplateFromBricks(this.slots)
     if (!template.flat().some((brick) => brick !== 0 && brick !== 3)) {
       this.displayMessage(t("Template must contain at least one breakable brick"), true)
-      return false;
+      return false
     }
-    return true;
+    return true
   }
 
   //////////////////////////////////////////////////////////////
@@ -238,15 +238,15 @@ export class LevelEditor extends Phaser.Scene {
       ])
     } else { // if there are levels in local storage
       const savedLevels: { id: number; template: number[][] }[] = data
-      let existingLevelIndex;
+      let existingLevelIndex
       const existingLevel = savedLevels.find((level, i) => {
-        if (level.id === this.levelId) existingLevelIndex = i;
-        return level.id === this.levelId;
-      });
+        if (level.id === this.levelId) existingLevelIndex = i
+        return level.id === this.levelId
+      })
       // if current level exists already (by id)
       if (data && existingLevel && existingLevelIndex !== null) {
         savedLevels[existingLevelIndex!].template =
-          Bricks.getTemplateFromBricks(this.slots);
+          Bricks.getTemplateFromBricks(this.slots)
         storage.set(StorageKeys.createdLevels, savedLevels)
       } else { // if this is a new level
         storage.set(StorageKeys.createdLevels, [...savedLevels,
@@ -265,17 +265,17 @@ export class LevelEditor extends Phaser.Scene {
     pointer: Phaser.Input.Pointer,
     slot: Phaser.GameObjects.GameObject
   ) {
-    const selectedSlot = slot as Brick;
+    const selectedSlot = slot as Brick
     if (pointer.leftButtonDown()) {
       if (this.selectedBrick) {
-        if (selectedSlot.anims?.isPlaying) selectedSlot.anims.stop();
+        if (selectedSlot.anims?.isPlaying) selectedSlot.anims.stop()
         if (this.selectedBrick.anims?.isPlaying) {
-          selectedSlot.play(this.selectedBrick.anims.currentAnim!);
-        } else selectedSlot.setTexture(this.selectedBrick.texture.key);
+          selectedSlot.play(this.selectedBrick.anims.currentAnim!)
+        } else selectedSlot.setTexture(this.selectedBrick.texture.key)
       }
     } else if (pointer.rightButtonDown()) {
-      if (selectedSlot.anims.isPlaying) selectedSlot.anims.stop();
-      selectedSlot.setTexture(Sprites.blankBrick);
+      if (selectedSlot.anims.isPlaying) selectedSlot.anims.stop()
+      selectedSlot.setTexture(Sprites.blankBrick)
     }
   }
 
@@ -289,22 +289,22 @@ export class LevelEditor extends Phaser.Scene {
         Sprites.playButton
       )
       .play(Anims.playButtonIdle)
-      .setInteractive();
+      .setInteractive()
 
     // play handlers
     const playDown = () => {
-      this.playButton.play(Anims.playButtonPressed);
-    };
+      this.playButton.play(Anims.playButtonPressed)
+    }
     const playUp = () => {
-      this.startGame();
-    };
+      this.startGame()
+    }
     const playOver = (pointer: Phaser.Input.Pointer) => {
-      this.playButton.play(Anims.playButtonHover);
-      if (pointer.isDown) this.playButton.play(Anims.playButtonPressed);
-    };
+      this.playButton.play(Anims.playButtonHover)
+      if (pointer.isDown) this.playButton.play(Anims.playButtonPressed)
+    }
     const playOut = () => {
-      this.playButton.play(Anims.playButtonIdle);
-    };
+      this.playButton.play(Anims.playButtonIdle)
+    }
 
     // play listeners
     this.playButton
@@ -312,21 +312,21 @@ export class LevelEditor extends Phaser.Scene {
       .on("pointerup", playUp)
       .on("pointerout", playOut)
       .on("pointerover", (pointer: Phaser.Input.Pointer) => {
-        playOver(pointer);
-      });
+        playOver(pointer)
+      })
   }
 
   //////////////////////////////////////////////////////////////
   ////// START GAME
   startGame() {
-    if (!this.canSave()) return;
-    const template: number[][] = Bricks.getTemplateFromBricks(this.slots);
-    this.saveToStorage();
+    if (!this.canSave()) return
+    const template: number[][] = Bricks.getTemplateFromBricks(this.slots)
+    this.saveToStorage()
     transition("fadeOut", this, () => {
       this.message = undefined
-      this.scene.start(Scenes.game, { isCustom: true, template });
-      this.scene.stop();
-    });
+      this.scene.start(Scenes.game, { isCustom: true, template })
+      this.scene.stop()
+    })
   }
 
   //////////////////////////////////////////////////////////////
@@ -335,7 +335,7 @@ export class LevelEditor extends Phaser.Scene {
     this.add
       .sprite(0, this.scale.height, Sprites.brickSelector)
       .setOrigin(0, 1)
-      .setDepth(-1);
+      .setDepth(-1)
 
     const canvasH = this.scale.height
     const bestScore = storage.get(StorageKeys.bestScore)
@@ -371,26 +371,26 @@ export class LevelEditor extends Phaser.Scene {
     // UNSELECT BRICK
     this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
       if (pointer.rightButtonDown() && this.selectedBrick) {
-        this.selectedBrick.destroy();
-        this.brickHighlight?.destroy();
-        this.selectedBrick = undefined;
+        this.selectedBrick.destroy()
+        this.brickHighlight?.destroy()
+        this.selectedBrick = undefined
       }
-    });
+    })
   }
 
   handleSelectBrick(brick: Phaser.GameObjects.Sprite, sprite: string) {
-    this.sounds.select.play();
-    if (this.brickHighlight) this.brickHighlight.destroy();
-    if (this.selectedBrick) this.selectedBrick.destroy();
-    this.brickHighlight = Brick.createHighlight(brick.x, brick.y, this);
-    this.selectedBrick = this.add.sprite(brick.x + 8, brick.y + 5, sprite);
-    if (sprite === "fireBrick") this.selectedBrick.play(Anims.fireBrick);
-    this.input.off("pointermove");
-    this.input.on("pointermove", this.handleMoveBrick, this);
+    this.sounds.select.play()
+    if (this.brickHighlight) this.brickHighlight.destroy()
+    if (this.selectedBrick) this.selectedBrick.destroy()
+    this.brickHighlight = Brick.createHighlight(brick.x, brick.y, this)
+    this.selectedBrick = this.add.sprite(brick.x + 8, brick.y + 5, sprite)
+    if (sprite === "fireBrick") this.selectedBrick.play(Anims.fireBrick)
+    this.input.off("pointermove")
+    this.input.on("pointermove", this.handleMoveBrick, this)
   }
 
   handleMoveBrick(pointer: Phaser.Input.Pointer) {
-    this.selectedBrick?.setX(pointer.x);
-    this.selectedBrick?.setY(pointer.y);
+    this.selectedBrick?.setX(pointer.x)
+    this.selectedBrick?.setY(pointer.y)
   }
 }
