@@ -1,4 +1,5 @@
 import { Anims, Sounds, Sprites } from "../../constants"
+import { debug } from "../../scripts/debug"
 
 export default class Paddle extends Phaser.Physics.Arcade.Sprite {
   // 1 = short; 2 = default; 3 = long
@@ -190,5 +191,6 @@ export const createPaddle = function (scene: Phaser.Scene) {
   scene.add.existing(paddle)
   scene.physics.world.enableBody(paddle, Phaser.Physics.Arcade.DYNAMIC_BODY)
   paddle.init()
+  debug.cannons && paddle.addCannons()
   return paddle
 }

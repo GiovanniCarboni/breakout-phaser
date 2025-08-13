@@ -1,6 +1,7 @@
 import "phaser"
 import { scenes } from "../scenes"
 import { Scenes } from "../constants"
+import { debug } from "./debug"
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -11,7 +12,7 @@ const config: Phaser.Types.Core.GameConfig = {
     default: "arcade",
     arcade: {
       gravity: { y: 0, x: 0 },
-      // debug: true,
+      debug: debug.physics,
     },
   },
   scale: {

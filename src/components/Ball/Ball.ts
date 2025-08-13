@@ -1,6 +1,7 @@
 import { Anims, Sounds, Sprites } from "../../constants"
 import Paddle from "../Paddle/Paddle"
 import Brick from "../Brick/Brick"
+import { debug } from "../../scripts/debug"
 
 export default class Ball extends Phaser.Physics.Arcade.Sprite {
   speedIncrement = 20
@@ -249,5 +250,6 @@ export const createBall = function (scene: Phaser.Scene) {
   scene.add.existing(ball)
   scene.physics.world.enableBody(ball, Phaser.Physics.Arcade.DYNAMIC_BODY)
   ball.init()
+  debug.fireBall && ball.ignite()
   return ball
 }
