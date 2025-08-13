@@ -49,6 +49,10 @@ export default class Brick extends Phaser.Physics.Arcade.Sprite {
         )
         this.setData("type", "ice");
         break;
+      case 5:
+        this.setTexture(Sprites.rockBrick)
+        this.setData("type", "rock")
+        break
       case 9:
         this.setTexture(Sprites.blankBrick);
         this.setData("type", "blank");

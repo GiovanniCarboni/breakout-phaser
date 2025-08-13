@@ -54,4 +54,12 @@ export const createBricksAnims = (
     frames: anims.generateFrameNumbers(Sprites.iceBrick, { start: 4, end: 9 }),
     frameRate: 40,
   });
+  anims.create({
+    key: Anims.rockBrickBreak,
+    frames: anims.generateFrameNumbers(Sprites.rockBrick, {
+      start: 3,
+      end: 6,
+    }),
+    frameRate: 40
+  })
 };

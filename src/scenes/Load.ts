@@ -80,6 +80,14 @@ export class Load extends Phaser.Scene {
         frameHeight: 20,
       }
     );
+    this.load.spritesheet(
+      Sprites.rockBrick,
+      "assets/images/brick/rock_brick.png",
+      {
+        frameWidth: 51,
+        frameHeight: 20,
+      }
+    )
     // powerups
     this.load.image(Sprites.notYetDiscovered, "assets/images/powerups/not_yet_discovered.png")
     this.load.image(Sprites.speedUpBall, "assets/images/powerups/speed_up_ball.png")

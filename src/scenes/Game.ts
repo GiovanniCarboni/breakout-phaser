@@ -372,6 +372,29 @@ export class Game extends Phaser.Scene {
       });
       this.addPowerup(brick.x, brick.y);
     }
+    if (brickType === "rock") {
+      this.sounds.brickbreak.play()
+      const hits = brick.getData("hits") || 0
+      switch (hits) {
+        case 0: 
+          brick.setFrame(1)
+          brick.setData("hits", 1)
+          break
+        case 1:
+          brick.setFrame(2)
+          brick.setData("hits", 2)
+          this.addPowerup(brick.x, brick.y);
+          break
+        case 2:
+          brick.anims.play(Anims.rockBrickBreak)
+          this.addPowerup(brick.x, brick.y);
+          brick.on("animationcomplete", () => {
+            brick.disableBody()
+            brick.destroy()
+          })
+          break
+      }
+    }
   }
 
   //////////////////////////////////////////////////////////////
@@ -405,6 +428,34 @@ export class Game extends Phaser.Scene {
         brick.setData("hits", 1)
       });
       this.addPowerup(brick.x, brick.y);
+    }
+
+    if (brickType === "rock") {
+      this.sounds.brickbreak.play()
+      const hits = brick.getData("hits") || 0
+      switch (hits) {
+        case 0: 
+        // case 3: 
+          brick.setFrame(1)
+          brick.setData("hits", 1)
+          break
+        case 1:
+        // case 4:
+          brick.setFrame(2)
+          brick.setData("hits", 2)
+          this.addPowerup(brick.x, brick.y);
+          break
+        case 2:
+        // default:
+          brick.anims.play(Anims.rockBrickBreak)
+          this.addPowerup(brick.x, brick.y);
+          brick.on("animationcomplete", () => {
+            brick.disableBody()
+            brick.destroy()
+          })
+          break
+      }
+      return
     }
 
     if (brickType === "fire" || this.ball.isIgnited) {

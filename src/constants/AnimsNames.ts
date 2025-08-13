@@ -9,6 +9,7 @@ export enum Anims {
   metalBrick = "metalBrick",
   iceBrickIdle = "iceBrickIdle",
   iceBrickBreak = "iceBrickBreak",
+  rockBrickBreak = "rockBrickBreak",
   // paddle
   defaultPaddle = "defaultPaddle",
   longPaddle = "longPaddle",

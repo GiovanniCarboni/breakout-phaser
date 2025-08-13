@@ -344,7 +344,8 @@ export class LevelEditor extends Phaser.Scene {
       { x: 160, y: canvasH - 110, sprite: Sprites.commonBrick },
       { x: 160, y: canvasH - 70, sprite: Sprites.fireBrick, play: Anims.fireBrick },
       { x: 240, y: canvasH - 110, sprite: Sprites.metalBrick },
-      { x: 240, y: canvasH - 70, sprite: Sprites.iceBrick }
+      { x: 240, y: canvasH - 70, sprite: Sprites.iceBrick },
+      { x: 320, y: canvasH - 110, sprite: Sprites.rockBrick},
     ].map((brick, i) => i > bestScore ? {
       ...brick,
       sprite: Sprites.lockedBrick,

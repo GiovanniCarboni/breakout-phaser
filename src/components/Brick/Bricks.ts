@@ -28,6 +28,7 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
           case "fireBrick": return 2;
           case "metalBrick": return 3;
           case "iceBrick": return 4;
+          case "rockBrick": return 5;
           case "blankBrick": return 0;
           default: return 0
         }

@@ -16,6 +16,7 @@ export enum Sprites {
   metalBrick = "metalBrick",
   blankBrick = "blankBrick",
   iceBrick = "iceBrick",
+  rockBrick = "rockBrick",
   // powerups
   speedUpBall = "speedUpBall",
   getLife = "getLife",
