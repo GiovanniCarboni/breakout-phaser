@@ -25,6 +25,7 @@ export class Load extends Phaser.Scene {
         frameHeight: 18,
       }
     )
+    // paddle
     this.load.atlas(
       Sprites.paddle,
       "assets/images/paddle/paddle.png",
@@ -37,6 +38,11 @@ export class Load extends Phaser.Scene {
       { frameWidth: 10, frameHeight: 8 }
     )
     this.load.image(Sprites.bullet, "assets/images/paddle/bullet.png")
+    this.load.image(Sprites.holdBallStub, "assets/images/paddle/hold_ball_stub.png")
+    this.load.spritesheet(Sprites.holdBallBolt, "assets/images/paddle/hold_ball_bold.png", {
+      frameWidth: 154,
+      frameHeight: 10
+    })
     // brick
     this.load.image(Sprites.blankBrick, "assets/images/brick/blank_brick.png")
     this.load.image(Sprites.lockedBrick, "assets/images/brick/locked_brick.png")
@@ -108,6 +114,10 @@ export class Load extends Phaser.Scene {
     this.load.image(
       Sprites.addShooter,
       "assets/images/powerups/add_shooter.png"
+    )
+    this.load.image(
+      Sprites.holdBall,
+      "assets/images/powerups/hold_ball.png"
     )
     // ui
     this.load.image(Sprites.headbar, "assets/images/UI/headbar.png")
@@ -235,6 +245,7 @@ export class Load extends Phaser.Scene {
     this.load.audio(Sounds.hitMetal, "assets/sounds/hit_metal.mp3")
     this.load.audio(Sounds.ballIgnition, "assets/sounds/ball_ignition.mp3")
     this.load.audio(Sounds.shot, "assets/sounds/shot.mp3")
+    this.load.audio(Sounds.holdBall, "assets/sounds/hold_ball.mp3")
 
     ////////// AUDIO /////////////////////
     this.load.addFile(new WebFontFileLoader(this.load, [Fonts.manaspace]))

@@ -31,6 +31,7 @@ export const translations = {
       "Expand Paddle": "Expand Paddle",
       "FireBall": "FireBall",
       "Shooting Paddle": "Shooting Paddle",
+      "Hold Ball": "Hold Ball",
     },
   },
   it: {
@@ -65,6 +66,7 @@ export const translations = {
       "Expand Paddle": "Ingrandisci Paddle",
       "FireBall": "Palla di Fuoco",
       "Shooting Paddle": "Paddle Armato",
+      "Hold Ball": "Ferma Palla",
     },
   },
   ro: {
@@ -99,6 +101,7 @@ export const translations = {
       "Expand Paddle": "Mareste Paddle",
       "FireBall": "Minge de Foc",
       "Shooting Paddle": "Paddle cu Tiroi",
+      "Hold Ball": "Tine Mingea",
     },
   },
 }

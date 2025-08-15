@@ -95,13 +95,7 @@ export class Game extends Phaser.Scene {
     //////////////////////////////////////////////////////////////
     ////// START BALL ON CLICK
     new Array(Events.levelChanged, Events.livesChanged).forEach((e) => {
-      sceneEvents.on(
-        e,
-        () => {
-          this.input.once("pointerdown", () => this.ball.start())
-        },
-        this
-      )
+      sceneEvents.on(e, this.startBallOnClick, this)
     })
   }
 
@@ -192,6 +186,7 @@ export class Game extends Phaser.Scene {
       fire: this.sound.add(Sounds.fireBrick, { loop: false }),
       fireBrickbreak: this.sound.add(Sounds.fireBrickbreak, { loop: false }),
       hitMetal: this.sound.add(Sounds.hitMetal, { loop: false, volume: 0.3 }),
+      holdBall: this.sound.add(Sounds.holdBall, { loop: false }),
     }
   }
 
@@ -212,6 +207,13 @@ export class Game extends Phaser.Scene {
   ////// SET LIVES
   setLives() {
     sceneEvents.emit(Events.livesChanged, this.lives)
+  }
+
+  //////////////////////////////////////////////////////////////
+  ////// START BALL ON CLICK
+  startBallOnClick() {
+    if (this.ball.getIsHeld()) this.ball.setIsHeld(false)
+    this.input.once("pointerdown", () => this.ball.start())
   }
 
   //////////////////////////////////////////////////////////////
@@ -301,6 +303,10 @@ export class Game extends Phaser.Scene {
       case Sprites.speedUpBall:
         this.ball.speedUp()
         break
+      case Sprites.holdBall:
+        this.ball.setIsToBeHeld(true)
+        this.paddle.addBallHolder()
+        break
     }
     powerup.destroy()
   }
@@ -308,12 +314,18 @@ export class Game extends Phaser.Scene {
   //////////////////////////////////////////////////////////////
   ////// BALL HIT PADDLE
   ballHitPaddle(obj1: any, _: any) {
+    let sound = this.sounds.bounce
+    if (this.ball.getIsToBeHeld()) {
+      sound = this.sounds.holdBall
+      this.ball.setIsHeld(true)
+      this.ball.stopMovement()
+      this.startBallOnClick()
+    }
     // increment speed
     if (this.ball.speed <= 900) {
       this.ball.setSpeed(this.ball.speed + this.ball.speedIncrement)
     }
     if (this.ball.isIgnited) this.ball.createSmoke(this.ball.x, this.ball.y)
-    this.sounds.bounce.play()
 
     const diff = Math.abs(this.paddle.x - this.ball.x)
     if (this.ball.x < this.paddle.x) {
@@ -328,6 +340,7 @@ export class Game extends Phaser.Scene {
       this.ball.setDegDirection(100)
       this.ball.setSpeedOnInclPerc(0)
     }
+    sound.play()
   }
 
   calcInclinationPercentage(degree: number) {

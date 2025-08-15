@@ -8,6 +8,8 @@ export enum Sprites {
   cannon = "cannon",
   cannonShooting = "cannonShooting",
   bullet = "bullet",
+  holdBallStub = "holdBallStub",
+  holdBallBolt = "holdBallBolt",
   // brick
   commonBrick = "commonBrick",
   lockedBrick = "lockedBrick",
@@ -26,6 +28,7 @@ export enum Sprites {
   igniteBall = "igniteBall",
   addShooter = "addShooter",
   notYetDiscovered = "notYetDiscovered",
+  holdBall = "holdBall",
   // UI
   headbar = "headbar",
   heart = "heart",
@@ -81,6 +84,7 @@ export enum Sounds {
   hitMetal = "hitMetal",
   ballIgnition = "ballIgnition",
   shot = "shot",
+  holdBall = "holdBall",
 }
 
 // FONTS ///////////////////////////////////////////////////////////////////////////

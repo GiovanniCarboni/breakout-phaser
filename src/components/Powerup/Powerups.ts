@@ -10,7 +10,8 @@ export default class Powerups extends Phaser.Physics.Arcade.Group {
     { sprite: Sprites.getLife, desc: 'Extra Life' },
     { sprite: Sprites.expandPaddle, desc: 'Expand Paddle' },
     { sprite: Sprites.igniteBall, desc: 'FireBall' },
-    { sprite: Sprites.addShooter, desc: 'Shooting Paddle' }
+    { sprite: Sprites.addShooter, desc: 'Shooting Paddle' },
+    { sprite: Sprites.holdBall, desc: 'Hold Ball' },
   ]
 
   constructor(scene: Phaser.Scene, config: any) {
@@ -30,6 +31,7 @@ export default class Powerups extends Phaser.Physics.Arcade.Group {
   }
 
   getRandomPowerup() {
+    // return this.powerups[2].sprite
     const randomPowerup = this.powerups[Math.floor(Math.random() * this.powerups.length)].sprite
     const discoveredPowerups = storage.get(StorageKeys.discoveredPowerups) || []
     if (!discoveredPowerups.find((x: string) => x === randomPowerup)) {

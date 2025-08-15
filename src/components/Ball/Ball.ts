@@ -6,7 +6,9 @@ import { debug } from "../../scripts/debug"
 export default class Ball extends Phaser.Physics.Arcade.Sprite {
   speedIncrement = 20
   isIgnited = false
-  isSpedUp = false
+  private isSpedUp = false
+  private isToBeHeld = false
+  isHeld = false
   onSlowDownArea = false
   slowDownArea!: Phaser.GameObjects.Arc
   speed = 600
@@ -55,7 +57,10 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
   //////////////////////////////////////////////////////////////
   ////// UPDATE
   update(paddle: Paddle, bricks: Phaser.GameObjects.GameObject[]) {
-    if (!this.isMoving) this.x = paddle.x
+    if (!this.isMoving) {
+      this.body?.reset(paddle.x, paddle.y - 20)
+      return
+    }
 
     // slow down approaching last brick
     if (
@@ -132,6 +137,22 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
   }
 
   //////////////////////////////////////////////////////////////
+  ////// SET STOP BALL ON PADDLE COLLIDE, SCHEDULE CLICK EVENT TO START AGAIN
+  setIsToBeHeld(toBeHeld: boolean) {
+    this.isToBeHeld = toBeHeld
+  }
+  getIsToBeHeld() {
+    return this.isToBeHeld
+  }
+  setIsHeld(held: boolean) {
+    this.isHeld = held
+  }
+  getIsHeld() {
+    return this.isHeld
+  }
+  
+
+  //////////////////////////////////////////////////////////////
   ////// SET BALL DIRECTION (degrees)
   setDegDirection(direction: number) {
     this.setVelocity(
@@ -147,6 +168,7 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
     this.isMoving = false
     this.isIgnited = false
     this.isSpedUp = false
+    this.setIsToBeHeld(false)
     this.setVelocity(0)
     this.setAngle(0)
     // reset ball texture
@@ -159,7 +181,7 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
   //////////////////////////////////////////////////////////////
   ////// STOP BALL
   stopMovement() {
-    this.setVelocity(0)
+    this.setVelocity(0, 0)
     this.isMoving = false
   }
 
@@ -251,5 +273,6 @@ export const createBall = function (scene: Phaser.Scene) {
   scene.physics.world.enableBody(ball, Phaser.Physics.Arcade.DYNAMIC_BODY)
   ball.init()
   debug.fireBall && ball.ignite()
+  debug.holdBall && ball.setIsToBeHeld(true)
   return ball
 }

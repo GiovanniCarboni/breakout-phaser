@@ -4,10 +4,13 @@ import { debug } from "../../scripts/debug"
 export default class Paddle extends Phaser.Physics.Arcade.Sprite {
   // 1 = short; 2 = default; 3 = long
   private paddleLength: 1 | 2 | 3 = 2
+  private lengthChanging = false
   private canvasH: number
   private canvasW: number
   public cannons!: Phaser.Physics.Arcade.Group
   public bullets!: Phaser.Physics.Arcade.Group
+  public holdBallStubs!: Phaser.Physics.Arcade.Group
+  public holdBallBolt!: Phaser.GameObjects.Image
   private shotSound!:
     | Phaser.Sound.NoAudioSound
     | Phaser.Sound.HTML5AudioSound
@@ -51,10 +54,10 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
       loop: false,
       volume: 0.3,
     })
-
-    //////////////// debug ////////////////
-    // debug cannons
-    // this.addCannons()
+    // add empty hold ball stubs
+    this.holdBallStubs = this.scene.physics.add.group({
+      classType: Phaser.Physics.Arcade.Image
+    })
   }
 
   //////////////////////////////////////////////////////////////
@@ -75,6 +78,20 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
         return true
       })
     }
+
+    if (this.holdBallStubs.getLength()) {
+      const xL = this.x - this.width / 2 + 15
+      const xR = this.x + this.width / 2 - 16
+      const y = this.y - this.height / 2 - 6
+      this.holdBallStubs.children.each((child, i) => {
+        const stub = child as Phaser.Physics.Arcade.Sprite
+        if (i === 0) stub.setPosition(xL, y)
+        if (i === 1) stub.setPosition(xR, y)
+        return true
+      })
+      this.holdBallBolt.setPosition(this.x, this.y - 20)
+      if (this.lengthChanging) this.adjustBoltCrop()
+    }
   }
 
   //////////////////////////////////////////////////////////////
@@ -85,6 +102,7 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
     this.setSize(this.frame.width, 20)
     this.paddleLength = 2
 
+    if (this.holdBallStubs.getLength()) this.removeBallHolder()
     if (this.cannons.getLength()) {
       this.removeCannons()
       this.scene.input.off("pointerdown", this.handleShoot, this)
@@ -104,14 +122,16 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
   }
 
   //////////////////////////////////////////////////////////////
-  ////// EXPAND PADDLES
+  ////// CHANGE SIZE
   expand() {
     if (this.paddleLength === 3) return
+    this.lengthChanging = true
     if (this.paddleLength === 2) {
       this.play(Anims.paddleGetsLonger2)
       this.on("animationcomplete", () => {
         this.play(Anims.longPaddle)
         this.setSize(this.frame.width, 20)
+        this.lengthChanging = false
       })
     }
     if (this.paddleLength === 1) {
@@ -119,20 +139,20 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
       this.on("animationcomplete", () => {
         this.play(Anims.defaultPaddle)
         this.setSize(this.frame.width, 20)
+        this.lengthChanging = false
       })
     }
     this.paddleLength++
   }
-
-  //////////////////////////////////////////////////////////////
-  ////// SHRINK PADDLE
   shrink() {
     if (this.paddleLength === 1) return
+    this.lengthChanging = true
     if (this.paddleLength === 2) {
       this.play(Anims.paddleGetsShorter1)
       this.on("animationcomplete", () => {
         this.play(Anims.shortPaddle)
         this.setSize(this.frame.width, 20)
+        this.lengthChanging = false
       })
     }
     if (this.paddleLength === 3) {
@@ -140,24 +160,47 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
       this.on("animationcomplete", () => {
         this.play(Anims.defaultPaddle)
         this.setSize(this.frame.width, 20)
+        this.lengthChanging = false
       })
     }
     this.paddleLength--
   }
 
   //////////////////////////////////////////////////////////////
-  ////// ADD SHOOTER POWERUP
+  ////// ADD/REMOVE SHOOTER POWERUP
   addCannons() {
     if (this.cannons.getLength()) return
-    this.cannons.get(this.x, this.y, Sprites.cannon)
-    this.cannons.get(this.x, this.y, Sprites.cannon)
     this.scene.input.on("pointerdown", this.handleShoot, this)
+    this.cannons.get(this.x, this.y, Sprites.cannon)
+    this.cannons.get(this.x, this.y, Sprites.cannon)
+  }
+  removeCannons() {
+    this.cannons.clear(true, true)
   }
 
   //////////////////////////////////////////////////////////////
-  ////// REMOVE SHOOTER POWERUP
-  removeCannons() {
-    this.cannons.clear(true, true)
+  ////// ADD/REMOVE BALL HOLDER ART
+  addBallHolder() {
+    if (this.holdBallStubs.getLength()) return
+    this.holdBallBolt = this.scene.add.sprite(this.x, this.y, Sprites.holdBallBolt)
+      .setOrigin(0.5, 0.5)
+      .play(Anims.holdBallBolt)
+    this.adjustBoltCrop()
+    this.holdBallStubs.get(this.x, this.y, Sprites.holdBallStub)
+    this.holdBallStubs.get(this.x, this.y, Sprites.holdBallStub)
+      .setScale(-1, 1)
+  }
+  removeBallHolder() {
+    this.holdBallStubs.clear(true, true)
+    this.holdBallBolt.destroy()
+  }
+  adjustBoltCrop() {
+    // the visible portion of the bolt needs to change depending
+    // on the length of the paddle 
+    if (!this.holdBallBolt.active) return
+    const cropWidth = this.width - 30
+    const cropX = (this.holdBallBolt.width - cropWidth) / 2
+    this.holdBallBolt.setCrop(cropX, 0, cropWidth, this.height)
   }
 
   //////////////////////////////////////////////////////////////
@@ -192,5 +235,8 @@ export const createPaddle = function (scene: Phaser.Scene) {
   scene.physics.world.enableBody(paddle, Phaser.Physics.Arcade.DYNAMIC_BODY)
   paddle.init()
   debug.cannons && paddle.addCannons()
+  debug.holdBall && paddle.addBallHolder()
+  debug.shortPaddle && paddle.shrink()
+  debug.longPaddle && paddle.expand()
   return paddle
 }

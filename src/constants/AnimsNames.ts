@@ -18,6 +18,7 @@ export enum Anims {
   paddleGetsLonger2 = "paddleGetsLonger2",
   paddleGetsShorter1 = "paddleGetsShorter1",
   paddleGetsShorter2 = "paddleGetsShorter2",
+  holdBallBolt = "holdBallBolt",
   shoot = "shoot",
   //text
   gameOver = "gameOver",

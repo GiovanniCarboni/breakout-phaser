@@ -3,6 +3,7 @@ import { Anims, Sprites } from "../constants"
 export const createPaddleAnims = (
   anims: Phaser.Animations.AnimationManager
 ) => {
+  // paddle 
   anims.create({
     key: Anims.defaultPaddle,
     frames: anims.generateFrameNames(Sprites.paddle, {
@@ -76,7 +77,7 @@ export const createPaddleAnims = (
     }),
     frameRate: 60,
   })
-
+  // paddle cannons
   anims.create({
     key: Anims.shoot,
     frames: anims.generateFrameNumbers(Sprites.cannonShooting, {
@@ -84,5 +85,15 @@ export const createPaddleAnims = (
       end: 3,
     }),
     frameRate: 40,
+  })
+  // paddle hold-ball bolt
+  anims.create({
+    key: Anims.holdBallBolt,
+    frames: anims.generateFrameNumbers(Sprites.holdBallBolt, {
+      start: 0,
+      end: 3
+    }),
+    frameRate: 18,
+    repeat: -1
   })
 }
