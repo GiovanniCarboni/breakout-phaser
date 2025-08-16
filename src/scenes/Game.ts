@@ -7,6 +7,7 @@ import Powerups, { createPowerups } from "../components/Powerup/Powerups"
 import { Sprites, Events, Sounds, Scenes, Anims, StorageKeys } from "../constants"
 import { transition } from "../anims/SceneTransitions"
 import { storage } from "../utils/gneral"
+import { debug } from "../scripts/debug"
 
 export class Game extends Phaser.Scene {
   private isCustom: boolean = false
@@ -45,7 +46,7 @@ export class Game extends Phaser.Scene {
       this.isCustom = true
       sceneEvents.emit(Events.levelChanged, 0)
     } else if (!isCustom) {
-      this.level = 1
+      this.level = Number(debug.level) || 1
       this.isCustom = false
       sceneEvents.emit(Events.levelChanged, this.level)
       this.bricks = createBricks(this, this.level)
@@ -186,7 +187,7 @@ export class Game extends Phaser.Scene {
       fire: this.sound.add(Sounds.fireBrick, { loop: false }),
       fireBrickbreak: this.sound.add(Sounds.fireBrickbreak, { loop: false }),
       hitMetal: this.sound.add(Sounds.hitMetal, { loop: false, volume: 0.3 }),
-      holdBall: this.sound.add(Sounds.holdBall, { loop: false }),
+      holdBall: this.sound.add(Sounds.holdBall, { loop: false, volume: 1.8 }),
     }
   }
 

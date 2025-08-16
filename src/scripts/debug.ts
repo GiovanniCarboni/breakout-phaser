@@ -1,6 +1,7 @@
 type DebugKeys = keyof typeof debug
 const debug = {
     physics: false,
+    level: false, // false, 2, 3, 4 ...
     fireBall: false,
     cannons: false,
     holdBall: false,
