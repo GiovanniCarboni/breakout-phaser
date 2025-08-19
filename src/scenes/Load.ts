@@ -14,6 +14,7 @@ export class Load extends Phaser.Scene {
   }
 
   preload() {
+    this.createLoader()
     ////////// IMAGES /////////////////////
     // ball
     this.load.image(Sprites.ball, "assets/images/ball/ball.png")
@@ -274,6 +275,20 @@ export class Load extends Phaser.Scene {
       } else {
         this.scene.start(Scenes.languageSelection)
       }
+    })
+  }
+
+  createLoader() {
+    const loadingBarBackground = this.add.rectangle(0, this.scale.height, this.scale.width - 54, 20, 0x3f261a)
+      .setOrigin(0, 1)
+    const loadingBar = this.add.rectangle(0, this.scale.height, 0, 20, 0x936e56)
+      .setOrigin(0, 1)
+    const loadingText = this.add.text(this.scale.width, this.scale.height, '', {
+      fontSize: 22
+    }).setOrigin(1, 1)
+    this.load.on("progress", (value: number) => {
+      loadingBar.width = value * loadingBarBackground.width
+      loadingText.setText(parseInt(String(value * 100)) + '%')
     })
   }
 }
