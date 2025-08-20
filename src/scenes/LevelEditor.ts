@@ -227,13 +227,13 @@ export class LevelEditor extends Phaser.Scene {
   ////// SAVE TO LOCAL STORAGE
   saveToStorage() {
     const data = storage.get(StorageKeys.createdLevels)
-
+    const template = Bricks.getTemplateFromBricks(this.slots)
     // if no levels in local storage
     if (!data) {
       storage.set(StorageKeys.createdLevels, [
         {
           id: Date.now(),
-          template: Bricks.getTemplateFromBricks(this.slots),
+          template
         },
       ])
     } else { // if there are levels in local storage
@@ -245,16 +245,13 @@ export class LevelEditor extends Phaser.Scene {
       })
       // if current level exists already (by id)
       if (data && existingLevel && existingLevelIndex !== null) {
-        savedLevels[existingLevelIndex!].template =
-          Bricks.getTemplateFromBricks(this.slots)
+        savedLevels[existingLevelIndex!].template = template
         storage.set(StorageKeys.createdLevels, savedLevels)
       } else { // if this is a new level
-        storage.set(StorageKeys.createdLevels, [...savedLevels,
-          {
-            id: this.levelId,
-            template: Bricks.getTemplateFromBricks(this.slots)
-          }
-        ])
+        storage.set(StorageKeys.createdLevels, [...savedLevels, {
+          id: this.levelId,
+          template
+        }])
       }
     }
   }

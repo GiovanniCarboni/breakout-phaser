@@ -10,6 +10,7 @@ import { storage } from "../utils/gneral"
 import { debug } from "../scripts/debug"
 
 export class Game extends Phaser.Scene {
+  private lastLevel = 4
   private isCustom: boolean = false
   private topEdge!: Phaser.Physics.Arcade.Image
   private ball!: Ball
@@ -46,7 +47,8 @@ export class Game extends Phaser.Scene {
       this.isCustom = true
       sceneEvents.emit(Events.levelChanged, 0)
     } else if (!isCustom) {
-      this.level = Number(debug.level) || 1
+      const debugLevel = Number(debug.level) > this.lastLevel ? this.lastLevel : Number(debug.level)
+      this.level = debugLevel || 1
       this.isCustom = false
       sceneEvents.emit(Events.levelChanged, this.level)
       this.bricks = createBricks(this, this.level)
@@ -154,7 +156,7 @@ export class Game extends Phaser.Scene {
     if (!this.isCustom) {
       this.saveBestScore(this.level)
       // if last level
-      if (this.level === 3) {
+      if (this.level === this.lastLevel) {
         this.scene.stop()
         this.scene.start(Scenes.winGame, { isCustom: false })
         return
