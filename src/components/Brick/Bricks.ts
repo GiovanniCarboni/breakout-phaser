@@ -103,7 +103,7 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
       const brick = brickObj as Phaser.Physics.Arcade.Sprite
       await sleep(10)
       try {
-        brick.play(Anims.burnBrick)
+        brick.play(Anims.burnBrick, true)
         brick.on("animationcomplete", () => brick.destroy())
       } catch (err) {
         continue

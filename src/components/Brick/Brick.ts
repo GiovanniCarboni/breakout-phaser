@@ -32,7 +32,7 @@ export default class Brick extends Phaser.Physics.Arcade.Sprite {
         this.setTexture(Sprites.fireBrick)
         this.scene.time.delayedCall(
           74 * Math.ceil(Math.random() * 8),
-          () => this.play(Anims.fireBrick)
+          () => this.play(Anims.fireBrick, true)
         )
         this.setData("type", "fire")
         break
