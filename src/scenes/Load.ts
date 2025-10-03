@@ -7,6 +7,7 @@ import { WebFontFileLoader } from "../scripts/webfontloader"
 import { loadLocale } from "../i18next/i18next"
 import i18next from "i18next"
 import { storage } from "../utils/gneral"
+import { debug } from "../scripts/debug"
 
 export class Load extends Phaser.Scene {
   constructor() {
@@ -15,6 +16,10 @@ export class Load extends Phaser.Scene {
 
   preload() {
     this.createLoader()
+    ////////// INPUT /////////////////////
+    this.input.setDefaultCursor(Sprites.defaultCursor)
+    // remove ctx menu on right click
+    !debug.ctxMenu && this.input.mouse?.disableContextMenu()
     ////////// IMAGES /////////////////////
     // ball
     this.load.image(Sprites.ball, "assets/images/ball/ball.png")

@@ -25,16 +25,17 @@ npm run build
 The build artifacts will be stored in the `./dist` directory.
 
 ## Debug
-Locate the debug object in `./src/scripts/debug.ts`, edit the values to test one or more behaviors. The changes will apply on the start of a new game or a custom game.
+Locate the debug object in `./src/scripts/debug.ts`, edit the values to test one or more behaviors.
 ```javascript
 const debug = {
     physics: false,
-    level: 2, // false, 2, 3, 4 ...
-    fireBall: true,
+    level: false, // false, 2, 3, 4 ...
+    fireBall: false,
     cannons: false,
     holdBall: false,
     shortPaddle: false, // either short or long, cant be both
     longPaddle: false,
+    ctxMenu: false,
 }
 ```
 

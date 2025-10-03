@@ -7,6 +7,7 @@ const debug = {
     holdBall: false,
     shortPaddle: false, // either short or long, cant be both
     longPaddle: false,
+    ctxMenu: false,
 }
 
 const displayDebugging = () => {

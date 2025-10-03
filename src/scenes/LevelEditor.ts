@@ -30,6 +30,10 @@ export class LevelEditor extends Phaser.Scene {
   //////////////////////////////////////////////////////////////
   ////// INIT
   init(data: { id: number; template: number[][] }) {
+    // toggle eraser cursor on pointer right btn down
+    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => pointer.rightButtonDown() && this.input.setDefaultCursor(Sprites.eraserCursor))
+    this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => (pointer.rightButtonReleased() || pointer.button === 2) && this.input.setDefaultCursor(Sprites.defaultCursor))
+    
     this.selectedBrick = undefined
 
     // there no incoming template (blank page)
@@ -61,9 +65,6 @@ export class LevelEditor extends Phaser.Scene {
 
     // set background color
     this.cameras.main.setBackgroundColor("#110702")
-
-    // remove menu on right click
-    this.input.mouse?.disableContextMenu()
 
     // init elements
     this.initBrickSelector()

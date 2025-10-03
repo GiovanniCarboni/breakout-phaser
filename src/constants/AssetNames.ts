@@ -51,6 +51,8 @@ export enum Sprites {
   sideBar = "sideBar",
   dot = "dot",
   dotHighlight = "dotHighlight",
+  defaultCursor = "url(assets/images/UI/cursor_default.png), auto",
+  eraserCursor = "url(assets/images/UI/cursor_eraser.png), auto",
   // volume slider
   volumeBar = "volumeBar",
   volumeNob = "volumeNob",
