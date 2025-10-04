@@ -96,6 +96,7 @@ export class LevelEditor extends Phaser.Scene {
         loop: false,
         volume: 0.2,
       }),
+      erase: this.sound.add(Sounds.erase, { loop: false })
     }
 
     //////////////////////////////////////////////////////////////
@@ -155,6 +156,7 @@ export class LevelEditor extends Phaser.Scene {
   //////////////////////////////////////////////////////////////
   ////// HANDLE BACK
   handleBack() {
+    this.input.setDefaultCursor(Sprites.defaultCursor)
     const savedData = storage.get(StorageKeys.createdLevels)
     transition("fadeOut", this, () => {
       this.message = undefined
@@ -171,6 +173,7 @@ export class LevelEditor extends Phaser.Scene {
   //////////////////////////////////////////////////////////////
   ////// HANDLE CLEAR
   handleClear() {
+    this.sounds.erase.play()
     this.slots.children.each((slotObj) => {
       const slot = slotObj as Brick
       if (slot.anims.isPlaying) slot.anims.stop()
@@ -273,7 +276,10 @@ export class LevelEditor extends Phaser.Scene {
       }
     } else if (pointer.rightButtonDown()) {
       if (selectedSlot.anims.isPlaying) selectedSlot.anims.stop()
-      selectedSlot.setTexture(Sprites.blankBrick)
+      if (selectedSlot.texture.key !== Sprites.blankBrick) {
+        !this.sounds.erase.isPlaying && this.sounds.erase.play()
+        selectedSlot.setTexture(Sprites.blankBrick)
+      }
     }
   }
 
@@ -287,7 +293,7 @@ export class LevelEditor extends Phaser.Scene {
         Sprites.playButton
       )
       .play(Anims.playButtonIdle)
-      .setInteractive()
+      .setInteractive({ cursor: Sprites.pointerCursor })
 
     // play handlers
     const playDown = () => {
@@ -358,7 +364,7 @@ export class LevelEditor extends Phaser.Scene {
         brick.sprite
       )
       if (brick.play) brickEl.play(brick.play)
-      brickEl.setInteractive()
+      brickEl.setInteractive({ cursor: Sprites.pointerCursor })
       brickEl.setOrigin(0.5, 0.5)
       brickEl.on("pointerdown", brick.sprite === Sprites.lockedBrick 
         ? () => this.displayMessage(t("You need to clear more stages to unlock this brick"))

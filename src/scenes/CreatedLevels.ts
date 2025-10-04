@@ -231,11 +231,11 @@ export class CreatedLevels extends Phaser.Scene {
         this.scale.height / 2 - 60,
         Sprites.arrowButton
       )
-      .setInteractive()
+      .setInteractive({ cursor: Sprites.pointerCursor })
     const left = this.add
       .sprite(100, this.scale.height / 2 - 60, Sprites.arrowButton)
       .setRotation(Phaser.Math.DegToRad(180))
-      .setInteractive()
+      .setInteractive({ cursor: Sprites.pointerCursor })
 
     left.play(Anims.arrowButtonDisabled).setData("disabled", true)
     if (this.representation.length - 1 === 0)

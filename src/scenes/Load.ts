@@ -252,6 +252,7 @@ export class Load extends Phaser.Scene {
     this.load.audio(Sounds.ballIgnition, "assets/sounds/ball_ignition.mp3")
     this.load.audio(Sounds.shot, "assets/sounds/shot.mp3")
     this.load.audio(Sounds.holdBall, "assets/sounds/hold_ball.mp3")
+    this.load.audio(Sounds.erase, "assets/sounds/erase.mp3")
 
     ////////// AUDIO /////////////////////
     this.load.addFile(new WebFontFileLoader(this.load, [Fonts.manaspace]))

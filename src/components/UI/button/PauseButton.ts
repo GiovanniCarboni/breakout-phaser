@@ -13,7 +13,7 @@ export default class PauseButton extends Phaser.GameObjects.Sprite {
     frame?: string
   ) {
     super(scene, x, y, texture, frame)
-    this.setInteractive()
+    this.setInteractive({ cursor: Sprites.pointerCursor })
 
     this.pressSound = this.scene.sound.add(Sounds.buttonPress, {
       loop: false,

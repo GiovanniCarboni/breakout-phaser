@@ -15,7 +15,7 @@ export default class Button extends Phaser.GameObjects.Sprite {
     frame?: string
   ) {
     super(scene, x, y, texture, frame)
-    this.setInteractive()
+    this.setInteractive({ cursor: Sprites.pointerCursor })
     this.play(Anims.genericButtonIdle)
     this.sounds = {
       shuffle: this.scene.sound.add(Sounds.shuffle, {

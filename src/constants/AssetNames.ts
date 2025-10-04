@@ -51,8 +51,9 @@ export enum Sprites {
   sideBar = "sideBar",
   dot = "dot",
   dotHighlight = "dotHighlight",
-  defaultCursor = "url(assets/images/UI/cursor_default.png), auto",
-  eraserCursor = "url(assets/images/UI/cursor_eraser.png), auto",
+  defaultCursor = "url(assets/images/UI/cursor_default.cur), auto",
+  eraserCursor = "url(assets/images/UI/cursor_eraser.cur), auto",
+  pointerCursor = "url(assets/images/UI/cursor_pointer.cur) 16 16, auto",
   // volume slider
   volumeBar = "volumeBar",
   volumeNob = "volumeNob",
@@ -87,6 +88,7 @@ export enum Sounds {
   ballIgnition = "ballIgnition",
   shot = "shot",
   holdBall = "holdBall",
+  erase = "erase",
 }
 
 // FONTS ///////////////////////////////////////////////////////////////////////////

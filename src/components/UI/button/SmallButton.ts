@@ -15,7 +15,7 @@ export default class SmallButton extends Phaser.GameObjects.Sprite {
     frame?: string
   ) {
     super(scene, x, y, texture, frame)
-    this.setOrigin(0.5, 0.5).setInteractive()
+    this.setOrigin(0.5, 0.5).setInteractive({ cursor: Sprites.pointerCursor })
 
     this.pressSound = this.scene.sound.add(Sounds.buttonPress, {
       loop: false,

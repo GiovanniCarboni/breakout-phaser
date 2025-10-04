@@ -150,7 +150,7 @@ export class Options extends Phaser.Scene {
 
     this.nob = this.add
       .sprite(nobX, label.y, Sprites.volumeNob)
-      .setInteractive()
+      .setInteractive({ cursor: Sprites.pointerCursor })
       .setDepth(2)
 
     /////// volume fill /////////////////////////////////////////////

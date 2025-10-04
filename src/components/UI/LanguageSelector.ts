@@ -25,15 +25,17 @@ export default class LanguageSelector extends Phaser.GameObjects.Group {
     ////// FLAGS ////////////////////////////////////////////////////
     const it = this.scene.add
       .sprite(x - 90, y, Sprites.italian)
-      .setInteractive()
+      .setInteractive({ cursor: Sprites.pointerCursor })
     this.addListeners(it, "Italiano", onChange)
     this.add(it)
-    const ro = this.scene.add.sprite(x, y, Sprites.romanian).setInteractive()
+    const ro = this.scene.add
+      .sprite(x, y, Sprites.romanian)
+      .setInteractive({ cursor: Sprites.pointerCursor })
     this.addListeners(ro, "Romana", onChange)
     this.add(ro)
     const en = this.scene.add
       .sprite(x + 90, y, Sprites.english)
-      .setInteractive()
+      .setInteractive({ cursor: Sprites.pointerCursor })
     this.addListeners(en, "English", onChange)
     this.add(en)
 
