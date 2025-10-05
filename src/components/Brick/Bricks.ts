@@ -1,4 +1,4 @@
-import { Anims } from "../../constants"
+import { Anims, Sprites } from "../../constants"
 import {
   LevelTemplate, // type
   getLevelTemplate,
@@ -24,12 +24,13 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
     while (bricks.length !== 0) {
       const row: number[] = bricks.splice(0, 17).map((brick: string) => {
         switch(brick) {
-          case "commonBrick": return 1
-          case "fireBrick": return 2
-          case "metalBrick": return 3
-          case "iceBrick": return 4
-          case "rockBrick": return 5
-          case "blankBrick": return 0
+          case Sprites.commonBrick: return 1
+          case Sprites.fireBrick: return 2
+          case Sprites.metalBrick: return 3
+          case Sprites.iceBrick: return 4
+          case Sprites.rockBrick: return 5
+          case Sprites.glassBrick: return 6
+          case Sprites.blankBrick: return 0
           default: return 0
         }
       })

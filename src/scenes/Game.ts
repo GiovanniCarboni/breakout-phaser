@@ -190,6 +190,7 @@ export class Game extends Phaser.Scene {
       fireBrickbreak: this.sound.add(Sounds.fireBrickbreak, { loop: false }),
       hitMetal: this.sound.add(Sounds.hitMetal, { loop: false, volume: 0.3 }),
       holdBall: this.sound.add(Sounds.holdBall, { loop: false, volume: 1.8 }),
+      glassShatter: this.sound.add(Sounds.glassShatter, { loop: false })
     }
   }
 
@@ -411,6 +412,14 @@ export class Game extends Phaser.Scene {
           break
       }
     }
+    if (brickType === "glass") {
+      this.sounds.glassShatter.play()
+      const hits = brick.getData("hits")
+      if (hits === 1) return (brick.disableBody(), brick.destroy())
+      brick.setFrame(2)
+      brick.setData("hits", 1)
+      this.addPowerup(brick.x, brick.y)
+    }
   }
 
   //////////////////////////////////////////////////////////////
@@ -451,18 +460,15 @@ export class Game extends Phaser.Scene {
       const hits = brick.getData("hits") || 0
       switch (hits) {
         case 0: 
-        // case 3: 
           brick.setFrame(1)
           brick.setData("hits", 1)
           break
         case 1:
-        // case 4:
           brick.setFrame(2)
           brick.setData("hits", 2)
           this.addPowerup(brick.x, brick.y)
           break
         case 2:
-        // default:
           brick.anims.play(Anims.rockBrickBreak)
           this.addPowerup(brick.x, brick.y)
           brick.on("animationcomplete", () => {
@@ -471,6 +477,16 @@ export class Game extends Phaser.Scene {
           })
           break
       }
+      return
+    }
+
+    if (brickType === "glass") {
+      this.sounds.glassShatter.play()
+      const hits = brick.getData("hits")
+      if (hits === 1) return (brick.disableBody(), brick.destroy())
+      brick.setFrame(2)
+      brick.setData("hits", 1)
+      this.addPowerup(brick.x, brick.y)
       return
     }
 

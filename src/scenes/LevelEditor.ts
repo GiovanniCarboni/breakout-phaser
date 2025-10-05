@@ -55,6 +55,11 @@ export class LevelEditor extends Phaser.Scene {
           })
         )
       )
+      this.slots.children.each(slot => {
+        const brick = slot as Brick
+        if (brick.texture.key === Sprites.glassBrick) brick.setFrame(1)
+        return true
+      })
     }
   }
 
@@ -273,6 +278,8 @@ export class LevelEditor extends Phaser.Scene {
         if (this.selectedBrick.anims?.isPlaying) {
           selectedSlot.play(this.selectedBrick.anims.currentAnim!)
         } else selectedSlot.setTexture(this.selectedBrick.texture.key)
+        const frameToShow = this.selectedBrick.getData("frameToShow")
+        if (frameToShow) selectedSlot.setFrame(frameToShow)
       }
     } else if (pointer.rightButtonDown()) {
       if (selectedSlot.anims.isPlaying) selectedSlot.anims.stop()
@@ -349,7 +356,8 @@ export class LevelEditor extends Phaser.Scene {
       { x: 160, y: canvasH - 70, sprite: Sprites.fireBrick, play: Anims.fireBrick },
       { x: 240, y: canvasH - 110, sprite: Sprites.metalBrick },
       { x: 240, y: canvasH - 70, sprite: Sprites.iceBrick },
-      { x: 320, y: canvasH - 110, sprite: Sprites.rockBrick},
+      { x: 320, y: canvasH - 110, sprite: Sprites.rockBrick },
+      { x: 320, y: canvasH - 70, sprite: Sprites.glassBrick, frame: 1 },
     ].map((brick, i) => i > bestScore ? {
       ...brick,
       sprite: Sprites.lockedBrick,
@@ -363,7 +371,14 @@ export class LevelEditor extends Phaser.Scene {
         brick.y,
         brick.sprite
       )
-      if (brick.play) brickEl.play(brick.play)
+      if (brick.play) {
+        brickEl.setData("toPlay", brick.play)
+        brickEl.play(brick.play)
+      }
+      if (brick.frame) {
+        brickEl.setData("frameToShow", brick.frame)
+        brickEl.setFrame(1)
+      }
       brickEl.setInteractive({ cursor: Sprites.pointerCursor })
       brickEl.setOrigin(0.5, 0.5)
       brickEl.on("pointerdown", brick.sprite === Sprites.lockedBrick 
@@ -388,7 +403,13 @@ export class LevelEditor extends Phaser.Scene {
     if (this.selectedBrick) this.selectedBrick.destroy()
     this.brickHighlight = Brick.createHighlight(brick.x, brick.y, this)
     this.selectedBrick = this.add.sprite(brick.x + 8, brick.y + 5, sprite)
-    if (sprite === "fireBrick") this.selectedBrick.play(Anims.fireBrick)
+    const frameToShow = brick.getData("frameToShow")
+    if (frameToShow) {
+      this.selectedBrick.setFrame(frameToShow)
+      this.selectedBrick.setData("frameToShow", frameToShow)
+    }
+    const toPlayAnim = brick.getData("toPlay")
+    if (toPlayAnim) this.selectedBrick.play(toPlayAnim)
     this.input.off("pointermove")
     this.input.on("pointermove", this.handleMoveBrick, this)
   }

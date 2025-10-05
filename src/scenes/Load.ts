@@ -50,56 +50,16 @@ export class Load extends Phaser.Scene {
       frameHeight: 10
     })
     // brick
+    const brickFrameOptions = { frameWidth: 51, frameHeight: 20 }
     this.load.image(Sprites.blankBrick, "assets/images/brick/blank_brick.png")
     this.load.image(Sprites.lockedBrick, "assets/images/brick/locked_brick.png")
-    this.load.spritesheet(
-      Sprites.commonBrick,
-      "assets/images/brick/common_brick.png",
-      {
-        frameWidth: 51,
-        frameHeight: 20,
-      }
-    )
-    this.load.spritesheet(
-      Sprites.fireBrick,
-      "assets/images/brick/fire_brick.png",
-      {
-        frameWidth: 51,
-        frameHeight: 20,
-      }
-    )
-    this.load.spritesheet(
-      Sprites.burnBrick,
-      "assets/images/brick/burn_brick.png",
-      {
-        frameWidth: 51,
-        frameHeight: 20,
-      }
-    )
-    this.load.spritesheet(
-      Sprites.metalBrick,
-      "assets/images/brick/metal_brick.png",
-      {
-        frameWidth: 51,
-        frameHeight: 20,
-      }
-    )
-    this.load.spritesheet(
-      Sprites.iceBrick,
-      "assets/images/brick/ice_brick.png",
-      {
-        frameWidth: 51,
-        frameHeight: 20,
-      }
-    )
-    this.load.spritesheet(
-      Sprites.rockBrick,
-      "assets/images/brick/rock_brick.png",
-      {
-        frameWidth: 51,
-        frameHeight: 20,
-      }
-    )
+    this.load.spritesheet(Sprites.commonBrick, "assets/images/brick/common_brick.png", brickFrameOptions)
+    this.load.spritesheet(Sprites.fireBrick, "assets/images/brick/fire_brick.png", brickFrameOptions)
+    this.load.spritesheet(Sprites.burnBrick, "assets/images/brick/burn_brick.png", brickFrameOptions) 
+    this.load.spritesheet(Sprites.metalBrick, "assets/images/brick/metal_brick.png", brickFrameOptions)
+    this.load.spritesheet(Sprites.iceBrick, "assets/images/brick/ice_brick.png", brickFrameOptions)
+    this.load.spritesheet(Sprites.rockBrick, "assets/images/brick/rock_brick.png", brickFrameOptions)
+    this.load.spritesheet(Sprites.glassBrick, "assets/images/brick/glass_brick.png", brickFrameOptions)
     // powerups
     this.load.image(Sprites.notYetDiscovered, "assets/images/powerups/not_yet_discovered.png")
     this.load.image(Sprites.speedUpBall, "assets/images/powerups/speed_up_ball.png")
@@ -253,6 +213,7 @@ export class Load extends Phaser.Scene {
     this.load.audio(Sounds.shot, "assets/sounds/shot.mp3")
     this.load.audio(Sounds.holdBall, "assets/sounds/hold_ball.mp3")
     this.load.audio(Sounds.erase, "assets/sounds/erase.mp3")
+    this.load.audio(Sounds.glassShatter, "assets/sounds/glass_shatter.mp3")
 
     ////////// AUDIO /////////////////////
     this.load.addFile(new WebFontFileLoader(this.load, [Fonts.manaspace]))
