@@ -23,26 +23,17 @@ export class Load extends Phaser.Scene {
     ////////// IMAGES /////////////////////
     // ball
     this.load.image(Sprites.ball, "assets/images/ball/ball.png")
-    this.load.spritesheet(
-      Sprites.fireBall,
-      "assets/images/ball/fire_ball.png",
-      {
-        frameWidth: 12,
-        frameHeight: 18,
-      }
-    )
+    this.load.spritesheet(Sprites.fireBall, "assets/images/ball/fire_ball.png", {
+      frameWidth: 12,
+      frameHeight: 18,
+    })
     // paddle
-    this.load.atlas(
-      Sprites.paddle,
-      "assets/images/paddle/paddle.png",
-      "assets/images/paddle/paddle.json"
-    )
+    this.load.atlas(Sprites.paddle, "assets/images/paddle/paddle.png", "assets/images/paddle/paddle.json")
     this.load.image(Sprites.cannon, "assets/images/paddle/cannon.png")
-    this.load.spritesheet(
-      Sprites.cannonShooting,
-      "assets/images/paddle/cannon_shooting.png",
-      { frameWidth: 10, frameHeight: 8 }
-    )
+    this.load.spritesheet(Sprites.cannonShooting, "assets/images/paddle/cannon_shooting.png", { 
+      frameWidth: 10, 
+      frameHeight: 8 
+    })
     this.load.image(Sprites.bullet, "assets/images/paddle/bullet.png")
     this.load.image(Sprites.holdBallStub, "assets/images/paddle/hold_ball_stub.png")
     this.load.spritesheet(Sprites.holdBallBolt, "assets/images/paddle/hold_ball_bold.png", {
@@ -65,118 +56,63 @@ export class Load extends Phaser.Scene {
     this.load.image(Sprites.speedUpBall, "assets/images/powerups/speed_up_ball.png")
     this.load.image(Sprites.getLife, "assets/images/powerups/get_life.png")
     this.load.image(Sprites.loseLife, "assets/images/powerups/lose_life.png")
-    this.load.image(
-      Sprites.expandPaddle,
-      "assets/images/powerups/expand_paddle.png"
-    )
-    this.load.image(
-      Sprites.shrinkPaddle,
-      "assets/images/powerups/shrink_paddle.png"
-    )
-    this.load.image(
-      Sprites.igniteBall,
-      "assets/images/powerups/ignite_ball.png"
-    )
-    this.load.image(
-      Sprites.addShooter,
-      "assets/images/powerups/add_shooter.png"
-    )
-    this.load.image(
-      Sprites.holdBall,
-      "assets/images/powerups/hold_ball.png"
-    )
+    this.load.image(Sprites.expandPaddle, "assets/images/powerups/expand_paddle.png")
+    this.load.image(Sprites.shrinkPaddle, "assets/images/powerups/shrink_paddle.png")
+    this.load.image(Sprites.igniteBall, "assets/images/powerups/ignite_ball.png")
+    this.load.image(Sprites.addShooter, "assets/images/powerups/add_shooter.png")
+    this.load.image(Sprites.holdBall, "assets/images/powerups/hold_ball.png")
     // ui
     this.load.image(Sprites.headbar, "assets/images/UI/headbar.png")
     this.load.image(Sprites.pauseButton, "assets/images/UI/pause_button.png")
     this.load.image(Sprites.heart, "assets/images/UI/heart.png")
-    this.load.image(
-      Sprites.brickSelector,
-      "assets/images/UI/brick_selector.png"
-    )
-    this.load.image(
-      Sprites.brickHighlight,
-      "assets/images/UI/brick_highlight.png"
-    )
-    this.load.spritesheet(
-      Sprites.playButton,
-      "assets/images/UI/play_button.png",
-      {
-        frameWidth: 120,
-        frameHeight: 120,
-      }
-    )
-    this.load.spritesheet(
-      Sprites.genericButton,
-      "assets/images/UI/generic_button.png",
-      { frameWidth: 270, frameHeight: 73 }
-    )
-    this.load.spritesheet(
-      Sprites.mainButton,
-      "assets/images/UI/main_button.png",
-      { frameWidth: 270, frameHeight: 73 }
-    )
+    this.load.image(Sprites.brickSelector, "assets/images/UI/brick_selector.png")
+    this.load.image(Sprites.brickHighlight, "assets/images/UI/brick_highlight.png")
+    this.load.spritesheet(Sprites.playButton, "assets/images/UI/play_button.png", {
+      frameWidth: 120,
+      frameHeight: 120,
+    })
+    this.load.spritesheet(Sprites.genericButton, "assets/images/UI/generic_button.png", { 
+      frameWidth: 270, 
+      frameHeight: 73 
+    })
+    this.load.spritesheet(Sprites.mainButton, "assets/images/UI/main_button.png", { 
+      frameWidth: 270, 
+      frameHeight: 73 
+    })
     this.load.image(Sprites.menuBox2, "assets/images/UI/menu_box_2.png")
     this.load.image(Sprites.menuBox3, "assets/images/UI/menu_box_3.png")
     this.load.image(Sprites.menuBox4, "assets/images/UI/menu_box_4.png")
     this.load.image(Sprites.menuHanger, "assets/images/UI/menu_hanger.png")
-    this.load.spritesheet(
-      Sprites.backButton,
-      "assets/images/UI/back_button.png",
-      {
-        frameWidth: 80,
-        frameHeight: 33,
-      }
-    )
-    this.load.spritesheet(
-      Sprites.clearButton,
-      "assets/images/UI/clear_button.png",
-      {
-        frameWidth: 33,
-        frameHeight: 33,
-      }
-    )
-    this.load.image(
-      Sprites.languageSelectionBox,
-      "assets/images/UI/language_selection_box.png"
-    )
+    this.load.spritesheet(Sprites.backButton, "assets/images/UI/back_button.png", {
+      frameWidth: 80,
+      frameHeight: 33,
+    })
+    this.load.spritesheet(Sprites.clearButton, "assets/images/UI/clear_button.png", {
+      frameWidth: 33,
+      frameHeight: 33,
+    })
+    this.load.image(Sprites.languageSelectionBox, "assets/images/UI/language_selection_box.png")
     this.load.image(Sprites.optionsBox, "assets/images/UI/options_box.png")
-    this.load.spritesheet(
-      Sprites.arrowButton,
-      "assets/images/UI/arrow_button.png",
-      {
-        frameHeight: 100,
-        frameWidth: 80,
-      }
-    )
-    this.load.spritesheet(
-      Sprites.titleFrame,
-      "assets/images/UI/title_frame.png",
-      {
-        frameWidth: 270,
-        frameHeight: 73,
-      }
-    )
+    this.load.spritesheet(Sprites.arrowButton, "assets/images/UI/arrow_button.png", {
+      frameHeight: 100,
+      frameWidth: 80,
+    })
+    this.load.spritesheet(Sprites.titleFrame, "assets/images/UI/title_frame.png", {
+      frameWidth: 270,
+      frameHeight: 73,
+    })
     this.load.image(Sprites.sideBar, "assets/images/UI/side_bar.png")
     this.load.image(Sprites.dot, "assets/images/UI/dot.png")
     this.load.image(Sprites.dotHighlight, "assets/images/UI/dot_highlight.png")
 
     // volume slider
-    this.load.image(
-      Sprites.volumeBar,
-      "assets/images/UI/volume_slider/bar.png"
-    )
-    this.load.image(
-      Sprites.volumeNob,
-      "assets/images/UI/volume_slider/nob.png"
-    )
+    this.load.image(Sprites.volumeBar, "assets/images/UI/volume_slider/bar.png")
+    this.load.image(Sprites.volumeNob, "assets/images/UI/volume_slider/nob.png")
     // flags
     this.load.image(Sprites.italian, "assets/images/flags/italian.png")
     this.load.image(Sprites.romanian, "assets/images/flags/romanian.png")
     this.load.image(Sprites.english, "assets/images/flags/english.png")
-    this.load.image(
-      Sprites.flagHighlight,
-      "assets/images/flags/flag_highlight.png"
-    )
+    this.load.image(Sprites.flagHighlight, "assets/images/flags/flag_highlight.png")
     // text
     this.load.image(Sprites.start, "assets/images/text/start.png")
     this.load.image(Sprites.restart, "assets/images/text/restart.png")
@@ -184,14 +120,10 @@ export class Load extends Phaser.Scene {
     this.load.image(Sprites.backToMenu, "assets/images/text/back_to_menu.png")
     this.load.image(Sprites.customLevel, "assets/images/text/custom_level.png")
 
-    this.load.spritesheet(
-      Sprites.gameOver,
-      "assets/images/text/game_over.png",
-      {
-        frameWidth: 360,
-        frameHeight: 40,
-      }
-    )
+    this.load.spritesheet(Sprites.gameOver, "assets/images/text/game_over.png", {
+      frameWidth: 360,
+      frameHeight: 40,
+    })
     // others
     this.load.spritesheet(Sprites.smoke, "assets/images/smoke.png", {
       frameWidth: 26,
