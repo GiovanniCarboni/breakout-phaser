@@ -91,6 +91,7 @@ export enum Sounds {
   holdBall = "holdBall",
   erase = "erase",
   glassShatter = "glassShatter",
+  glassCrack = "glassCrack",
 }
 
 // FONTS ///////////////////////////////////////////////////////////////////////////

@@ -10,7 +10,7 @@ import { storage } from "../utils/gneral"
 import { debug } from "../scripts/debug"
 
 export class Game extends Phaser.Scene {
-  private lastLevel = 4
+  private lastLevel = 5
   private isCustom: boolean = false
   private topEdge!: Phaser.Physics.Arcade.Image
   private ball!: Ball
@@ -190,7 +190,8 @@ export class Game extends Phaser.Scene {
       fireBrickbreak: this.sound.add(Sounds.fireBrickbreak, { loop: false }),
       hitMetal: this.sound.add(Sounds.hitMetal, { loop: false, volume: 0.3 }),
       holdBall: this.sound.add(Sounds.holdBall, { loop: false, volume: 1.8 }),
-      glassShatter: this.sound.add(Sounds.glassShatter, { loop: false })
+      glassShatter: this.sound.add(Sounds.glassShatter, { loop: false }),
+      glassCrack: this.sound.add(Sounds.glassCrack, { loop: false }),
     }
   }
 
@@ -413,9 +414,13 @@ export class Game extends Phaser.Scene {
       }
     }
     if (brickType === "glass") {
-      this.sounds.glassShatter.play()
       const hits = brick.getData("hits")
-      if (hits === 1) return (brick.disableBody(), brick.destroy())
+      if (hits === 1) return (
+        this.sounds.glassCrack.play(),
+        brick.disableBody(), 
+        brick.destroy()
+      )
+      this.sounds.glassShatter.play()
       brick.setFrame(2)
       brick.setData("hits", 1)
       this.addPowerup(brick.x, brick.y)
@@ -481,9 +486,13 @@ export class Game extends Phaser.Scene {
     }
 
     if (brickType === "glass") {
-      this.sounds.glassShatter.play()
       const hits = brick.getData("hits")
-      if (hits === 1) return (brick.disableBody(), brick.destroy())
+      if (hits === 1) return (
+        this.sounds.glassShatter.play(),
+        brick.disableBody(), 
+        brick.destroy()
+      )
+      this.sounds.glassCrack.play()
       brick.setFrame(2)
       brick.setData("hits", 1)
       this.addPowerup(brick.x, brick.y)

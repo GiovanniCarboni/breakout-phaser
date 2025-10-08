@@ -114,12 +114,6 @@ export class Load extends Phaser.Scene {
     this.load.image(Sprites.english, "assets/images/flags/english.png")
     this.load.image(Sprites.flagHighlight, "assets/images/flags/flag_highlight.png")
     // text
-    this.load.image(Sprites.start, "assets/images/text/start.png")
-    this.load.image(Sprites.restart, "assets/images/text/restart.png")
-    this.load.image(Sprites.resume, "assets/images/text/resume.png")
-    this.load.image(Sprites.backToMenu, "assets/images/text/back_to_menu.png")
-    this.load.image(Sprites.customLevel, "assets/images/text/custom_level.png")
-
     this.load.spritesheet(Sprites.gameOver, "assets/images/text/game_over.png", {
       frameWidth: 360,
       frameHeight: 40,
@@ -145,6 +139,7 @@ export class Load extends Phaser.Scene {
     this.load.audio(Sounds.shot, "assets/sounds/shot.mp3")
     this.load.audio(Sounds.holdBall, "assets/sounds/hold_ball.mp3")
     this.load.audio(Sounds.erase, "assets/sounds/erase.mp3")
+    this.load.audio(Sounds.glassCrack, "assets/sounds/glass_crack.mp3")
     this.load.audio(Sounds.glassShatter, "assets/sounds/glass_shatter.mp3")
 
     ////////// AUDIO /////////////////////
