@@ -126,6 +126,16 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
       fireBrick + 20,
     ]
   }
+
+  //////////////////////////////////////////////////////////////
+  ////// SHOW INVISIBLE BRICKS
+  revealInvisible() {
+    this.children.each(brickEl => {
+      const brick = brickEl as Brick
+      if (brick.texture.key === Sprites.glassBrick && +brick.frame.name === 0) brick.setFrame(1)
+      return true
+    })
+  }
 }
 
 export const createBricks = function (

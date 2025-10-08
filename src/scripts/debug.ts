@@ -8,6 +8,7 @@ const debug = {
     shortPaddle: false, // either short or long, cant be both
     longPaddle: false,
     ctxMenu: false,
+    revealInvisibleBricks: false,
 }
 
 const displayDebugging = () => {

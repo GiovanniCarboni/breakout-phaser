@@ -199,11 +199,7 @@ export class CreatedLevels extends Phaser.Scene {
         },
         padding: 2.7,
       }).setVisible(false)
-      bricks.children.each((brickEl) => {
-        const brick = brickEl as Brick
-        if (brick.texture.key === Sprites.glassBrick) brick.setFrame(1)
-        return true
-      })
+      bricks.revealInvisible()
       if (i === 0) bricks.setVisible(true)
       bricks.getChildren().forEach((child) => {
         (child as Brick).setScale(0.7)

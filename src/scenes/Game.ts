@@ -53,6 +53,7 @@ export class Game extends Phaser.Scene {
       sceneEvents.emit(Events.levelChanged, this.level)
       this.bricks = createBricks(this, this.level)
     }
+    if (debug.revealInvisibleBricks) this.bricks.revealInvisible()
   }
 
   //////////////////////////////////////////////////////////////
@@ -192,6 +193,7 @@ export class Game extends Phaser.Scene {
       holdBall: this.sound.add(Sounds.holdBall, { loop: false, volume: 1.8 }),
       glassShatter: this.sound.add(Sounds.glassShatter, { loop: false }),
       glassCrack: this.sound.add(Sounds.glassCrack, { loop: false }),
+      spell: this.sound.add(Sounds.spell, { loop: false }),
     }
   }
 
@@ -311,6 +313,10 @@ export class Game extends Phaser.Scene {
       case Sprites.holdBall:
         this.ball.setIsToBeHeld(true)
         this.paddle.addBallHolder()
+        break
+      case Sprites.revealInvisible:
+        this.sounds.spell.play()
+        this.bricks.revealInvisible()
         break
     }
     powerup.destroy()

@@ -32,6 +32,7 @@ export const translations = {
       "FireBall": "FireBall",
       "Shooting Paddle": "Shooting Paddle",
       "Hold Ball": "Hold Ball",
+      "Reveal Invisible": "Reveal Invisible",
     },
   },
   it: {
@@ -67,6 +68,7 @@ export const translations = {
       "FireBall": "Palla di Fuoco",
       "Shooting Paddle": "Paddle Armato",
       "Hold Ball": "Ferma Palla",
+      "Reveal Invisible": "Rivela Invisibili",
     },
   },
   ro: {
@@ -102,6 +104,7 @@ export const translations = {
       "FireBall": "Minge de Foc",
       "Shooting Paddle": "Paddle cu Tiroi",
       "Hold Ball": "Tine Mingea",
+      "Reveal Invisible": "Dezvaluie Caramizile",
     },
   },
 }

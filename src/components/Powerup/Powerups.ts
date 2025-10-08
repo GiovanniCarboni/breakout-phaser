@@ -12,6 +12,7 @@ export default class Powerups extends Phaser.Physics.Arcade.Group {
     { sprite: Sprites.igniteBall, desc: 'FireBall' },
     { sprite: Sprites.addShooter, desc: 'Shooting Paddle' },
     { sprite: Sprites.holdBall, desc: 'Hold Ball' },
+    { sprite: Sprites.revealInvisible, desc: "Reveal Invisible" },
   ]
 
   constructor(scene: Phaser.Scene, config: any) {

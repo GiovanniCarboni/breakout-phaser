@@ -55,11 +55,7 @@ export class LevelEditor extends Phaser.Scene {
           })
         )
       )
-      this.slots.children.each(slot => {
-        const brick = slot as Brick
-        if (brick.texture.key === Sprites.glassBrick) brick.setFrame(1)
-        return true
-      })
+      this.slots.revealInvisible()
     }
   }
 

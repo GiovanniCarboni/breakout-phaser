@@ -30,6 +30,7 @@ export enum Sprites {
   addShooter = "addShooter",
   notYetDiscovered = "notYetDiscovered",
   holdBall = "holdBall",
+  revealInvisible = "revealInvisible",
   // UI
   headbar = "headbar",
   heart = "heart",
@@ -92,6 +93,7 @@ export enum Sounds {
   erase = "erase",
   glassShatter = "glassShatter",
   glassCrack = "glassCrack",
+  spell = "spell",
 }
 
 // FONTS ///////////////////////////////////////////////////////////////////////////
