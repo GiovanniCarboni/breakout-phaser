@@ -62,6 +62,7 @@ export class Load extends Phaser.Scene {
     this.load.image(Sprites.addShooter, "assets/images/powerups/add_shooter.png")
     this.load.image(Sprites.holdBall, "assets/images/powerups/hold_ball.png")
     this.load.image(Sprites.revealInvisible, "assets/images/powerups/reveal_invisible.png")
+    this.load.image(Sprites.fallingBricks, "assets/images/powerups/falling_bricks.png")
     // ui
     this.load.image(Sprites.headbar, "assets/images/UI/headbar.png")
     this.load.image(Sprites.pauseButton, "assets/images/UI/pause_button.png")
@@ -143,6 +144,7 @@ export class Load extends Phaser.Scene {
     this.load.audio(Sounds.glassCrack, "assets/sounds/glass_crack.mp3")
     this.load.audio(Sounds.glassShatter, "assets/sounds/glass_shatter.mp3")
     this.load.audio(Sounds.spell, "assets/sounds/spell.mp3")
+    this.load.audio(Sounds.clang, "assets/sounds/clang.mp3")
 
     ////////// AUDIO /////////////////////
     this.load.addFile(new WebFontFileLoader(this.load, [Fonts.manaspace]))

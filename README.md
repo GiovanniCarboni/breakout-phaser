@@ -37,6 +37,7 @@ const debug = {
     longPaddle: false,
     ctxMenu: false,
 	revealInvisibleBricks: false,
+	bricksFall: false,
 }
 ```
 

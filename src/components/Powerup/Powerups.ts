@@ -7,6 +7,7 @@ export default class Powerups extends Phaser.Physics.Arcade.Group {
     { sprite: Sprites.speedUpBall, desc: 'Fast Ball' },
     { sprite: Sprites.loseLife, desc: 'Kill Paddle' },
     { sprite: Sprites.shrinkPaddle, desc: 'Shrink Paddle' },
+    { sprite: Sprites.fallingBricks, desc: "Falling Bricks" },
     { sprite: Sprites.getLife, desc: 'Extra Life' },
     { sprite: Sprites.expandPaddle, desc: 'Expand Paddle' },
     { sprite: Sprites.igniteBall, desc: 'FireBall' },

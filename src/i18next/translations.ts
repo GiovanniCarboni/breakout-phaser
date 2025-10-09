@@ -33,6 +33,7 @@ export const translations = {
       "Shooting Paddle": "Shooting Paddle",
       "Hold Ball": "Hold Ball",
       "Reveal Invisible": "Reveal Invisible",
+      "Falling Bricks": "Falling Bricks",
     },
   },
   it: {
@@ -69,6 +70,7 @@ export const translations = {
       "Shooting Paddle": "Paddle Armato",
       "Hold Ball": "Ferma Palla",
       "Reveal Invisible": "Rivela Invisibili",
+      "Falling Bricks": "Cadono Mattoni"
     },
   },
   ro: {
@@ -105,6 +107,7 @@ export const translations = {
       "Shooting Paddle": "Paddle cu Tiroi",
       "Hold Ball": "Tine Mingea",
       "Reveal Invisible": "Dezvaluie Caramizile",
+      "Falling Bricks": "Cad Caramizile",
     },
   },
 }

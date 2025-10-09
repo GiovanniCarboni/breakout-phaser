@@ -8,6 +8,7 @@ import { Sprites, Events, Sounds, Scenes, Anims, StorageKeys } from "../constant
 import { transition } from "../anims/SceneTransitions"
 import { storage } from "../utils/gneral"
 import { debug } from "../scripts/debug"
+import Brick from "../components/Brick/Brick"
 
 export class Game extends Phaser.Scene {
   private lastLevel = 5
@@ -119,6 +120,7 @@ export class Game extends Phaser.Scene {
       this.ball.reset(this.paddle.x)
       this.paddle.reset()
       this.powerups.clear(undefined, true)
+      this.bricks.shouldFall = false
     }
 
     ////// NO MORE LIVES
@@ -194,6 +196,7 @@ export class Game extends Phaser.Scene {
       glassShatter: this.sound.add(Sounds.glassShatter, { loop: false }),
       glassCrack: this.sound.add(Sounds.glassCrack, { loop: false }),
       spell: this.sound.add(Sounds.spell, { loop: false }),
+      clang: this.sound.add(Sounds.clang, { loop: false }),
     }
   }
 
@@ -316,7 +319,11 @@ export class Game extends Phaser.Scene {
         break
       case Sprites.revealInvisible:
         this.sounds.spell.play()
+        this.bricks.shouldFall = false
         this.bricks.revealInvisible()
+        break
+      case Sprites.fallingBricks:
+        this.bricks.shouldFall = true
         break
     }
     powerup.destroy()
@@ -326,18 +333,15 @@ export class Game extends Phaser.Scene {
   ////// BALL HIT PADDLE
   ballHitPaddle(obj1: any, _: any) {
     let sound = this.sounds.bounce
-    if (this.ball.getIsToBeHeld()) {
-      sound = this.sounds.holdBall
-      this.ball.setIsHeld(true)
-      this.ball.stopMovement()
-      this.startBallOnClick()
-    }
-    // increment speed
-    if (this.ball.speed <= 900) {
-      this.ball.setSpeed(this.ball.speed + this.ball.speedIncrement)
-    }
+    if (this.bricks.shouldFall) sound = this.scheduleBrickFall()
+    if (this.ball.getIsToBeHeld()) sound = this.scheduleBallToBeHeld()
+    if (this.ball.speed <= 900) this.ball.setSpeed(this.ball.speed + this.ball.speedIncrement)
     if (this.ball.isIgnited) this.ball.createSmoke(this.ball.x, this.ball.y)
+    this.setBallDirectionBasedOnPaddle()
+    sound.play()
+  }
 
+  setBallDirectionBasedOnPaddle() {
     const diff = Math.abs(this.paddle.x - this.ball.x)
     if (this.ball.x < this.paddle.x) {
       const degree = 90 + (Math.ceil(diff) > 70 ? 70 : Math.ceil(diff))
@@ -351,7 +355,20 @@ export class Game extends Phaser.Scene {
       this.ball.setDegDirection(100)
       this.ball.setSpeedOnInclPerc(0)
     }
-    sound.play()
+  }
+
+  scheduleBrickFall() {
+    const bricksArr = this.bricks.children.getArray()
+    const endReached = this.canvasH - (bricksArr[bricksArr.length - 1] as Brick).y < 180
+    this.bricks.fall(this, endReached)
+    return this.sounds.clang
+  }
+
+  scheduleBallToBeHeld() {
+    this.ball.setIsHeld(true)
+    this.ball.stopMovement()
+    this.startBallOnClick()
+    return this.sounds.holdBall
   }
 
   calcInclinationPercentage(degree: number) {
@@ -375,9 +392,7 @@ export class Game extends Phaser.Scene {
       this.sounds.brickbreak.play()
       brick.play(Anims.commonBrick)
       brick.disableBody()
-      brick.on("animationcomplete", () => {
-        brick.destroy()
-      })
+      brick.on("animationcomplete", () => brick.destroy())
       this.addPowerup(brick.x, brick.y)
     }
     if (brickType === "fire") {
@@ -412,10 +427,8 @@ export class Game extends Phaser.Scene {
         case 2:
           brick.anims.play(Anims.rockBrickBreak)
           this.addPowerup(brick.x, brick.y)
-          brick.on("animationcomplete", () => {
-            brick.disableBody()
-            brick.destroy()
-          })
+          brick.disableBody()
+          brick.on("animationcomplete", () => brick.destroy())
           break
       }
     }
@@ -449,9 +462,7 @@ export class Game extends Phaser.Scene {
       this.sounds.brickbreak.play()
       brick.play(Anims.commonBrick)
       brick.disableBody()
-      brick.on("animationcomplete", () => {
-        brick.destroy()
-      })
+      brick.on("animationcomplete", () => brick.destroy())
       this.addPowerup(brick.x, brick.y)
     }
 
@@ -482,10 +493,8 @@ export class Game extends Phaser.Scene {
         case 2:
           brick.anims.play(Anims.rockBrickBreak)
           this.addPowerup(brick.x, brick.y)
-          brick.on("animationcomplete", () => {
-            brick.disableBody()
-            brick.destroy()
-          })
+          brick.disableBody()
+          brick.on("animationcomplete", () => brick.destroy())
           break
       }
       return

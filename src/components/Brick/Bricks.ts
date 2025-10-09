@@ -1,4 +1,5 @@
 import { Anims, Sprites } from "../../constants"
+import { debug } from "../../scripts/debug"
 import {
   LevelTemplate, // type
   getLevelTemplate,
@@ -7,8 +8,11 @@ import { sleep } from "../../utils/gneral"
 import Brick, { createBrick } from "./Brick"
 
 export default class Bricks extends Phaser.Physics.Arcade.Group {
+  private _shouldFall = false
+
   constructor(scene: Phaser.Scene, config: any) {
     super(scene.physics.world, config)
+    if (debug.bricksFall) this.shouldFall = true
   }
 
   //////////////////////////////////////////////////////////////
@@ -136,6 +140,27 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
       return true
     })
   }
+
+  //////////////////////////////////////////////////////////////
+  ////// BRICKS FALL ONE SLOT (OR TRY TO)
+  fall(scene: Phaser.Scene, holdPosition: boolean) {
+    scene.tweens.add({
+      targets: this.children.getArray(),
+      y: "+=" + (holdPosition ? 5 : 26),
+      ease: "Sine.easeIn",
+      duration: 100,
+      yoyo: holdPosition
+    }).play()
+  }
+
+  set shouldFall(bool: boolean) {
+    this._shouldFall = bool
+  }
+
+  get shouldFall() {
+    return this._shouldFall
+  }
+  
 }
 
 export const createBricks = function (
