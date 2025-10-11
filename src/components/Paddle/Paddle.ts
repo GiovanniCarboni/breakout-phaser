@@ -11,10 +11,12 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
   public bullets!: Phaser.Physics.Arcade.Group
   public holdBallStubs!: Phaser.Physics.Arcade.Group
   public holdBallBolt!: Phaser.GameObjects.Image
-  private shotSound!:
-    | Phaser.Sound.NoAudioSound
-    | Phaser.Sound.HTML5AudioSound
-    | Phaser.Sound.WebAudioSound
+  private sounds!: {
+    [key: string]:
+      | Phaser.Sound.NoAudioSound
+      | Phaser.Sound.HTML5AudioSound
+      | Phaser.Sound.WebAudioSound
+  }
 
   constructor(
     scene: Phaser.Scene,
@@ -50,14 +52,12 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
         this.scene.time.delayedCall(1500, () => go.destroy())
       },
     })
-    this.shotSound = this.scene.sound.add(Sounds.shot, {
-      loop: false,
-      volume: 0.3,
-    })
     // add empty hold ball stubs
     this.holdBallStubs = this.scene.physics.add.group({
       classType: Phaser.Physics.Arcade.Image
     })
+
+    this.initSounds()
   }
 
   //////////////////////////////////////////////////////////////
@@ -95,6 +95,17 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
   }
 
   //////////////////////////////////////////////////////////////
+  ////// INITIALIZE SOUNDS
+  initSounds() {
+    this.sounds = {
+      reload: this.scene.sound.add(Sounds.reload, { loop: false }),
+      shot: this.scene.sound.add(Sounds.shot, { loop: false, volume: 0.3 }),
+      expand: this.scene.sound.add(Sounds.expand, { loop: false }),
+      shrink: this.scene.sound.add(Sounds.shrink, { loop: false }),
+    }
+  }
+
+  //////////////////////////////////////////////////////////////
   ////// RESET PADDLE (POSITION, SIZE, REMOVES POWERUPS)
   reset() {
     this.x = this.canvasW / 2
@@ -126,6 +137,7 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
   expand() {
     if (this.paddleLength === 3) return
     this.lengthChanging = true
+    this.sounds.expand.play()
     if (this.paddleLength === 2) {
       this.play(Anims.paddleGetsLonger2)
       this.on("animationcomplete", () => {
@@ -147,6 +159,7 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
   shrink() {
     if (this.paddleLength === 1) return
     this.lengthChanging = true
+    this.sounds.shrink.play()
     if (this.paddleLength === 2) {
       this.play(Anims.paddleGetsShorter1)
       this.on("animationcomplete", () => {
@@ -170,6 +183,7 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
   ////// ADD/REMOVE SHOOTER POWERUP
   addCannons() {
     if (this.cannons.getLength()) return
+    this.sounds.reload.play()
     this.scene.input.on("pointerdown", this.handleShoot, this)
     this.cannons.get(this.x, this.y, Sprites.cannon)
     this.cannons.get(this.x, this.y, Sprites.cannon)
@@ -225,7 +239,7 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
     rBullet.setVelocity(0, -550)
     rBullet.setDepth(-1)
 
-    this.shotSound.play()
+    this.sounds.shot.play()
   }
 }
 

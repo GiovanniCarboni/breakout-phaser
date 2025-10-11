@@ -145,6 +145,11 @@ export class Load extends Phaser.Scene {
     this.load.audio(Sounds.glassShatter, "assets/sounds/glass_shatter.mp3")
     this.load.audio(Sounds.spell, "assets/sounds/spell.mp3")
     this.load.audio(Sounds.clang, "assets/sounds/clang.mp3")
+    this.load.audio(Sounds.newLife, "assets/sounds/new_life.mp3")
+    this.load.audio(Sounds.die, "assets/sounds/die.mp3")
+    this.load.audio(Sounds.reload, "assets/sounds/reload.mp3")
+    this.load.audio(Sounds.expand, "assets/sounds/expand.mp3")
+    this.load.audio(Sounds.shrink, "assets/sounds/shrink.mp3")
 
     ////////// AUDIO /////////////////////
     this.load.addFile(new WebFontFileLoader(this.load, [Fonts.manaspace]))

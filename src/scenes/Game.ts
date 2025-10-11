@@ -114,7 +114,7 @@ export class Game extends Phaser.Scene {
 
     ////// BALL FALLS BELOW
     if (this.ball.y > this.canvasH + this.ball.height) {
-      if (this.lives > 1) this.sounds.lifeLost.play()
+      if (this.lives > 1) this.sounds.die.play()
       this.lives--
       this.setLives()
       this.ball.reset(this.paddle.x)
@@ -197,6 +197,8 @@ export class Game extends Phaser.Scene {
       glassCrack: this.sound.add(Sounds.glassCrack, { loop: false }),
       spell: this.sound.add(Sounds.spell, { loop: false }),
       clang: this.sound.add(Sounds.clang, { loop: false }),
+      newLife: this.sound.add(Sounds.newLife, { loop: false }),
+      die: this.sound.add(Sounds.die, { loop: false }),
     }
   }
 
@@ -290,11 +292,13 @@ export class Game extends Phaser.Scene {
     switch (powerup.getData("power")) {
       case Sprites.getLife:
         if (this.lives < 4) {
+          this.sounds.newLife.play()
           this.lives++
           this.setLives()
         }
         break
       case Sprites.loseLife:
+        this.sounds.lifeLost.play()
         this.lives--
         this.setLives()
         break

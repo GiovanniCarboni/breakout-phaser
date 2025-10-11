@@ -96,6 +96,11 @@ export enum Sounds {
   glassCrack = "glassCrack",
   spell = "spell",
   clang = "clang",
+  newLife = "newLife",
+  die = "die",
+  reload = "reload",
+  expand = "expand",
+  shrink = "shrink",
 }
 
 // FONTS ///////////////////////////////////////////////////////////////////////////
