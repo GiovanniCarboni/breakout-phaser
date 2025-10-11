@@ -28,16 +28,17 @@ The build artifacts will be stored in the `./dist` directory.
 Locate the debug object in `./src/scripts/debug.ts`, edit the values to test one or more behaviors.
 ```javascript
 const debug = {
+    ctxMenu: false, // allow ctx menu on right click
     physics: false,
+    showFps: false, // show fps count during game scene
     level: false, // false, 2, 3, 4 ...
     fireBall: false,
     cannons: false,
     holdBall: false,
     shortPaddle: false, // either short or long, cant be both
     longPaddle: false,
-    ctxMenu: false,
-	revealInvisibleBricks: false,
-	bricksFall: false,
+    revealInvisibleBricks: false,
+    bricksFall: false,
 }
 ```
 

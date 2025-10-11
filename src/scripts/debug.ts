@@ -2,14 +2,15 @@ import { Sprites } from "../constants"
 
 type DebugKeys = keyof typeof debug
 const debug = {
+    ctxMenu: false,
     physics: false,
+    showFps: false,
     level: false, // false, 2, 3, 4 ...
     fireBall: false,
     cannons: false,
     holdBall: false,
     shortPaddle: false, // either short or long, cant be both
     longPaddle: false,
-    ctxMenu: false,
     revealInvisibleBricks: false,
     bricksFall: false,
 }

@@ -21,6 +21,7 @@ export class Game extends Phaser.Scene {
   private level?: number
   private lives!: number
   private isStageCleared = false
+  private fpsText: Phaser.GameObjects.Text | null = null
   private sounds!: {
     [key: string]:
       | Phaser.Sound.NoAudioSound
@@ -61,6 +62,10 @@ export class Game extends Phaser.Scene {
   ////// CREATE
   create() {
     transition("fadeIn", this)
+
+    if (debug.showFps) this.fpsText = this.add.text(14, 60, "FPS", {
+      color: "#4ee44e"
+    })
 
     this.cameras.main.setBackgroundColor("#110702")
 
@@ -107,6 +112,8 @@ export class Game extends Phaser.Scene {
   //////////////////////////////////////////////////////////////
   ////// UPDATE
   update(_: number, dt: number) {
+    if (debug.showFps) this.fpsText?.setText("FPS " + String(Math.floor(this.game.loop.actualFps)))
+
     const bricks = this.bricks.getChildren()
 
     this.ball.update(this.paddle, bricks)
