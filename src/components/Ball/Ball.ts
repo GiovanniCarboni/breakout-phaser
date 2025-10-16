@@ -2,8 +2,10 @@ import { Anims, Sounds, Sprites } from "../../constants"
 import Paddle from "../Paddle/Paddle"
 import Brick from "../Brick/Brick"
 import { debug } from "../../scripts/debug"
+import { Game } from "../../scenes/Game"
 
 export default class Ball extends Phaser.Physics.Arcade.Sprite {
+  private gameScene: Game
   speedIncrement = 20
   isIgnited = false
   private isSpedUp = false
@@ -20,15 +22,16 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
     | Phaser.Sound.NoAudioSound
     | Phaser.Sound.HTML5AudioSound
     | Phaser.Sound.WebAudioSound
+
   constructor(
-    scene: Phaser.Scene,
+    scene: Game,
     x: number,
     y: number,
     texture: string,
     frame?: string
   ) {
     super(scene, x, y, texture, frame)
-
+    this.gameScene = scene
     this.canvasH = scene.scale.height
     this.canvasW = scene.scale.width
     this.startPosition = { x: this.canvasW / 2, y: this.canvasH - 40 }
@@ -48,24 +51,19 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
       loop: false,
     })
     this.setData("isSlow", false)
-
-    //////////////// debug ////////////////
-    // debug fire ball
-    // this.ignite()
   }
 
   //////////////////////////////////////////////////////////////
   ////// UPDATE
   update(paddle: Paddle, bricks: Phaser.GameObjects.GameObject[]) {
     if (!this.isMoving) {
-      this.body?.reset(paddle.x, paddle.y - 20)
+      const { x: paddleX, y: paddleY } = paddle.body!.position
+      this.body?.reset(paddleX+paddle.width/2, paddleY - 12)
       return
     }
 
     // slow down approaching last brick
-    if (
-      bricks.filter((brick) => brick.getData("type") !== "metal").length === 1
-    ) {
+    if (bricks.filter((brick) => brick.getData("type") !== "metal").length === 1) {
       if (!this.slowDownArea.getData("created")) {
         const lastBrick = bricks.find(
           (brick) => brick.getData("type") !== "metal"
@@ -104,6 +102,24 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
         this.setAngle(Phaser.Math.RadToDeg(angle) - 90)
       }
     }
+  }
+
+  //////////////////////////////////////////////////////////////
+  ////// UPDATE
+  destroy() {
+    this.removeEvents()
+  }
+
+  //////////////////////////////////////////////////////////////
+  ////// START BALL ON CLICK/ACTION BTN
+  startOnInput() {
+    if (this.getIsHeld()) this.setIsHeld(false)
+    if (this.gameScene.allowMouseInput) this.gameScene.input.once("pointerdown", this.start, this)
+    else this.gameScene.keys?.action?.once('down', this.start, this)
+  }
+  removeEvents() {
+    if (this.gameScene.allowMouseInput) this.gameScene.input.off("pointerdown", this.start)
+    else this.gameScene.keys?.action?.off('down', this.start)
   }
 
   //////////////////////////////////////////////////////////////
@@ -267,7 +283,7 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
   }
 }
 
-export const createBall = function (scene: Phaser.Scene) {
+export const createBall = function (scene: Game) {
   const ball = new Ball(scene, 0, 0, Sprites.ball)
   scene.add.existing(ball)
   scene.physics.world.enableBody(ball, Phaser.Physics.Arcade.DYNAMIC_BODY)

@@ -1,7 +1,9 @@
 import { Anims, Sounds, Sprites } from "../../constants"
+import { Game } from "../../scenes/Game"
 import { debug } from "../../scripts/debug"
 
 export default class Paddle extends Phaser.Physics.Arcade.Sprite {
+  private gameScene: Game
   // 1 = short; 2 = default; 3 = long
   private paddleLength: 1 | 2 | 3 = 2
   private lengthChanging = false
@@ -19,14 +21,14 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
   }
 
   constructor(
-    scene: Phaser.Scene,
+    scene: Game,
     x: number,
     y: number,
     texture: string,
     frame?: string
   ) {
     super(scene, x, y, texture, frame)
-
+    this.gameScene = scene
     this.canvasH = scene.scale.height
     this.canvasW = scene.scale.width
   }
@@ -38,9 +40,10 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
     this.y = this.canvasH - 30
     this.setInteractive()
     this.setImmovable(true)
+    this.setCollideWorldBounds(true)
     this.play(Anims.defaultPaddle)
     this.setSize(this.frame.width, 20)
-    this.scene.input.on("pointermove", this.handleInput, this)
+    if (this.gameScene.allowMouseInput) this.scene.input.on("pointermove", this.handleInput, this)
     // add empty cannon and bullet groups
     this.cannons = this.scene.physics.add.group({
       classType: Phaser.Physics.Arcade.Sprite,
@@ -56,42 +59,48 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
     this.holdBallStubs = this.scene.physics.add.group({
       classType: Phaser.Physics.Arcade.Image
     })
-
     this.initSounds()
   }
 
   //////////////////////////////////////////////////////////////
   ////// UPDATE
   update() {
-    if (this.x < 0 + this.width / 2) this.x = 0 + this.width / 2
-    if (this.x > this.canvasW - this.width / 2)
-      this.x = this.canvasW - this.width / 2
-
-    if (this.cannons.getLength()) {
-      const xL = this.x - this.width / 2 + 15
-      const xR = this.x + this.width / 2 - 16
-      const y = this.y - this.height / 2 - 3
-      this.cannons.children.each((child, i) => {
-        const cannon = child as Phaser.Physics.Arcade.Sprite
-        if (i === 0) cannon.setPosition(xL, y)
-        if (i === 1) cannon.setPosition(xR, y)
-        return true
-      })
+    const { x: paddleX, y: paddleY } = this.body!.position
+    const paddleW = this.width
+    if (this.holdBallStubs.getLength()) this.recalcHoldBallPos(paddleX, paddleY, paddleW)
+    if (this.cannons.getLength()) this.recalcCannonsPos(paddleX, paddleY, paddleW)
+    this.setVelocity(0)
+    if (!this.gameScene.allowMouseInput) {
+      const { left, right } = this.gameScene.keys
+      if (left?.isDown && paddleX > 0) this.setVelocityX(-1000)
+      else if (right?.isDown && paddleX+paddleW < this.canvasW) this.setVelocityX(1000)
     }
+  }
 
-    if (this.holdBallStubs.getLength()) {
-      const xL = this.x - this.width / 2 + 15
-      const xR = this.x + this.width / 2 - 16
-      const y = this.y - this.height / 2 - 6
-      this.holdBallStubs.children.each((child, i) => {
-        const stub = child as Phaser.Physics.Arcade.Sprite
-        if (i === 0) stub.setPosition(xL, y)
-        if (i === 1) stub.setPosition(xR, y)
-        return true
-      })
-      this.holdBallBolt.setPosition(this.x, this.y - 20)
-      if (this.lengthChanging) this.adjustBoltCrop()
-    }
+  recalcHoldBallPos(paddleX:number, paddleY:number, paddleW:number ) {
+    const xL = paddleX + 15
+    const xR = paddleX + paddleW - 16
+    const y = paddleY - 6
+    this.holdBallStubs.children.each((child, i) => {
+      const stub = child as Phaser.Physics.Arcade.Sprite
+      if (i === 0) stub.setPosition(xL, y)
+      if (i === 1) stub.setPosition(xR, y)
+      return true
+    })
+    this.holdBallBolt.setPosition(paddleX + paddleW/2, paddleY - 10)
+    if (this.lengthChanging) this.adjustBoltCrop()
+  }
+
+  recalcCannonsPos(paddleX:number, paddleY:number, paddleW:number) {
+    const xL = paddleX + 15
+    const xR = paddleX + paddleW - 16
+    const y = paddleY - 4
+    this.cannons.children.each((child, i) => {
+      const cannon = child as Phaser.Physics.Arcade.Sprite
+      if (i === 0) cannon.setPosition(xL, y)
+      if (i === 1) cannon.setPosition(xR, y)
+      return true
+    })
   }
 
   //////////////////////////////////////////////////////////////
@@ -114,10 +123,7 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
     this.paddleLength = 2
 
     if (this.holdBallStubs.getLength()) this.removeBallHolder()
-    if (this.cannons.getLength()) {
-      this.removeCannons()
-      this.scene.input.off("pointerdown", this.handleShoot, this)
-    }
+    if (this.cannons.getLength()) this.removeCannons()
   }
 
   //////////////////////////////////////////////////////////////
@@ -184,12 +190,15 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
   addCannons() {
     if (this.cannons.getLength()) return
     this.sounds.reload.play()
-    this.scene.input.on("pointerdown", this.handleShoot, this)
+    if (this.gameScene.allowMouseInput) this.scene.input.on("pointerdown", this.handleShoot, this)
+    else this.gameScene.keys?.action?.on('down', this.handleShoot, this)
     this.cannons.get(this.x, this.y, Sprites.cannon)
     this.cannons.get(this.x, this.y, Sprites.cannon)
   }
   removeCannons() {
     this.cannons.clear(true, true)
+    if (this.gameScene.allowMouseInput) this.scene.input.off("pointerdown", this.handleShoot, this)
+    else this.gameScene.keys?.action?.off('down', this.handleShoot, this)
   }
 
   //////////////////////////////////////////////////////////////
@@ -243,7 +252,7 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
   }
 }
 
-export const createPaddle = function (scene: Phaser.Scene) {
+export const createPaddle = function (scene: Game) {
   const paddle = new Paddle(scene, 0, 0, Sprites.paddle)
   scene.add.existing(paddle)
   scene.physics.world.enableBody(paddle, Phaser.Physics.Arcade.DYNAMIC_BODY)

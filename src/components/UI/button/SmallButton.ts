@@ -1,4 +1,3 @@
-import { t } from "i18next"
 import { Anims, Fonts, Sounds, Sprites } from "../../../constants"
 
 export default class SmallButton extends Phaser.GameObjects.Sprite {

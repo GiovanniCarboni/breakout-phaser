@@ -23,6 +23,10 @@ export const translations = {
       "Power-Ups": "Power-Ups",
       "Not yet discovered": "Not yet discovered",
       "Play more to discover all power-ups": "Play more to discover all power-ups",
+      "Controls": "Controls",
+      "General": "General",
+      "Use mouse": "Use mouse",
+      "Press a key": "Press a key",
       // powerups
       "Fast Ball": "Fast Ball",
       "Kill Paddle": "Kill Paddle",
@@ -46,8 +50,7 @@ export const translations = {
       "Back to Menu": "Torna al Menu",
       "Back to Editor": "Torna all'Editor",
       "Stage": "Livello",
-      "Template must contain at least one breakable brick":
-        "Il template deve contenre almeno un mattone",
+      "Template must contain at least one breakable brick": "Il template deve contenre almeno un mattone",
       "Back": "Torna",
       "Language": "Lingua",
       "Volume": "Volume",
@@ -60,6 +63,10 @@ export const translations = {
       "Power-Ups": "Power-Ups",
       "Not yet discovered": "Non ancora trovato",
       "Play more to discover all power-ups": "Gioca di piu per scoprire tutti i powerup",
+      "Controls": "Controlli",
+      "General": "Generali",
+      "Use mouse": "Usa il mouse",
+      "Press a key": "Premi un tasto",
       // powerups
       "Fast Ball": "Palla Veloce",
       "Kill Paddle": "Distruggi Paddle",
@@ -83,8 +90,7 @@ export const translations = {
       "Back to Menu": "Meniu",
       "Back to Editor": "Inapoi la Editor",
       "Stage": "Nivel",
-      "Template must contain at least one breakable brick":
-        "Template-ul trebuie sa contina macar o caramida",
+      "Template must contain at least one breakable brick": "Template-ul trebuie sa contina macar o caramida",
       "Back": "Inapoi",
       "Language": "Limba",
       "Volume": "Volum",
@@ -97,6 +103,10 @@ export const translations = {
       "Power-Ups": "Power-Ups",
       "Not yet discovered": "Inca negasit",
       "Play more to discover all power-ups": "Joaca mai mult sa gasesti toate powerups-urile",
+      "Controls": "Controale",
+      "General": "Generale",
+      "Use mouse": "Foloseste mouse-ul",
+      "Press a key": "Apasa o tasta",
       // powerups
       "Fast Ball": "Minge Rapida",
       "Kill Paddle": "Distruge Paddle",

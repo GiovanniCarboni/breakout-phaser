@@ -6,6 +6,8 @@ import LanguageSelector, {
   createLanguageSelector,
 } from "../components/UI/LanguageSelector"
 import { storage } from "../utils/gneral"
+import { createCheckbox } from "../components/UI/Checkbox"
+import { createKeySelector, KeyInfo } from "../components/UI/KeySelector"
 
 export class Options extends Phaser.Scene {
   private fromScene!: string
@@ -26,42 +28,24 @@ export class Options extends Phaser.Scene {
     // transition("fadeIn", this)
     this.cameras.main.setBackgroundColor("#000")
 
-    /////// HEADING /////////////////////////////////////////////
-    this.add
-      .text(this.scale.width / 2, 120, t("Options"), {
-        fontFamily: Fonts.manaspace,
-        fontSize: 30,
-      })
-      .setOrigin(0.5, 0.5)
+    const centerBar = this.add.sprite(this.scale.width/2, 160, Sprites.sideBar).setOrigin(0, 0).setDepth(1)
+    centerBar.setCrop(0, 0, centerBar.width, 500)
 
-    /////// MENU FRAME /////////////////////////////////////////////
-    this.add
-      .image(
-        this.scale.width / 2,
-        this.scale.height / 2 - 10,
-        Sprites.optionsBox
-      )
-      .setDepth(-1)
-
-    /////// BACK BUTTON /////////////////////////////////////////////
-    createSmallButton(
-      120,
-      this.scale.height - 140,
-      t("Back"),
-      () => {
-        transition("fadeOut", this, () => {
-          this.scene.stop()
-          this.scene.start(this.fromScene)
-        })
-      },
-      this
-    )
-
-    /////// LANGUAGE SELECTOR /////////////////////////////////////////////
+    // Create option elements
+    this.setHeaders()
     this.initLanguageSelector()
-
-    /////// VOLUME SLIDER /////////////////////////////////////////////
     this.initVolumeSlider()
+    this.initControls()
+
+    // Menu frame
+    this.add.image(this.scale.width/2, this.scale.height/2 - 10, Sprites.optionsBox).setDepth(-1)
+
+    // Back button
+    createSmallButton(130, 130, t("Back"), () => {
+      transition("fadeOut", this, () => {
+      this.scene.stop()
+      this.scene.start(this.fromScene)
+    })}, this)
   }
 
   update() {
@@ -69,10 +53,40 @@ export class Options extends Phaser.Scene {
     this.volumeFill.width = this.nob.x - this.volumeFill.x
   }
 
+  /////// CONTROLS //////////////////////////////////////////////////////
+  initControls() {
+    const controls = storage.get(StorageKeys.controls)
+    // default keys (in case they werent saved properly in localStorage)
+    const defaultKeys = {
+      right: { code: "ArrowRight", keyCode: 39 },
+      left: { code: "ArrowLeft", keyCode: 37 },
+      action: { code: "Space", keyCode: 32 },
+    }
+    // key change callback (returns weather it wasnt used already)
+    const handleKeyChange = (name:string, obj: KeyInfo) => {
+      const controls = storage.get(StorageKeys.controls)
+      if (Object.values(controls.keys).find((key:any) => key.code === obj.code)) return false
+      storage.set(StorageKeys.controls, { ...controls, keys: { ...controls.keys, [name]: obj } })
+      return true
+    }
+    // create key selectors
+    const leftKey = createKeySelector(this.scale.width/2+100, 375, "<", (obj) => handleKeyChange("left", obj), controls.keys?.left ?? defaultKeys.left, this)
+    const rightKey = createKeySelector(this.scale.width/2+100, 450, ">", (obj) => handleKeyChange("right", obj), controls.keys?.right ?? defaultKeys.right, this)
+    const actionKey = createKeySelector(this.scale.width/2+100, 525, t("Action").toLowerCase(), (obj) => handleKeyChange("action", obj), controls.keys?.action ?? defaultKeys.action, this)
+    // disable/enable key selectos
+    const enableKeySelectors = (enable:boolean) => [rightKey, actionKey, leftKey].forEach(x => x[enable?'enable':'disable']())
+    // create "use mouse" checkbox
+    const mouseCheckbox = createCheckbox(this.scale.width/2+100, 300, t("Use mouse"), (checked) => {
+      storage.set(StorageKeys.controls, { ...controls, useMouse: checked })
+      enableKeySelectors(!checked)
+    }, controls.useMouse, this)
+    enableKeySelectors(!mouseCheckbox.isChecked())
+  }
+
   /////// LANGUAGE SELECTOR /////////////////////////////////////////////
   initLanguageSelector() {
     const label = this.add
-      .text(this.scale.width / 2 - 120, 280, t("Language"), {
+      .text(200, 300, t("Language"), {
         fontFamily: Fonts.manaspace,
       })
       .setOrigin(1, 0.5)
@@ -86,6 +100,22 @@ export class Options extends Phaser.Scene {
         this.scene.stop().start()
       }
     )
+  }
+
+  //////// HEADERS //////////////////////////////////////////////////
+  setHeaders() {
+    this.add.text(this.scale.width/2, 130, t("Options"), {
+      fontFamily: Fonts.manaspace,
+      fontSize: 30,
+    }).setOrigin(0.5, 0.5)
+    this.add.text(this.scale.width*.75, 200, t("Controls"), {
+      fontFamily: Fonts.manaspace,
+      fontSize: 22
+    }).setOrigin(.5, .5)
+    this.add.text(this.scale.width*.25, 200, t("General"), {
+      fontFamily: Fonts.manaspace,
+      fontSize: 22
+    }).setOrigin(.5, .5)
   }
 
   /////// VOLUME SLIDER /////////////////////////////////////////////
@@ -104,7 +134,7 @@ export class Options extends Phaser.Scene {
   initVolumeSlider() {
     /////// text label /////////////////////////////////////////////
     const label = this.add
-      .text(this.scale.width / 2 - 120, 460, t("Volume"), {
+      .text(200, 460, t("Volume"), {
         fontFamily: Fonts.manaspace,
       })
       .setOrigin(1, 0.5)

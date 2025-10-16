@@ -16,7 +16,6 @@ export class Pause extends Phaser.Scene {
       [
         { label: t("Resume"), onClick: this.handleResume, isMain: true },
         { label: t("Restart"), onClick: this.handleRestart },
-        { label: t("Options"), onClick: this.handleOptions },
         { label: t("Back to Menu"), onClick: this.handleBackToMenu },
       ],
       this,
@@ -38,11 +37,6 @@ export class Pause extends Phaser.Scene {
     transition("fadeOut", this, () => {
       this.scene.stop(Scenes.game)
       this.scene.start(Scenes.start)
-    })
-  }
-  handleOptions() {
-    transition("fadeOut", this, () => {
-      this.scene.start(Scenes.options, { fromScene: Scenes.pause })
     })
   }
 }

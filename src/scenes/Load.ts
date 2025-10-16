@@ -106,7 +106,10 @@ export class Load extends Phaser.Scene {
     this.load.image(Sprites.sideBar, "assets/images/UI/side_bar.png")
     this.load.image(Sprites.dot, "assets/images/UI/dot.png")
     this.load.image(Sprites.dotHighlight, "assets/images/UI/dot_highlight.png")
-
+    this.load.spritesheet(Sprites.checkbox, "assets/images/UI/checkbox.png", {
+      frameWidth: 52,
+      frameHeight: 52
+    })
     // volume slider
     this.load.image(Sprites.volumeBar, "assets/images/UI/volume_slider/bar.png")
     this.load.image(Sprites.volumeNob, "assets/images/UI/volume_slider/nob.png")
@@ -160,6 +163,7 @@ export class Load extends Phaser.Scene {
     createBricksAnims(this.anims)
     createPaddleAnims(this.anims)
     createUiAnims(this.anims)
+    this.addDefaultControls()
 
     const volume = storage.get(StorageKeys.volume)
 
@@ -177,6 +181,19 @@ export class Load extends Phaser.Scene {
         this.scene.start(Scenes.start)
       } else {
         this.scene.start(Scenes.languageSelection)
+      }
+    })
+  }
+
+  addDefaultControls() {
+    const controls = storage.get(StorageKeys.controls)
+    if (controls) return
+    storage.set(StorageKeys.controls, {
+      useMouse: true,
+      keys: {
+        right: { code: "ArrowRight", keyCode: 39 },
+        left: { code: "ArrowLeft", keyCode: 37 },
+        action: { code: "Space", keyCode: 32 },
       }
     })
   }

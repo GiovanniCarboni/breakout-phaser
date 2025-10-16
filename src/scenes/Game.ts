@@ -22,6 +22,12 @@ export class Game extends Phaser.Scene {
   private lives!: number
   private isStageCleared = false
   private fpsText: Phaser.GameObjects.Text | null = null
+  public allowMouseInput = true
+  public keys!: {
+    left: Phaser.Input.Keyboard.Key | null,
+    right: Phaser.Input.Keyboard.Key | null,
+    action: Phaser.Input.Keyboard.Key | null
+  }
   private sounds!: {
     [key: string]:
       | Phaser.Sound.NoAudioSound
@@ -56,6 +62,7 @@ export class Game extends Phaser.Scene {
       this.bricks = createBricks(this, this.level)
     }
     if (debug.revealInvisibleBricks) this.bricks.revealInvisible()
+    this.initControls()
   }
 
   //////////////////////////////////////////////////////////////
@@ -105,7 +112,7 @@ export class Game extends Phaser.Scene {
     //////////////////////////////////////////////////////////////
     ////// START BALL ON CLICK
     new Array(Events.levelChanged, Events.livesChanged).forEach((e) => {
-      sceneEvents.on(e, this.startBallOnClick, this)
+      sceneEvents.on(e, () => this.ball.startOnInput(), this)
     })
   }
 
@@ -223,16 +230,23 @@ export class Game extends Phaser.Scene {
   }
 
   //////////////////////////////////////////////////////////////
-  ////// SET LIVES
-  setLives() {
-    sceneEvents.emit(Events.livesChanged, this.lives)
+  ////// INIT CONTROLS 
+  initControls() {
+    const controls = storage.get(StorageKeys.controls)
+    this.allowMouseInput = !!controls.useMouse
+    const keys = controls?.keys
+    const defaultKeys = { right: 39, left: 37, action: 32 }
+    this.keys = {
+      action: this.input.keyboard?.addKey(keys?.action?.keyCode ?? defaultKeys.action) ?? null,
+      left: this.input.keyboard?.addKey(keys?.left?.keyCode ?? defaultKeys.left) ?? null,
+      right: this.input.keyboard?.addKey(keys?.right?.keyCode ?? defaultKeys.right) ?? null,
+    }
   }
 
   //////////////////////////////////////////////////////////////
-  ////// START BALL ON CLICK
-  startBallOnClick() {
-    if (this.ball.getIsHeld()) this.ball.setIsHeld(false)
-    this.input.once("pointerdown", () => this.ball.start())
+  ////// SET LIVES
+  setLives() {
+    sceneEvents.emit(Events.livesChanged, this.lives)
   }
 
   //////////////////////////////////////////////////////////////
@@ -288,7 +302,7 @@ export class Game extends Phaser.Scene {
     )
     this.powerups.addPowerup(powerup, {
       x: this.ball.body?.velocity.x! - 150,
-      y: -this.ball.body?.velocity.y!,
+      y: -(this.ball.body?.velocity.y! || -200),
     })
   }
 
@@ -378,7 +392,7 @@ export class Game extends Phaser.Scene {
   scheduleBallToBeHeld() {
     this.ball.setIsHeld(true)
     this.ball.stopMovement()
-    this.startBallOnClick()
+    this.ball.startOnInput()
     return this.sounds.holdBall
   }
 

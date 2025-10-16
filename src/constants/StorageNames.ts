@@ -4,4 +4,5 @@ export enum StorageKeys {
     volume = "volume",
     bestScore = "bestScore",
     discoveredPowerups = "discoveredPowerups",
+    controls = "controls",
 }
