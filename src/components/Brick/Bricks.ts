@@ -1,4 +1,5 @@
 import { Anims, Sprites } from "../../constants"
+import { Game } from "../../scenes/Game"
 import { debug } from "../../scripts/debug"
 import {
   LevelTemplate, // type
@@ -9,9 +10,12 @@ import Brick, { createBrick } from "./Brick"
 
 export default class Bricks extends Phaser.Physics.Arcade.Group {
   private _shouldFall = false
+  public poisonDrops: Phaser.Physics.Arcade.Group
+  public notMandatoryBricks = [ "metal", "grass" ]
 
-  constructor(scene: Phaser.Scene, config: any) {
+  constructor(scene: Phaser.Scene | Game, config: any) {
     super(scene.physics.world, config)
+    this.poisonDrops = scene.physics.add.group({ classType: Phaser.Physics.Arcade.Sprite })
     if (debug.bricksFall) this.shouldFall = true
   }
 
@@ -34,6 +38,7 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
           case Sprites.iceBrick: return 4
           case Sprites.rockBrick: return 5
           case Sprites.glassBrick: return 6
+          case Sprites.grassBrick: return 7
           case Sprites.blankBrick: return 0
           default: return 0
         }
@@ -47,7 +52,7 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
 
   //////////////////////////////////////////////////////////////
   ////// CREATE BRICKS
-  fillBricks(scene: Phaser.Scene, template: LevelTemplate) {
+  fillBricks(scene: Phaser.Scene | Game, template: LevelTemplate) {
     const { info, layout } = template
     let entryNr = 0
     for (let row = 0; row < layout.length; row++) {
@@ -58,7 +63,7 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
           let newBrick = createBrick(scene, brickX, brickY, {
             type: layout[row][col],
             entryNr,
-          })
+          }, this)
           this.add(newBrick)
           newBrick.setImmovable(true)
         }
@@ -164,7 +169,7 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
 }
 
 export const createBricks = function (
-  scene: Phaser.Scene,
+  scene: Phaser.Scene | Game,
   level?: number,
   template?: number[][],
   info?: any

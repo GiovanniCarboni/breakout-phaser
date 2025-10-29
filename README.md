@@ -1,6 +1,6 @@
 # Breakout with Pahser 3
 
-![Alt text](./public/cover.png)
+![Game Cover](./public/cover.png)
 
 live demo: https://breakoutphaser.netlify.app/
 
@@ -39,6 +39,7 @@ const debug = {
     longPaddle: false,
     revealInvisibleBricks: false,
     bricksFall: false,
+	poisonImmunity: false,
 }
 ```
 

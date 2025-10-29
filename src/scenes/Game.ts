@@ -28,12 +28,7 @@ export class Game extends Phaser.Scene {
     right: Phaser.Input.Keyboard.Key | null,
     action: Phaser.Input.Keyboard.Key | null
   }
-  private sounds!: {
-    [key: string]:
-      | Phaser.Sound.NoAudioSound
-      | Phaser.Sound.HTML5AudioSound
-      | Phaser.Sound.WebAudioSound
-  }
+  sounds!: Record<string, Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound>
   canvasW!: number
   canvasH!: number
 
@@ -134,6 +129,7 @@ export class Game extends Phaser.Scene {
       this.ball.reset(this.paddle.x)
       this.paddle.reset()
       this.powerups.clear(undefined, true)
+      this.bricks.poisonDrops.clear(true, true)
       this.bricks.shouldFall = false
     }
 
@@ -149,7 +145,7 @@ export class Game extends Phaser.Scene {
 
     ////// IF LEVEL IS CLEARED
     if (
-      !bricks.some((brick) => brick.getData("type") !== "metal") &&
+      !bricks.some((brick) => !this.bricks.notMandatoryBricks.includes(brick.getData("type"))) &&
       !this.isStageCleared
     )
       this.isStageCleared = true
@@ -165,6 +161,7 @@ export class Game extends Phaser.Scene {
     this.powerups.clear(undefined, true)
     this.bricks.clear(true, true)
     this.paddle.bullets.clear(true, true)
+    this.bricks.poisonDrops.clear(true, true)
     this.isStageCleared = false
     if (this.isCustom) {
       this.scene.stop()
@@ -200,19 +197,20 @@ export class Game extends Phaser.Scene {
   ////// INIT SOUNDS
   initSounds() {
     this.sounds = {
-      bounce: this.sound.add(Sounds.bounce, { loop: false }),
-      brickbreak: this.sound.add(Sounds.brickbreak, { loop: false }),
-      lifeLost: this.sound.add(Sounds.lifeLost, { loop: false }),
-      fire: this.sound.add(Sounds.fireBrick, { loop: false }),
-      fireBrickbreak: this.sound.add(Sounds.fireBrickbreak, { loop: false }),
-      hitMetal: this.sound.add(Sounds.hitMetal, { loop: false, volume: 0.3 }),
-      holdBall: this.sound.add(Sounds.holdBall, { loop: false, volume: 1.8 }),
-      glassShatter: this.sound.add(Sounds.glassShatter, { loop: false }),
-      glassCrack: this.sound.add(Sounds.glassCrack, { loop: false }),
-      spell: this.sound.add(Sounds.spell, { loop: false }),
-      clang: this.sound.add(Sounds.clang, { loop: false }),
-      newLife: this.sound.add(Sounds.newLife, { loop: false }),
-      die: this.sound.add(Sounds.die, { loop: false }),
+      bounce: this.sound.add(Sounds.bounce),
+      brickbreak: this.sound.add(Sounds.brickbreak),
+      lifeLost: this.sound.add(Sounds.lifeLost),
+      fire: this.sound.add(Sounds.fireBrick),
+      fireBrickbreak: this.sound.add(Sounds.fireBrickbreak),
+      hitMetal: this.sound.add(Sounds.hitMetal, { volume: 0.3 }),
+      holdBall: this.sound.add(Sounds.holdBall, { volume: 1.8 }),
+      glassShatter: this.sound.add(Sounds.glassShatter),
+      glassCrack: this.sound.add(Sounds.glassCrack),
+      spell: this.sound.add(Sounds.spell),
+      clang: this.sound.add(Sounds.clang),
+      newLife: this.sound.add(Sounds.newLife),
+      die: this.sound.add(Sounds.die),
+      rustle: this.sound.add(Sounds.rustle)
     }
   }
 
@@ -263,6 +261,13 @@ export class Game extends Phaser.Scene {
       this.bricks,
       this.ball,
       this.ballHitBrick,
+      undefined,
+      this
+    )
+    this.physics.add.collider(
+      this.bricks.poisonDrops,
+      this.paddle,
+      this.poisonDropHitPaddle,
       undefined,
       this
     )
@@ -405,7 +410,7 @@ export class Game extends Phaser.Scene {
   ////// BULLET HIT BRICK
   bulletHitBrick(bulletObj: any, brickObj: any) {
     (bulletObj as Phaser.Physics.Arcade.Sprite).destroy()
-    const brick = brickObj as Phaser.Physics.Arcade.Sprite
+    const brick = brickObj as Brick
     const brickType = brick.getData("type")
 
     if (brickType === "metal") {
@@ -469,12 +474,13 @@ export class Game extends Phaser.Scene {
       brick.setData("hits", 1)
       this.addPowerup(brick.x, brick.y)
     }
+    if (brickType === "grass") brick.shakeLeaves()
   }
 
   //////////////////////////////////////////////////////////////
   ////// BALL HIT BRICK
   ballHitBrick(obj1: any, obj2: any) {
-    const brick = obj2 as Phaser.Physics.Arcade.Sprite
+    const brick = obj2 as Brick
     const brickType = brick.getData("type")
     if (brickType === "metal" && !this.ball.isIgnited) {
       // this.cameras.main.shake(100, 0.005)
@@ -539,6 +545,8 @@ export class Game extends Phaser.Scene {
       return
     }
 
+    if (brickType === "grass") brick.shakeLeaves()
+
     if (brickType === "fire" || this.ball.isIgnited) {
       this.sounds.fireBrickbreak.play()
       this.ball.createSmoke(obj1.x, obj1.y)
@@ -546,4 +554,14 @@ export class Game extends Phaser.Scene {
       this.addPowerup(brick.x, brick.y)
     }
   }
+
+  poisonDropHitPaddle(_:any, dropObj:any) {
+    (dropObj as Phaser.Physics.Arcade.Sprite).destroy()
+    if (this.sounds.lifeLost.isPlaying) return
+    this.sounds.lifeLost.play()
+    if (debug.poisonImmunity) return
+    this.lives--
+    this.setLives()
+  }
+  
 }

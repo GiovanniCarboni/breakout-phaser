@@ -62,4 +62,20 @@ export const createBricksAnims = (
     }),
     frameRate: 40
   })
+  anims.create({
+    key: Anims.leafBurst,
+    frames: anims.generateFrameNumbers(Sprites.leafBurst, {
+      start: 0,
+      end: 6,
+    }),
+    frameRate: 35,
+  })
+  anims.create({
+    key: Anims.poisonDrop,
+    frames: anims.generateFrameNumbers(Sprites.poisonDrop, {
+      start: 0,
+      end: 5,
+    }),
+    frameRate: 24
+  })
 }

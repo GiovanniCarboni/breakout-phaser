@@ -51,6 +51,15 @@ export class Load extends Phaser.Scene {
     this.load.spritesheet(Sprites.iceBrick, "assets/images/brick/ice_brick.png", brickFrameOptions)
     this.load.spritesheet(Sprites.rockBrick, "assets/images/brick/rock_brick.png", brickFrameOptions)
     this.load.spritesheet(Sprites.glassBrick, "assets/images/brick/glass_brick.png", brickFrameOptions)
+    this.load.spritesheet(Sprites.grassBrick, "assets/images/brick/grass_brick.png", brickFrameOptions)
+    this.load.spritesheet(Sprites.poisonDrop, "assets/images/brick/poison_drop.png", {
+      frameWidth: 12,
+      frameHeight: 20
+    })
+    this.load.spritesheet(Sprites.leafBurst, "assets/images/brick/leaf_burst.png", {
+      frameWidth: 70,
+      frameHeight: 40
+    })
     // powerups
     this.load.image(Sprites.notYetDiscovered, "assets/images/powerups/not_yet_discovered.png")
     this.load.image(Sprites.speedUpBall, "assets/images/powerups/speed_up_ball.png")
@@ -153,6 +162,7 @@ export class Load extends Phaser.Scene {
     this.load.audio(Sounds.reload, "assets/sounds/reload.mp3")
     this.load.audio(Sounds.expand, "assets/sounds/expand.mp3")
     this.load.audio(Sounds.shrink, "assets/sounds/shrink.mp3")
+    this.load.audio(Sounds.rustle, "assets/sounds/rustle.mp3")
 
     ////////// AUDIO /////////////////////
     this.load.addFile(new WebFontFileLoader(this.load, [Fonts.manaspace]))

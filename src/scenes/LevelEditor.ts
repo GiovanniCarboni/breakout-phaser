@@ -221,7 +221,7 @@ export class LevelEditor extends Phaser.Scene {
   ////// MESSAGE IF CAN'T SAVE/PLAY
   canSave(): boolean {
     const template: number[][] = Bricks.getTemplateFromBricks(this.slots)
-    if (!template.flat().some((brick) => brick !== 0 && brick !== 3)) {
+    if (!template.flat().some((brick) => brick !== 0 && brick !== 3 && brick !== 7)) {
       this.displayMessage(t("Template must contain at least one breakable brick"), true)
       return false
     }
@@ -354,6 +354,7 @@ export class LevelEditor extends Phaser.Scene {
       { x: 240, y: canvasH - 70, sprite: Sprites.iceBrick },
       { x: 320, y: canvasH - 110, sprite: Sprites.rockBrick },
       { x: 320, y: canvasH - 70, sprite: Sprites.glassBrick, frame: 1 },
+      { x: 400, y: canvasH - 110, sprite: Sprites.grassBrick },
     ].map((brick, i) => i > bestScore ? {
       ...brick,
       sprite: Sprites.lockedBrick,

@@ -20,6 +20,9 @@ export enum Sprites {
   iceBrick = "iceBrick",
   rockBrick = "rockBrick",
   glassBrick = "glassBrick",
+  grassBrick = "grassBrick",
+  poisonDrop = "poisonDrop",
+  leafBurst = "leafBurst",
   // powerups
   speedUpBall = "speedUpBall",
   getLife = "getLife",
@@ -102,6 +105,7 @@ export enum Sounds {
   reload = "reload",
   expand = "expand",
   shrink = "shrink",
+  rustle = "rustle",
 }
 
 // FONTS ///////////////////////////////////////////////////////////////////////////

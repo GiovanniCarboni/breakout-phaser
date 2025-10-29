@@ -10,6 +10,7 @@ export enum Anims {
   iceBrickIdle = "iceBrickIdle",
   iceBrickBreak = "iceBrickBreak",
   rockBrickBreak = "rockBrickBreak",
+  leafBurst = "leafBurst",
   // paddle
   defaultPaddle = "defaultPaddle",
   longPaddle = "longPaddle",
@@ -24,6 +25,7 @@ export enum Anims {
   gameOver = "gameOver",
   // others
   smoke = "smoke",
+  poisonDrop = "poisonDrop",
   // ui
   playButtonIdle = "playButtonIdle",
   playButtonPressed = "playButtonPressed",

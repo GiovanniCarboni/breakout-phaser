@@ -1,5 +1,3 @@
-import { Sprites } from "../constants"
-
 type DebugKeys = keyof typeof debug
 const debug = {
     ctxMenu: false,
@@ -13,6 +11,7 @@ const debug = {
     longPaddle: false,
     revealInvisibleBricks: false,
     bricksFall: false,
+    poisonImmunity: false,
 }
 
 const displayDebugging = () => {
