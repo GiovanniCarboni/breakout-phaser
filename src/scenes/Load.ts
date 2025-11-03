@@ -105,8 +105,8 @@ export class Load extends Phaser.Scene {
     this.load.image(Sprites.languageSelectionBox, "assets/images/UI/language_selection_box.png")
     this.load.image(Sprites.optionsBox, "assets/images/UI/options_box.png")
     this.load.spritesheet(Sprites.arrowButton, "assets/images/UI/arrow_button.png", {
-      frameHeight: 100,
-      frameWidth: 80,
+      frameHeight: 96,
+      frameWidth: 66,
     })
     this.load.spritesheet(Sprites.titleFrame, "assets/images/UI/title_frame.png", {
       frameWidth: 270,

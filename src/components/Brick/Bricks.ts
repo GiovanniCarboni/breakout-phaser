@@ -144,6 +144,7 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
       if (brick.texture.key === Sprites.glassBrick && +brick.frame.name === 0) brick.setFrame(1)
       return true
     })
+    return this
   }
 
   //////////////////////////////////////////////////////////////

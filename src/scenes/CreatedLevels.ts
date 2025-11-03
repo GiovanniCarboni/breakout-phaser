@@ -3,318 +3,154 @@ import { transition } from "../anims/SceneTransitions"
 import Brick from "../components/Brick/Brick"
 import Bricks, { createBricks } from "../components/Brick/Bricks"
 import { createSmallButton } from "../components/UI/button/SmallButton"
-import Button, { createButton } from "../components/UI/button/Button"
-import { Anims, Scenes, Sprites, StorageKeys } from "../constants"
+import { createButton } from "../components/UI/button/Button"
+import { Scenes, Sprites, StorageKeys } from "../constants"
 import { storage } from "../utils/gneral"
+import ArrowButton, { createArrowButton } from "../components/UI/button/ArrowButton"
 
 export class CreatedLevels extends Phaser.Scene {
-  private templates!: { id: number; template: number[][] }[]
-  private representation!: Bricks[]
+  private levels: {
+    representation: Bricks,
+    model: { id: number, template: number[][] }
+  }[] = []
   private currentlyDisplayed = 0
-  private currentLevelId!: number
   private dots!: Phaser.GameObjects.Group
   private dotHighlight!: Phaser.GameObjects.Image
-  private deleteButton!: Button
+  private leftBtn!: ArrowButton
+  private rightBtn!: ArrowButton
 
   constructor() {
     super({ key: Scenes.createdLevels })
   }
 
   create() {
-    //////////////////////////////////////////////////////////////
-    ////// SKIP TO EDITOR IF NO SAVED DATA
-    const data = storage.get(StorageKeys.createdLevels)
-    if (!data) {
-      this.scene.start(Scenes.LevelEditor, {
-        id: undefined,
-        template: undefined,
-      })
-      this.scene.stop()
-      return
-    } else {
-      this.templates = data
-      this.currentlyDisplayed = 0
-    }
+    this.cameras.main.setBackgroundColor("#110702")
+    this.addArrowButtons()
+    this.addFrame()
+    this.addButtons()
+    this.reset()
+  }
 
-    this.dots = this.add.group({
-      classType: Phaser.GameObjects.Image,
-    })
+  private goTo(scene:Scenes, opt?:any) {
+    transition("fadeOut", this, () => this.scene.start(scene, opt).stop())
+  }
 
-    // transition("fadeIn", this)
+  private getCurrentLevelModel() {
+    return this.levels[this.currentlyDisplayed].model
+  }
 
-    this.addDots()
-
-    //////////////////////////////////////////////////////////
-    ////// GAME FRAME
+  //////////////////////////////////////////////////////////////
+  ////// CREATE CANVAS FRAME
+  private addFrame() {
     this.add.image(0, 0, Sprites.sideBar).setOrigin(0, 0)
     this.add.image(this.scale.width, 0, Sprites.sideBar).setOrigin(1, 0)
-    this.add
-      .image(0, 0, Sprites.sideBar)
-      .setOrigin(1, 0)
-      .setRotation(Phaser.Math.DegToRad(-90))
-    this.add
-      .image(0, this.scale.height, Sprites.sideBar)
-      .setOrigin(0, 0)
-      .setRotation(Phaser.Math.DegToRad(-90))
-    ///////////////////////////////////////////////////////////
-
-    // SET BACKGROUND COLOR
-    this.cameras.main.setBackgroundColor("#110702")
-
-    //////////////////////////////////////////////////////////////
-    ////// BACK BUTTON
-    createSmallButton(
-      135,
-      50,
-      t("Back"),
-      () => this.scene.start(Scenes.start),
-      this
-    )
-
-    //////////////////////////////////////////////////////////////
-    ////// LEVELS
-    this.setLevels()
-    // this.representation = this.templates.map(({ id, template }, i) => {
-    //   const bricks = createBricks(this, undefined, template, {
-    //     width: 36,
-    //     height: 14,
-    //     offset: {
-    //       top: 120,
-    //       left: 210,
-    //     },
-    //     padding: 2.7,
-    //   }).setVisible(false)
-    //   if (i === 0) bricks.setVisible(true)
-    //   bricks.getChildren().forEach((child) => {
-    //     (child as Brick).setScale(0.7)
-    //   })
-    //   return bricks!
-    // })
-
-    this.initArrowButtons()
-
-    this.currentLevelId = this.templates[0].id
-
-    //////////////////////////////////////////////////////////////
-    ////// BUTTONS
-    createButton(
-      this.scale.width - 240,
-      this.scale.height - 80,
-      t("Edit"),
-      this.handleEdit,
-      this
-    )
-    createButton(
-      this.scale.width / 2,
-      this.scale.height - 80,
-      t("New"),
-      this.handleNew,
-      this
-    )
-    this.deleteButton = createButton(
-      240,
-      this.scale.height - 80,
-      t("Delete"),
-      this.handleDelete,
-      this
-    )
-    createButton(
-      this.scale.width / 2,
-      this.scale.height - 180,
-      "Play",
-      this.handlePlay,
-      this,
-      true
-    )
+    this.add.image(0, 0, Sprites.sideBar).setOrigin(1, 0).setRotation(Phaser.Math.DegToRad(-90))
+    this.add.image(0, this.scale.height, Sprites.sideBar).setOrigin(0, 0).setRotation(Phaser.Math.DegToRad(-90))
   }
 
   //////////////////////////////////////////////////////////////
-  ////// HANDLE NEW
-  handleNew() {
-    if (this.templates.length >= 10) {
-      this.cameras.main.shake(100, 0.005)
-      return
-    }
-    transition("fadeOut", this, () => {
-      this.scene.start(Scenes.LevelEditor, {
-        id: null,
-        template: null,
-      })
-      this.scene.stop()
-    })
+  ////// CREATE BUTTONS
+  private addButtons() {
+    const { width: canvasW, height: canvasH } = this.scale
+    createSmallButton(135, 50, t("Back"), () => this.scene.start(Scenes.start), this)
+    createButton(canvasW-240, canvasH-80, t("Edit"), () => this.goTo(Scenes.LevelEditor, this.getCurrentLevelModel()), this)
+    createButton(canvasW/2, canvasH-80, t("New"), this.handleNew, this)
+    createButton(240, canvasH-80, t("Delete"), this.handleDelete, this)
+    createButton(canvasW/2, canvasH-180, "Play", () => this.goTo(Scenes.game, { isCustom: true, template: this.getCurrentLevelModel().template }), this, true)
   }
 
   //////////////////////////////////////////////////////////////
-  ////// HANDLE NEW
-  handleEdit() {
-    transition("fadeOut", this, () => {
-      this.scene.start(
-        Scenes.LevelEditor,
-        this.templates[this.currentlyDisplayed]
-      )
-      this.scene.stop()
-    })
+  ////// HANDLE CREATE NEW LEVEL
+  private handleNew() {
+    if (this.levels.length >= 10) return this.cameras.main.shake(100, 0.005)
+    this.goTo(Scenes.LevelEditor, { id: null, template: null })
   }
 
   //////////////////////////////////////////////////////////////
-  ////// HANDLE PLAY
-  handlePlay() {
-    transition("fadeOut", this, () => {
-      this.scene.start(Scenes.game, {
-        isCustom: true,
-        template: this.templates[this.currentlyDisplayed].template,
-      })
-      this.scene.stop()
-    })
-  }
-
-  //////////////////////////////////////////////////////////////
-  ////// HANDLE DELETE
-  handleDelete() {
+  ////// HANDLE DELETE LEVEL
+  private handleDelete() {
     const savedLevels = storage.get(StorageKeys.createdLevels)
-    if (savedLevels) {
-      const newSavedLevels = savedLevels.filter(
-        (level: { id: number }) => level.id !== this.currentLevelId
-      )
-      if (newSavedLevels.length === 0) {
-        storage.remove(StorageKeys.createdLevels)
-        this.scene.start(Scenes.start).stop()
-      } else {
-        storage.set(StorageKeys.createdLevels, newSavedLevels)
-        this.scene.start(Scenes.start).stop()
-      }
+    if (!savedLevels) return 
+    const newSavedLevels = savedLevels.filter((level: { id:number }) => level.id !== this.getCurrentLevelModel().id)
+    if (newSavedLevels.length === 0) {
+      storage.remove(StorageKeys.createdLevels)
+      this.goTo(Scenes.start)
+    } else {
+      storage.set(StorageKeys.createdLevels, newSavedLevels)
+      this.reset()
     }
   }
 
   //////////////////////////////////////////////////////////////
-  ////// CREATE LEVEL REPRESENTATIONS
-  setLevels() {
-    this.representation = this.templates.map(({ id, template }, i) => {
-      const bricks = createBricks(this, undefined, template, {
+  ////// INITIALIZE SCENE
+  private reset() {
+    const models = storage.get(StorageKeys.createdLevels)
+    if (!models) return this.scene.start(Scenes.LevelEditor, { template: null }).stop()
+    this.setLevels(models)
+    this.addDots()
+    this.setArrowButtonsState()
+  }
+
+  //////////////////////////////////////////////////////////////
+  ////// CREATE LEVEL OBJECTS BASED ON TEMPLATES AND DISPLAY CURRENT LEVEL
+  private setLevels(models:{ id: number; template: number[][] }[]) {
+    this.levels.forEach(({ representation }) => representation?.clear(true, true)) // remove visible bricks from canvas before recreating them with new models
+    this.levels = models.map((model, i) => {
+      const bricks = createBricks(this, undefined, model.template, {
         width: 36,
         height: 14,
-        offset: {
-          top: 120,
-          left: 210,
-        },
+        offset: { top: 120, left: 210 },
         padding: 2.7,
-      }).setVisible(false)
-      bricks.revealInvisible()
-      if (i === 0) bricks.setVisible(true)
-      bricks.getChildren().forEach((child) => {
-        (child as Brick).setScale(0.7)
-      })
-      return bricks!
+      }).setVisible(false).revealInvisible()
+      if (this.currentlyDisplayed > models.length-1) this.currentlyDisplayed = models.length-1
+      if (i === this.currentlyDisplayed) bricks.setVisible(true)
+      bricks.children.each(brick => ((brick as Brick).setScale(0.7), true))
+      return { representation: bricks, model }
     })
   }
 
   //////////////////////////////////////////////////////////////
-  ////// ARROW BUTTONS
-  addDots() {
-    for (let i = 1; i <= this.templates.length; i++) {
-      const x = 210 + i * 40
-      this.dots.get(x, 50, Sprites.dot)
+  ////// CREATE NAVIGATION DOTS
+  private addDots() {
+    this.dotHighlight?.destroy(true)
+    if (this.dots?.children) {
+      this.dots.children.each(dot => (dot.off("pointerdown"), true))
+      this.dots.clear(true, true)
+    } else this.dots = this.add.group({ classType: Phaser.GameObjects.Image })
+    for (let i = 0; i <= this.levels.length-1; i++) {
+      const x = 250 + i * 40
+      const y = 50
+      const dot = this.dots.get(x, y, Sprites.dot)
+      dot.setInteractive({ cursor: Sprites.pointerCursor })
+      dot.on("pointerdown", () => this.setDisplayedLevel(i))
+      if (i === this.currentlyDisplayed) this.dotHighlight = this.add.image(x, y, Sprites.dotHighlight).setDepth(1)
     }
-    const firstDot = this.dots.getChildren()[0] as Phaser.GameObjects.Image
-    this.dotHighlight = this.add.image(
-      firstDot.x,
-      firstDot.y,
-      Sprites.dotHighlight
-    )
+  }
+
+  //////////////////////////////////////////////////////////////
+  ////// CHANGE DISPLAYED LEVEL
+  private setDisplayedLevel(index:number) {
+    if (index > this.levels.length - 1 || index < 0) return
+    this.currentlyDisplayed = index
+    this.levels.forEach(({ representation }, i) => representation.setVisible(i === this.currentlyDisplayed))
+    const currentDot = this.dots.getChildren()[this.currentlyDisplayed] as Phaser.GameObjects.Image
+    this.dotHighlight.setX(currentDot.x).setY(currentDot.y)
+    this.setArrowButtonsState()
   }
 
   //////////////////////////////////////////////////////////////
   ////// ARROW BUTTONS
-  initArrowButtons() {
-    const right = this.add
-      .sprite(
-        this.scale.width - 100,
-        this.scale.height / 2 - 60,
-        Sprites.arrowButton
-      )
-      .setInteractive({ cursor: Sprites.pointerCursor })
-    const left = this.add
-      .sprite(100, this.scale.height / 2 - 60, Sprites.arrowButton)
-      .setRotation(Phaser.Math.DegToRad(180))
-      .setInteractive({ cursor: Sprites.pointerCursor })
-
-    left.play(Anims.arrowButtonDisabled).setData("disabled", true)
-    if (this.representation.length - 1 === 0)
-      right.play(Anims.arrowButtonDisabled).setData("disabled", true)
-
-    const defaultBtnY = right.y
-
-    //////////////////////////////////////////////////////////////
-    ////// ARROW BUTTONS HANDLERS
-    const handleArrowDown = (
-      direction: "back" | "forward",
-      button: Phaser.GameObjects.Sprite
-    ) => {
-      const maxLength = this.representation.length - 1
-
-      let newlyDisplayed
-      if (direction === "back") newlyDisplayed = this.currentlyDisplayed - 1
-      if (direction === "forward") newlyDisplayed = this.currentlyDisplayed + 1
-
-      // if switch to next level happens
-      if (newlyDisplayed! <= maxLength && newlyDisplayed! >= 0) {
-        this.currentlyDisplayed = newlyDisplayed!
-        this.representation.forEach((level) => {
-          const group = level as Bricks
-          group.setVisible(false)
-        })
-        this.representation[this.currentlyDisplayed].setVisible(true)
-        this.currentLevelId = this.templates[this.currentlyDisplayed].id
-
-        const newDot = this.dots.getChildren()[
-          this.currentlyDisplayed
-        ] as Phaser.GameObjects.Image
-        this.dotHighlight.setX(newDot.x).setY(newDot.y)
-
-        // arrow button UI logic
-        button.setY(defaultBtnY + 3)
-        right.play(Anims.arrowButtonIdle)
-        left.play(Anims.arrowButtonIdle)
-        right.setData("disabled", false)
-        left.setData("disabled", false)
-        if (this.currentlyDisplayed === maxLength) {
-          button.setY(defaultBtnY)
-          right.play(Anims.arrowButtonDisabled)
-          right.setY(defaultBtnY)
-          right.setData("disabled", true)
-        }
-        if (this.currentlyDisplayed === 0) {
-          button.setY(defaultBtnY)
-          left.play(Anims.arrowButtonDisabled)
-          left.setY(defaultBtnY)
-          left.setData("disabled", true)
-        }
-      }
-    }
-    const handleArrowUp = (button: Phaser.GameObjects.Sprite) => {
-      if (button.getData("disabled")) return
-      button.setY(defaultBtnY - 3)
-    }
-    const handleArrowHover = (button: Phaser.GameObjects.Sprite) => {
-      if (button.getData("disabled")) return
-      button.setY(defaultBtnY - 3)
-    }
-    const handleArrowOut = (button: Phaser.GameObjects.Sprite) => {
-      if (button.getData("disabled")) return
-      button.setY(defaultBtnY)
-    }
-
-    right.on("pointerover", () => handleArrowHover(right))
-    right.on("pointerout", () => handleArrowOut(right))
-    right.on("pointerup", () => handleArrowUp(right))
-    right.on("pointerdown", () => {
-      handleArrowDown("forward", right)
-    })
-    left.on("pointerover", () => handleArrowHover(left))
-    left.on("pointerout", () => handleArrowOut(left))
-    left.on("pointerup", () => handleArrowUp(left))
-    left.on("pointerdown", () => {
-      handleArrowDown("back", left)
-    })
+  private addArrowButtons() {
+    const y = this.scale.height/2 - 60
+    this.leftBtn = createArrowButton(100, y, "left", () => this.setDisplayedLevel(this.currentlyDisplayed-1), this)
+    this.rightBtn = createArrowButton(this.scale.width-100, y, "right", () => this.setDisplayedLevel(this.currentlyDisplayed+1), this)
   }
+
+  private setArrowButtonsState() {
+    if (!this.currentlyDisplayed) this.leftBtn.disable()
+    else this.leftBtn.enable()
+    if (this.levels.length-1 === this.currentlyDisplayed) this.rightBtn.disable()
+    else this.rightBtn.enable()
+  }
+
 }

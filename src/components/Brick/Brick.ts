@@ -1,4 +1,4 @@
-import { Sprites, Anims, Sounds } from "../../constants"
+import { Sprites, Anims } from "../../constants"
 import { Game } from "../../scenes/Game"
 import Bricks from "./Bricks"
 
@@ -39,7 +39,7 @@ export default class Brick extends Phaser.Physics.Arcade.Sprite {
         this.setTexture(Sprites.fireBrick)
         this.scene.time.delayedCall(
           74 * Math.ceil(Math.random() * 8),
-          () => this.play(Anims.fireBrick, true)
+          () => this && this.scene && this.active && this.play(Anims.fireBrick, true)
         )
         this.setData("type", "fire")
         break
@@ -52,7 +52,7 @@ export default class Brick extends Phaser.Physics.Arcade.Sprite {
         this.setData("hits", 0)
         this.scene.time.delayedCall(
           74 * Math.ceil(Math.random() * 8),
-          () => this.play(Anims.iceBrickIdle)
+          () => this && this.scene && this.active && this.play(Anims.iceBrickIdle)
         )
         this.setData("type", "ice")
         break

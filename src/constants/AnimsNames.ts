@@ -39,9 +39,5 @@ export enum Anims {
   clearButtonIdle = "clearButtonIdle",
   clearButtonPressed = "clearButtonPressed",
   clearButtonHover = "clearButtonHover",
-  arrowButtonIdle = "arrowButtonIdle",
-  arrowButtonHover = "arrowButtonHover",
-  arrowButtonPressed = "arrowButtonPressed",
-  arrowButtonDisabled = "arrowButtonDisabled",
   titleFrame = "titleFrame",
 }
