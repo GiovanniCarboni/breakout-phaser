@@ -89,8 +89,8 @@ export class Game extends Phaser.Scene {
     ////// INIT ELEMENTS
     this.initSounds()
     this.initLives()
-    this.ball = createBall(this)
     this.paddle = createPaddle(this)
+    this.ball = createBall(this, this.paddle)
     this.powerups = createPowerups(this)
 
     //////////////////////////////////////////////////////////////
@@ -118,7 +118,7 @@ export class Game extends Phaser.Scene {
 
     const bricks = this.bricks.getChildren()
 
-    this.ball.update(this.paddle, bricks)
+    this.ball.update(bricks)
     this.paddle.update()
 
     ////// BALL FALLS BELOW
@@ -147,8 +147,7 @@ export class Game extends Phaser.Scene {
     if (
       !bricks.some((brick) => !this.bricks.notMandatoryBricks.includes(brick.getData("type"))) &&
       !this.isStageCleared
-    )
-      this.isStageCleared = true
+    ) this.isStageCleared = true
 
     ////// ADVANCE LEVEL / WIN
     if (this.isStageCleared) {
@@ -220,9 +219,7 @@ export class Game extends Phaser.Scene {
     this.lives = 3
     this.time.addEvent({
       delay: 100,
-      callback: () => {
-        this.setLives()
-      },
+      callback: () => this.setLives(),
       callbackScope: this,
     })
   }
@@ -250,48 +247,12 @@ export class Game extends Phaser.Scene {
   //////////////////////////////////////////////////////////////
   ////// COLLIDERS
   addColliders() {
-    this.physics.add.collider(
-      this.ball,
-      this.paddle,
-      this.ballHitPaddle,
-      undefined,
-      this
-    )
-    this.physics.add.collider(
-      this.bricks,
-      this.ball,
-      this.ballHitBrick,
-      undefined,
-      this
-    )
-    this.physics.add.collider(
-      this.bricks.poisonDrops,
-      this.paddle,
-      this.poisonDropHitPaddle,
-      undefined,
-      this
-    )
-    this.physics.add.collider(
-      this.powerups,
-      this.paddle,
-      this.powerupHitPaddle,
-      undefined,
-      this
-    )
-    this.physics.add.collider(
-      this.paddle.bullets,
-      this.bricks,
-      this.bulletHitBrick,
-      undefined,
-      this
-    )
-    this.physics.add.overlap(
-      this.ball,
-      this.ball.slowDownArea,
-      () => (this.ball.onSlowDownArea = true),
-      undefined,
-      this
-    )
+    this.physics.add.collider(this.ball, this.paddle, this.ballHitPaddle, undefined, this)
+    this.physics.add.collider(this.bricks, this.ball, this.ballHitBrick, undefined, this)
+    this.physics.add.collider(this.bricks.poisonDrops, this.paddle, this.poisonDropHitPaddle, undefined, this)
+    this.physics.add.collider(this.powerups, this.paddle, this.powerupHitPaddle, undefined, this)
+    this.physics.add.collider(this.paddle.bullets, this.bricks, this.bulletHitBrick, undefined, this)
+    this.physics.add.overlap(this.ball, this.ball.slowDownArea, () => (this.ball.onSlowDownArea = true), undefined, this)
     this.physics.add.collider(this.ball, this.topEdge)
   }
 
@@ -361,49 +322,21 @@ export class Game extends Phaser.Scene {
 
   //////////////////////////////////////////////////////////////
   ////// BALL HIT PADDLE
-  ballHitPaddle(obj1: any, _: any) {
+  ballHitPaddle() {
     let sound = this.sounds.bounce
-    if (this.bricks.shouldFall) sound = this.scheduleBrickFall()
-    if (this.ball.getIsToBeHeld()) sound = this.scheduleBallToBeHeld()
-    if (this.ball.speed <= 900) this.ball.setSpeed(this.ball.speed + this.ball.speedIncrement)
-    if (this.ball.isIgnited) this.ball.createSmoke(this.ball.x, this.ball.y)
-    this.setBallDirectionBasedOnPaddle()
-    sound.play()
-  }
-
-  setBallDirectionBasedOnPaddle() {
-    const diff = Math.abs(this.paddle.x - this.ball.x)
-    if (this.ball.x < this.paddle.x) {
-      const degree = 90 + (Math.ceil(diff) > 70 ? 70 : Math.ceil(diff))
-      this.ball.setDegDirection(degree)
-      this.ball.setSpeedOnInclPerc(this.calcInclinationPercentage(degree))
-    } else if (this.ball.x > this.paddle.x) {
-      const degree = 90 - (Math.ceil(diff) > 70 ? 70 : Math.ceil(diff))
-      this.ball.setDegDirection(degree)
-      this.ball.setSpeedOnInclPerc(this.calcInclinationPercentage(degree))
-    } else {
-      this.ball.setDegDirection(100)
-      this.ball.setSpeedOnInclPerc(0)
+    if (this.bricks.shouldFall) {
+      this.bricks.fall()
+      sound = this.sounds.clang
     }
-  }
-
-  scheduleBrickFall() {
-    const bricksArr = this.bricks.children.getArray()
-    const endReached = this.canvasH - (bricksArr[bricksArr.length - 1] as Brick).y < 180
-    this.bricks.fall(this, endReached)
-    return this.sounds.clang
-  }
-
-  scheduleBallToBeHeld() {
-    this.ball.setIsHeld(true)
-    this.ball.stopMovement()
-    this.ball.startOnInput()
-    return this.sounds.holdBall
-  }
-
-  calcInclinationPercentage(degree: number) {
-    const diff = Math.abs(degree - 90)
-    return Math.ceil((diff / 90) * 100)
+    if (this.ball.getIsToBeHeld()) {
+      this.ball.hold()
+      sound = this.sounds.holdBall
+    } else {
+      if (this.ball.speed <= 900) this.ball.incrementSpeed()
+      if (this.ball.isIgnited) this.ball.createSmoke(this.ball.x, this.ball.y)
+      this.ball.setDirectionBasedOnPaddle()
+    }
+    sound.play()
   }
 
   //////////////////////////////////////////////////////////////

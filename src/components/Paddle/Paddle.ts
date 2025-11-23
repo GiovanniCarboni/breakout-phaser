@@ -4,8 +4,7 @@ import { debug } from "../../scripts/debug"
 
 export default class Paddle extends Phaser.Physics.Arcade.Sprite {
   private gameScene: Game
-  // 1 = short; 2 = default; 3 = long
-  private paddleLength: 1 | 2 | 3 = 2
+  private paddleLength: 1 | 2 | 3 = 2 // 1 = short; 2 = default; 3 = long
   private lengthChanging = false
   private canvasH: number
   private canvasW: number
@@ -230,17 +229,12 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
   ////// HANDLE SHOOT
   handleShoot() {
     if (this.bullets.countActive() >= 5) return
-
     this.cannons.children.each((child, i) => {
       (child as Phaser.Physics.Arcade.Sprite).play(Anims.shoot)
       return true
     })
-
-    const cannonL =
-      this.cannons.getChildren()[0] as Phaser.Physics.Arcade.Sprite
-    const cannonR =
-      this.cannons.getChildren()[1] as Phaser.Physics.Arcade.Sprite
-
+    const cannonL = this.cannons.getChildren()[0] as Phaser.Physics.Arcade.Sprite
+    const cannonR = this.cannons.getChildren()[1] as Phaser.Physics.Arcade.Sprite
     const lBullet = this.bullets.get(cannonL.x, cannonL.y, Sprites.bullet)
     lBullet.setVelocity(0, -550)
     lBullet.setDepth(-1)

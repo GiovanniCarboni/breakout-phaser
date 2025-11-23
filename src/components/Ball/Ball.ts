@@ -10,31 +10,25 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
   isIgnited = false
   private isSpedUp = false
   private isToBeHeld = false
-  isHeld = false
+  private heldPositionPercOnPaddle: number | null = null // stores the position (% of paddle width) on the paddle when the ball was last held
   onSlowDownArea = false
   slowDownArea!: Phaser.GameObjects.Arc
   speed = 600
   private isMoving: boolean
-  private canvasH: number
-  private canvasW: number
   private startPosition
-  private ballIgnitionSound!:
-    | Phaser.Sound.NoAudioSound
-    | Phaser.Sound.HTML5AudioSound
-    | Phaser.Sound.WebAudioSound
+  private paddle: Paddle
+  private ballIgnitionSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound
 
   constructor(
     scene: Game,
     x: number,
     y: number,
-    texture: string,
-    frame?: string
+    paddle: Paddle,
   ) {
-    super(scene, x, y, texture, frame)
+    super(scene, x, y, Sprites.ball)
     this.gameScene = scene
-    this.canvasH = scene.scale.height
-    this.canvasW = scene.scale.width
-    this.startPosition = { x: this.canvasW / 2, y: this.canvasH - 40 }
+    this.paddle = paddle
+    this.startPosition = { x: scene.scale.width / 2, y: scene.scale.height - 40 }
 
     this.isMoving = false
     this.setScale(1.5, 1.5)
@@ -55,10 +49,10 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
 
   //////////////////////////////////////////////////////////////
   ////// UPDATE
-  update(paddle: Paddle, bricks: Phaser.GameObjects.GameObject[]) {
+  update(bricks: Phaser.GameObjects.GameObject[]) {
     if (!this.isMoving) {
-      const { x: paddleX, y: paddleY } = paddle.body!.position
-      this.body?.reset(paddleX+paddle.width/2, paddleY - 12)
+      if (this.isToBeHeld && this.heldPositionPercOnPaddle) this.body?.reset(this.calcBallXBasedOnPaddlePerc(), this.paddle.y - 22)
+      else this.body?.reset(this.paddle.x, this.paddle.y - 22)
       return
     }
 
@@ -112,10 +106,9 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
 
   //////////////////////////////////////////////////////////////
   ////// START BALL ON CLICK/ACTION BTN
-  startOnInput() {
-    if (this.getIsHeld()) this.setIsHeld(false)
-    if (this.gameScene.allowMouseInput) this.gameScene.input.once("pointerdown", this.start, this)
-    else this.gameScene.keys?.action?.once('down', this.start, this)
+  startOnInput(basedOnPositionOnPaddle = false) {
+    if (this.gameScene.allowMouseInput) this.gameScene.input.once("pointerdown", () => this.start(basedOnPositionOnPaddle), this)
+    else this.gameScene.keys?.action?.once('down', () => this.start(basedOnPositionOnPaddle), this)
   }
   removeEvents() {
     if (this.gameScene.allowMouseInput) this.gameScene.input.off("pointerdown", this.start)
@@ -125,25 +118,91 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
   //////////////////////////////////////////////////////////////
   ////// CREATE SLOW DOWN AREA
   initSlowDownArea() {
-    // this.slowDownArea = this.scene.add.circle(-200, -200, 200, 0x6666ff)
     this.slowDownArea = this.scene.add.circle(-200, -200, 50)
-    this.scene.physics.world.enableBody(
-      this.slowDownArea,
-      Phaser.Physics.Arcade.DYNAMIC_BODY
-    )
+    this.scene.physics.world.enableBody(this.slowDownArea, Phaser.Physics.Arcade.DYNAMIC_BODY)
   }
 
   //////////////////////////////////////////////////////////////
-  ////// START BALL
-  start() {
+  ////// START BALL MOVEMENT
+  start(basedOnPositionOnPaddle: boolean) {
     this.speed = 600
-    this.setDegDirection(70)
+    if (basedOnPositionOnPaddle && this.heldPositionPercOnPaddle) this.setDirectionBasedOnPaddle()
+    else this.setDegDirection(70)
     this.isMoving = true
   }
 
   //////////////////////////////////////////////////////////////
+  ////// HOLD BALL
+  setIsToBeHeld(toBeHeld: boolean) { 
+    this.isToBeHeld = toBeHeld
+  }
+
+  getIsToBeHeld() {
+    return this.isToBeHeld
+  }
+
+  hold() {
+    this.heldPositionPercOnPaddle = this.calcBallPositionPercOnPaddle()
+    this.gameScene.tweens.add({
+      targets: this,
+      x: this.calcBallXBasedOnPaddlePerc(),
+      y: this.paddle.y - 22,
+      ease: "Sine.easeOut",
+      duration: 30,
+      onComplete: () => {
+        this.stopMovement()
+        this.startOnInput(true)
+        this.setAngle(0)
+      }
+    }).play()
+  }
+
+  //////////////////////////////////////////////////////////////
+  ////// CHANGE BALL DIRECTION
+  setDirectionBasedOnPaddle() {
+    const paddleX = this.paddle.x
+    const diff = Math.abs(paddleX - this.x)
+    if (this.x < paddleX) {
+      const degree = 90 + (Math.ceil(diff) > 70 ? 70 : Math.ceil(diff))
+      this.setDegDirection(degree)
+      this.setSpeedOnInclPerc(this.calcInclinationPercentage(degree))
+    } else if (this.x > paddleX) {
+      const degree = 90 - (Math.ceil(diff) > 70 ? 70 : Math.ceil(diff))
+      this.setDegDirection(degree)
+      this.setSpeedOnInclPerc(this.calcInclinationPercentage(degree))
+    } else {
+      this.setDegDirection(100)
+      this.setSpeedOnInclPerc(0)
+    }
+  }
+
+  private setDegDirection(direction: number) {
+    const rad = Phaser.Math.DegToRad(direction) 
+    this.setVelocity(Math.cos(rad) * this.speed, Math.sin(-rad) * this.speed)
+  }
+
+  //////////////////////////////////////////////////////////////
+  ////// CALCULATIONS
+  private calcInclinationPercentage(degree: number) {
+    const diff = Math.abs(degree - 90)
+    return Math.ceil((diff / 90) * 100)
+  }
+
+  private calcBallPositionPercOnPaddle() {
+    const { x, width } = this.paddle
+    return ((this.x - (x - width/2)) / width) * 100
+  }
+
+  // calculates the ball x based on the percentage of the width of the paddle the ball should stay at
+  private calcBallXBasedOnPaddlePerc() {
+    const padding = 30
+    const pixelsOnPaddle = Phaser.Math.Clamp((this.heldPositionPercOnPaddle! / 100) * this.paddle.width, padding, this.paddle.width - padding)
+    return this.paddle.x - this.paddle.width / 2 + pixelsOnPaddle
+  }
+
+  //////////////////////////////////////////////////////////////
   ////// CHANGE BALL SPEED
-  setSpeed(speed: number) {
+  private setSpeed(speed: number) {
     let x = this.body?.velocity.x! / this.speed
     let y = this.body?.velocity.y! / this.speed
     this.speed = speed
@@ -152,29 +211,26 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
     this.setVelocity(x, y)
   }
 
-  //////////////////////////////////////////////////////////////
-  ////// SET STOP BALL ON PADDLE COLLIDE, SCHEDULE CLICK EVENT TO START AGAIN
-  setIsToBeHeld(toBeHeld: boolean) {
-    this.isToBeHeld = toBeHeld
+  private setSpeedOnInclPerc(inclinationPercentage: number) {
+    if (inclinationPercentage < 30 && this.speed > 750) {
+      this.setSpeed(this.speed - 130)
+    } else if (inclinationPercentage < 50 && this.speed < 1200 ) {
+      this.setSpeed(this.speed + 50)
+    } else if (inclinationPercentage < 70 && this.speed < 1350) {
+      this.setSpeed(this.speed + 100)
+    } else if (this.speed < 1600) {
+      this.setSpeed(this.speed + 210)
+    }
   }
-  getIsToBeHeld() {
-    return this.isToBeHeld
-  }
-  setIsHeld(held: boolean) {
-    this.isHeld = held
-  }
-  getIsHeld() {
-    return this.isHeld
-  }
-  
 
-  //////////////////////////////////////////////////////////////
-  ////// SET BALL DIRECTION (degrees)
-  setDegDirection(direction: number) {
-    this.setVelocity(
-      Math.cos(Phaser.Math.DegToRad(direction)) * this.speed,
-      Math.sin(Phaser.Math.DegToRad(-direction)) * this.speed
-    )
+  speedUp() {
+    if (this.isSpedUp) return
+    this.setSpeed(1200)
+    this.isSpedUp = true
+  }
+
+  incrementSpeed() {
+    this.setSpeed(this.speed + this.speedIncrement)
   }
 
   //////////////////////////////////////////////////////////////
@@ -184,6 +240,7 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
     this.isMoving = false
     this.isIgnited = false
     this.isSpedUp = false
+    this.heldPositionPercOnPaddle = null
     this.setIsToBeHeld(false)
     this.setVelocity(0)
     this.setAngle(0)
@@ -202,28 +259,6 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
   }
 
   //////////////////////////////////////////////////////////////
-  ////// SPEED UP BALL
-  speedUp() {
-    if (this.isSpedUp) return
-    this.setSpeed(1200)
-    this.isSpedUp = true
-  }
-
-  //////////////////////////////////////////////////////////////
-  ////// SET SPEED BASED ON INCLINATION PERCENTAGE
-  setSpeedOnInclPerc(inclinationPercentage: number) {
-    if (inclinationPercentage < 30 && this.speed > 750) {
-      this.setSpeed(this.speed - 130)
-    } else if (inclinationPercentage < 50 && this.speed < 1200 ) {
-      this.setSpeed(this.speed + 50)
-    } else if (inclinationPercentage < 70 && this.speed < 1350) {
-      this.setSpeed(this.speed + 100)
-    } else if (this.speed < 1600) {
-      this.setSpeed(this.speed + 210)
-    }
-  }
-
-  //////////////////////////////////////////////////////////////
   ////// IGNITE BALL
   ignite() {
     if (this.isIgnited) return
@@ -238,53 +273,30 @@ export default class Ball extends Phaser.Physics.Arcade.Sprite {
   createSmoke(x: number, y: number) {
     const smoke = this.scene.add.sprite(x, y, Sprites.smoke).play(Anims.smoke)
     smoke.setScale(1.5, 1.5)
-    smoke.on("animationcomplete", () => {
-      smoke.destroy()
-    })
+    smoke.on("animationcomplete", () => smoke.destroy())
   }
 
   //////////////////////////////////////////////////////////////
   ////// ADD SPARKLES (IGNITED BALL ONLY)
   addFireSparkles() {
-    const randomValue = Math.ceil(Math.random() * 7)
-    if (randomValue === 1 && this.isMoving) {
-      const sparkle = this.scene.add.sprite(this.x, this.y, Sprites.sparkle)
-      this.scene.time.addEvent({
-        delay: Math.random() * 550,
-        callback: () => sparkle.destroy(),
-      })
-    }
-    if (randomValue === 2 && this.isMoving) {
-      const sparkle = this.scene.add.sprite(
-        this.x + 5,
-        this.y - 2,
-        Sprites.sparkle
-      )
-      this.scene.time.addEvent({
-        delay: Math.random() * 450,
-        callback: () => {
-          sparkle.destroy()
-        },
-      })
-    }
-    if (randomValue === 3 && this.isMoving) {
-      const sparkle = this.scene.add.sprite(
-        this.x - 4,
-        this.y - 3,
-        Sprites.sparkle
-      )
-      this.scene.time.addEvent({
-        delay: Math.random() * 250,
-        callback: () => {
-          sparkle.destroy()
-        },
-      })
-    }
+    if (!this.isMoving) return
+    const randomValue = Math.ceil(Math.random() * 7) - 1
+    const settings = [
+      { position: [this.x, this.y], delay: 550 },
+      { position: [this.x + 5, this.y -2], delay: 450 },
+      { position: [this.x - 4, this.y - 3], delay: 250 }
+    ]
+    if (randomValue >= settings.length) return
+    const [ x, y ] = settings[randomValue].position
+    const delay = settings[randomValue].delay
+    const sparkle = this.scene.add.sprite(x, y, Sprites.sparkle)
+    this.scene.time.addEvent({ delay: Math.random() * delay, callback: () => sparkle.destroy() })
   }
+
 }
 
-export const createBall = function (scene: Game) {
-  const ball = new Ball(scene, 0, 0, Sprites.ball)
+export const createBall = function (scene: Game, paddle: Paddle) {
+  const ball = new Ball(scene, 0, 0, paddle)
   scene.add.existing(ball)
   scene.physics.world.enableBody(ball, Phaser.Physics.Arcade.DYNAMIC_BODY)
   ball.init()

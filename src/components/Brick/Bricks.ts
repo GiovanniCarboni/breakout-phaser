@@ -12,9 +12,11 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
   private _shouldFall = false
   public poisonDrops: Phaser.Physics.Arcade.Group
   public notMandatoryBricks = [ "metal", "grass" ]
+  private currentScene: Game | Phaser.Scene
 
   constructor(scene: Phaser.Scene | Game, config: any) {
     super(scene.physics.world, config)
+    this.currentScene = scene
     this.poisonDrops = scene.physics.add.group({ classType: Phaser.Physics.Arcade.Sprite })
     if (debug.bricksFall) this.shouldFall = true
   }
@@ -52,7 +54,7 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
 
   //////////////////////////////////////////////////////////////
   ////// CREATE BRICKS
-  fillBricks(scene: Phaser.Scene | Game, template: LevelTemplate) {
+  fillBricks(template: LevelTemplate) {
     const { info, layout } = template
     let entryNr = 0
     for (let row = 0; row < layout.length; row++) {
@@ -60,7 +62,7 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
         if (layout[row][col] !== 0) {
           let brickX = col * (info.width + info.padding) + info.offset.left
           let brickY = row * (info.height + info.padding) + info.offset.top
-          let newBrick = createBrick(scene, brickX, brickY, {
+          let newBrick = createBrick(this.currentScene, brickX, brickY, {
             type: layout[row][col],
             entryNr,
           }, this)
@@ -149,8 +151,10 @@ export default class Bricks extends Phaser.Physics.Arcade.Group {
 
   //////////////////////////////////////////////////////////////
   ////// BRICKS FALL ONE SLOT (OR TRY TO)
-  fall(scene: Phaser.Scene, holdPosition: boolean) {
-    scene.tweens.add({
+  fall() {
+    const bricksArr = this.children.getArray()
+    const holdPosition = this.currentScene.scale.height - (bricksArr[bricksArr.length - 1] as Brick).y < 180
+    this.currentScene.tweens.add({
       targets: this.children.getArray(),
       y: "+=" + (holdPosition ? 5 : 26),
       ease: "Sine.easeIn",
@@ -176,8 +180,8 @@ export const createBricks = function (
   info?: any
 ) {
   const bricks = new Bricks(scene, { classType: Brick })
-  if (level) bricks.fillBricks(scene, getLevelTemplate(level))
+  if (level) bricks.fillBricks(getLevelTemplate(level))
   // use custom level
-  else bricks.fillBricks(scene, getLevelTemplate(0, template, info))
+  else bricks.fillBricks(getLevelTemplate(0, template, info))
   return bricks
 }
