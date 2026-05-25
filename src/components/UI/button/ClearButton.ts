@@ -1,4 +1,4 @@
-import { Anims, Sprites } from "../../../constants"
+import { Sprites } from "../../../constants"
 
 export default class ClearButton extends Phaser.GameObjects.Sprite {
   constructor(
@@ -12,22 +12,20 @@ export default class ClearButton extends Phaser.GameObjects.Sprite {
     this.setOrigin(0.5, 0.5).setInteractive({ cursor: Sprites.pointerCursor })
   }
 
-  //////////////////////////////////////////////////////////////
-  ////// INIT CLEAR BUTTON
   init(onClick: () => void) {
     this.on("pointerdown", () => {
-      this.play(Anims.clearButtonPressed)
+      this.setFrame(1)
     })
     this.on("pointerup", () => {
       onClick()
-      this.play(Anims.clearButtonHover)
+      this.setFrame(2)
     })
     this.on("pointerover", (pointer: Phaser.Input.Pointer) => {
-      this.play(Anims.clearButtonHover)
-      if (pointer.isDown) this.play(Anims.clearButtonPressed)
+      this.setFrame(2)
+      if (pointer.isDown) this.setFrame(1)
     })
     this.on("pointerout", () => {
-      this.play(Anims.clearButtonIdle)
+      this.setFrame(0)
     })
   }
 }

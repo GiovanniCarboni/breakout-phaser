@@ -2,20 +2,22 @@ import { t } from "i18next"
 import Brick from "../components/Brick/Brick"
 import Bricks, { createBricks } from "../components/Brick/Bricks"
 import { createSmallButton } from "../components/UI/button/SmallButton"
-import { createClearButton } from "../components/UI/button/ClearButton"
+import ClearButton, { createClearButton } from "../components/UI/button/ClearButton"
 import { Anims, Fonts, Scenes, Sounds, Sprites, StorageKeys } from "../constants"
 import { transition } from "../anims/SceneTransitions"
 import { storage } from "../utils/gneral"
+import EraserButton, { createEraserButton } from "../components/UI/button/EraserButton"
 
 export class LevelEditor extends Phaser.Scene {
   private levelId?: number
   private slots!: Bricks
-  private clearButton!: Phaser.GameObjects.Sprite
+  private clearButton!: ClearButton
   private playButton!: Phaser.GameObjects.Sprite
   private selectedBrick?: Phaser.GameObjects.Sprite
   private brickHighlight?: Phaser.GameObjects.Sprite
   private message?: Phaser.GameObjects.Text
   private messageTimeout?: Phaser.Time.TimerEvent
+  private eraser!: EraserButton
   private sounds!: {
     [key: string]:
       | Phaser.Sound.NoAudioSound
@@ -29,33 +31,19 @@ export class LevelEditor extends Phaser.Scene {
 
   //////////////////////////////////////////////////////////////
   ////// INIT
-  init(data: { id: number; template: number[][] }) {
-    // toggle eraser cursor on pointer right btn down
-    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => pointer.rightButtonDown() && this.input.setDefaultCursor(Sprites.eraserCursor))
-    this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => (pointer.rightButtonReleased() || pointer.button === 2) && this.input.setDefaultCursor(Sprites.defaultCursor))
-    
+  init(data: { id: number; template: number[][] }) {   
     this.selectedBrick = undefined
-
-    // there no incoming template (blank page)
-    if (!data.template && !data.id) {
+    if (!data.template && !data.id) { // there no incoming template (blank page)
       this.slots = createBricks(this, 9)
       this.levelId = Date.now()
-      // there is an incoming template
-    } else {
+    } else { // there is an incoming template
       this.levelId = data.id
-      this.slots = createBricks(
-        this,
-        undefined,
-        data.template.map((row, i) =>
-          row.map((num, j) => {
-            if (i === 0) return 0
-            if (j === 0) return 0
-            if (j === 18) return 0
-            return num === 0 ? 9 : num
-          })
-        )
-      )
-      this.slots.revealInvisible()
+      this.slots = createBricks(this, undefined, data.template.map((row, i) => row.map((num, j) => {
+        if (i === 0) return 0
+        if (j === 0) return 0
+        if (j === 18) return 0
+        return num === 0 ? 9 : num
+      }))).revealInvisible()
     }
   }
 
@@ -63,7 +51,6 @@ export class LevelEditor extends Phaser.Scene {
   ////// CREATE
   create() {
     transition("fadeIn", this)
-
     // set background color
     this.cameras.main.setBackgroundColor("#110702")
 
@@ -75,69 +62,50 @@ export class LevelEditor extends Phaser.Scene {
     ////// GAME FRAME
     this.add.image(0, 0, Sprites.sideBar).setOrigin(0, 0)
     this.add.image(this.scale.width, 0, Sprites.sideBar).setOrigin(1, 0)
-    this.add
-      .image(0, 0, Sprites.sideBar)
-      .setOrigin(1, 0)
-      .setRotation(Phaser.Math.DegToRad(-90))
-    this.add
-      .image(0, this.scale.height, Sprites.sideBar)
-      .setOrigin(0, 0)
-      .setRotation(Phaser.Math.DegToRad(-90))
+    this.add.image(0, 0, Sprites.sideBar).setOrigin(1, 0).setRotation(Phaser.Math.DegToRad(-90))
+    this.add.image(0, this.scale.height, Sprites.sideBar).setOrigin(0, 0).setRotation(Phaser.Math.DegToRad(-90))
     ///////////////////////////////////////////////////////////
 
     //////////////////////////////////////////////////////////////
     ////// SOUND
     this.sounds = {
-      shuffle: this.sound.add(Sounds.shuffle, { loop: false, volume: 0.2 }),
-      btnPressed: this.sound.add(Sounds.buttonPress, {
-        loop: false,
-        volume: 0.2,
-      }),
-      select: this.sound.add(Sounds.brickbreak, {
-        loop: false,
-        volume: 0.2,
-      }),
-      erase: this.sound.add(Sounds.erase, { loop: false })
+      shuffle: this.sound.add(Sounds.shuffle, {  volume: 0.2 }),
+      btnPressed: this.sound.add(Sounds.buttonPress, { volume: 0.2 }),
+      select: this.sound.add(Sounds.brickbreak, { volume: 0.2 }),
+      erase: this.sound.add(Sounds.erase)
     }
 
     //////////////////////////////////////////////////////////////
-    ////// BACK BUTTON
+    ////// BACK & SAVE BUTTONS
     createSmallButton(135, 50, t("Back"), this.handleBack, this)
+    createSmallButton(this.scale.width - 135, 50, t("Save"), this.handleSave, this)
 
     //////////////////////////////////////////////////////////////
     ////// CLEAR BUTTON
     this.clearButton = createClearButton(
-      205,
+      this.scale.width - 241,
       50,
       this.handleClear,
       this
-    ).setVisible(false)
+    ).setVisible(true)
+
+    //////////////////////////////////////////////////////////////
+    ////// SAVE BUTTON
+    this.eraser = createEraserButton(
+      this.scale.width - 200,
+      50,
+      this.unselectBrick,
+      this,
+    )
 
     //////////////////////////////////////////////////////////////
     ////// SELECT SLOT
     this.slots.children.each((slot) => {
-      slot.on(
-        "pointerover",
-        (pointer: Phaser.Input.Pointer) => this.handleSelectSlot(pointer, slot),
-        this
-      )
-      slot.on(
-        "pointerdown",
-        (pointer: Phaser.Input.Pointer) => this.handleSelectSlot(pointer, slot),
-        this
-      )
+      ["pointerover", "pointerdown"].forEach(ev => {
+        slot.on(ev, (pointer:Phaser.Input.Pointer) => this.handleSelectSlot(pointer, slot), this)
+      })
       return true
     })
-
-    //////////////////////////////////////////////////////////////
-    ////// SAVE BUTTON
-    createSmallButton(
-      this.scale.width - 135,
-      50,
-      t("Save"),
-      this.handleSave,
-      this
-    )
   }
 
   //////////////////////////////////////////////////////////////
@@ -157,6 +125,7 @@ export class LevelEditor extends Phaser.Scene {
   //////////////////////////////////////////////////////////////
   ////// HANDLE BACK
   handleBack() {
+    this.eraser.deactivate()
     this.input.setDefaultCursor(Sprites.defaultCursor)
     const savedData = storage.get(StorageKeys.createdLevels)
     transition("fadeOut", this, () => {
@@ -175,6 +144,8 @@ export class LevelEditor extends Phaser.Scene {
   ////// HANDLE CLEAR
   handleClear() {
     this.sounds.erase.play()
+    this.eraser.deactivate()
+    this.unselectBrick()
     this.slots.children.each((slotObj) => {
       const slot = slotObj as Brick
       if (slot.anims.isPlaying) slot.anims.stop()
@@ -221,7 +192,7 @@ export class LevelEditor extends Phaser.Scene {
   ////// MESSAGE IF CAN'T SAVE/PLAY
   canSave(): boolean {
     const template: number[][] = Bricks.getTemplateFromBricks(this.slots)
-    if (!template.flat().some((brick) => brick !== 0 && brick !== 3 && brick !== 7)) {
+    if (!template.flat().some((brick) => ![0, 3, 7].includes(brick))) {
       this.displayMessage(t("Template must contain at least one breakable brick"), true)
       return false
     }
@@ -234,92 +205,57 @@ export class LevelEditor extends Phaser.Scene {
     const data = storage.get(StorageKeys.createdLevels)
     const template = Bricks.getTemplateFromBricks(this.slots)
     // if no levels in local storage
-    if (!data) {
-      storage.set(StorageKeys.createdLevels, [
-        {
-          id: Date.now(),
-          template
-        },
-      ])
-    } else { // if there are levels in local storage
-      const savedLevels: { id: number; template: number[][] }[] = data
-      let existingLevelIndex
-      const existingLevel = savedLevels.find((level, i) => {
-        if (level.id === this.levelId) existingLevelIndex = i
-        return level.id === this.levelId
-      })
-      // if current level exists already (by id)
-      if (data && existingLevel && existingLevelIndex !== null) {
-        savedLevels[existingLevelIndex!].template = template
-        storage.set(StorageKeys.createdLevels, savedLevels)
-      } else { // if this is a new level
-        storage.set(StorageKeys.createdLevels, [...savedLevels, {
-          id: this.levelId,
-          template
-        }])
-      }
-    }
+    if (!data) return storage.set(StorageKeys.createdLevels, [{ id: Date.now(), template }])
+    // if there are levels in local storage
+    const savedLevels = data as { id: number; template: number[][] }[]
+    const existingLevelIndex = savedLevels.findIndex((level, i) => level.id === this.levelId)
+    // level is new
+    if (existingLevelIndex < 0) return storage.set(StorageKeys.createdLevels, [...savedLevels, {
+      id: this.levelId,
+      template
+    }])
+    // level exists
+    savedLevels[existingLevelIndex!].template = template
+    storage.set(StorageKeys.createdLevels, savedLevels)
   }
 
   //////////////////////////////////////////////////////////////
   ////// SELECT SLOT
-  handleSelectSlot(
-    pointer: Phaser.Input.Pointer,
-    slot: Phaser.GameObjects.GameObject
-  ) {
+  handleSelectSlot(pointer: Phaser.Input.Pointer, slot: Phaser.GameObjects.GameObject) {
     const selectedSlot = slot as Brick
-    if (pointer.leftButtonDown()) {
-      if (this.selectedBrick) {
-        if (selectedSlot.anims?.isPlaying) selectedSlot.anims.stop()
-        if (this.selectedBrick.anims?.isPlaying) {
-          selectedSlot.play(this.selectedBrick.anims.currentAnim!)
-        } else selectedSlot.setTexture(this.selectedBrick.texture.key)
-        const frameToShow = this.selectedBrick.getData("frameToShow")
-        if (frameToShow) selectedSlot.setFrame(frameToShow)
-      }
-    } else if (pointer.rightButtonDown()) {
-      if (selectedSlot.anims.isPlaying) selectedSlot.anims.stop()
-      if (selectedSlot.texture.key !== Sprites.blankBrick) {
-        !this.sounds.erase.isPlaying && this.sounds.erase.play()
-        selectedSlot.setTexture(Sprites.blankBrick)
-      }
-    }
+    if (!this.eraser.isActive() && pointer.leftButtonDown()) this.insertBrick(selectedSlot)
+    else if (this.eraser.isActive() && pointer.isDown) this.eraseBrick(selectedSlot)
+  }
+
+  insertBrick(selectedSlot: Brick) {
+    if (!this.selectedBrick) return
+    if (selectedSlot.anims?.isPlaying) selectedSlot.anims.stop()
+    if (this.selectedBrick.anims?.isPlaying) {
+      selectedSlot.play(this.selectedBrick.anims.currentAnim!)
+    } else selectedSlot.setTexture(this.selectedBrick.texture.key)
+    const frameToShow = this.selectedBrick.getData("frameToShow")
+    if (frameToShow) selectedSlot.setFrame(frameToShow)
+  }
+
+  eraseBrick(selectedSlot: Brick) {
+    if (selectedSlot.anims.isPlaying) selectedSlot.anims.stop()
+    if (selectedSlot.texture.key === Sprites.blankBrick) return
+    !this.sounds.erase.isPlaying && this.sounds.erase.play()
+    selectedSlot.setTexture(Sprites.blankBrick)
   }
 
   //////////////////////////////////////////////////////////////
   ////// PLAY BUTTON
   initPlayButton() {
     this.playButton = this.add
-      .sprite(
-        this.scale.width - 162,
-        this.scale.height - 89,
-        Sprites.playButton
-      )
-      .play(Anims.playButtonIdle)
+      .sprite(this.scale.width - 162, this.scale.height - 89, Sprites.playButton)
       .setInteractive({ cursor: Sprites.pointerCursor })
-
-    // play handlers
-    const playDown = () => {
-      this.playButton.play(Anims.playButtonPressed)
-    }
-    const playUp = () => {
-      this.startGame()
-    }
-    const playOver = (pointer: Phaser.Input.Pointer) => {
-      this.playButton.play(Anims.playButtonHover)
-      if (pointer.isDown) this.playButton.play(Anims.playButtonPressed)
-    }
-    const playOut = () => {
-      this.playButton.play(Anims.playButtonIdle)
-    }
-
-    // play listeners
-    this.playButton
-      .on("pointerdown", playDown)
-      .on("pointerup", playUp)
-      .on("pointerout", playOut)
+      .on("pointerdown", () => this.playButton.setFrame(1)) // pressed
+      .on("pointerup", () => this.startGame())
+      .on("pointerout", () => this.playButton.setFrame(0)) // idle
       .on("pointerover", (pointer: Phaser.Input.Pointer) => {
-        playOver(pointer)
+        this.playButton.setFrame(2) // hover
+        if (pointer.isDown) this.playButton.setFrame(1) // pressed
       })
   }
 
@@ -331,6 +267,7 @@ export class LevelEditor extends Phaser.Scene {
     this.saveToStorage()
     transition("fadeOut", this, () => {
       this.message = undefined
+      this.eraser.deactivate()
       this.scene.start(Scenes.game, { isCustom: true, template })
       this.scene.stop()
     })
@@ -386,18 +323,14 @@ export class LevelEditor extends Phaser.Scene {
 
     // UNSELECT BRICK
     this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
-      if (pointer.rightButtonDown() && this.selectedBrick) {
-        this.selectedBrick.destroy()
-        this.brickHighlight?.destroy()
-        this.selectedBrick = undefined
-      }
+      if (pointer.rightButtonDown()) this.unselectBrick()
     })
   }
 
-  handleSelectBrick(brick: Phaser.GameObjects.Sprite, sprite: string) {
+  private handleSelectBrick(brick: Phaser.GameObjects.Sprite, sprite: string) {
+    if (this.eraser.isActive()) this.eraser.deactivate()
+    this.unselectBrick()
     this.sounds.select.play()
-    if (this.brickHighlight) this.brickHighlight.destroy()
-    if (this.selectedBrick) this.selectedBrick.destroy()
     this.brickHighlight = Brick.createHighlight(brick.x, brick.y, this)
     this.selectedBrick = this.add.sprite(brick.x + 8, brick.y + 5, sprite)
     const frameToShow = brick.getData("frameToShow")
@@ -407,12 +340,19 @@ export class LevelEditor extends Phaser.Scene {
     }
     const toPlayAnim = brick.getData("toPlay")
     if (toPlayAnim) this.selectedBrick.play(toPlayAnim)
-    this.input.off("pointermove")
+    this.input.off("pointermove", this.handleMoveBrick, this)
     this.input.on("pointermove", this.handleMoveBrick, this)
   }
 
-  handleMoveBrick(pointer: Phaser.Input.Pointer) {
+  private handleMoveBrick(pointer: Phaser.Input.Pointer) {
     this.selectedBrick?.setX(pointer.x)
     this.selectedBrick?.setY(pointer.y)
+  }
+
+  private unselectBrick() {
+    if (!this.selectedBrick) return
+    this.selectedBrick.destroy()
+    this.brickHighlight?.destroy()
+    this.selectedBrick = undefined
   }
 }

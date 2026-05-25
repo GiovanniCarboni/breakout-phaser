@@ -49,6 +49,7 @@ export enum Sprites {
   backButton = "backButton",
   pauseButton = "pauseButton",
   clearButton = "clearButton",
+  eraserButton = "eraserButton",
   menuHanger = "menuHanger",
   languageSelectionBox = "languageSelectionBox",
   optionsBox = "optionsBox",
