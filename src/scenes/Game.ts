@@ -274,8 +274,9 @@ export class Game extends Phaser.Scene {
 
   //////////////////////////////////////////////////////////////
   ////// POWERUP HIT BALL
-  powerupHitPaddle(_: any, obj2: any) {
+  powerupHitPaddle(obj1: any, obj2: any) {
     const powerup = obj2 as Powerup
+    const paddle = obj1 as Paddle
     switch (powerup.getData("power")) {
       case Sprites.getLife:
         if (this.lives < 4) {
@@ -285,28 +286,29 @@ export class Game extends Phaser.Scene {
         }
         break
       case Sprites.loseLife:
-        this.sounds.lifeLost.play()
+        const wasInvulnerable = paddle.tryFlashInvulnerable()
+        if (wasInvulnerable) break
         this.lives--
         this.setLives()
         break
       case Sprites.expandPaddle:
-        this.paddle.expand()
+        paddle.expand()
         break
       case Sprites.shrinkPaddle:
-        this.paddle.shrink()
+        paddle.shrink()
         break
       case Sprites.igniteBall:
         this.ball.ignite()
         break
       case Sprites.addShooter:
-        this.paddle.addCannons()
+        paddle.addCannons()
         break
       case Sprites.speedUpBall:
         this.ball.speedUp()
         break
       case Sprites.holdBall:
         this.ball.setIsToBeHeld(true)
-        this.paddle.addBallHolder()
+        paddle.addBallHolder()
         break
       case Sprites.revealInvisible:
         this.sounds.spell.play()
@@ -488,11 +490,12 @@ export class Game extends Phaser.Scene {
     }
   }
 
-  poisonDropHitPaddle(_:any, dropObj:any) {
+  poisonDropHitPaddle(paddleObj:any, dropObj:any) {
     (dropObj as Phaser.Physics.Arcade.Sprite).destroy()
-    if (this.sounds.lifeLost.isPlaying) return
-    this.sounds.lifeLost.play()
+    const paddle = paddleObj as Paddle
     if (debug.poisonImmunity) return
+    const wasInvulnerable = paddle.tryFlashInvulnerable()
+    if (wasInvulnerable) return
     this.lives--
     this.setLives()
   }

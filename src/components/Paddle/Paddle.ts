@@ -8,6 +8,7 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
   private lengthChanging = false
   private canvasH: number
   private canvasW: number
+  private invulnerable = false
   public cannons!: Phaser.Physics.Arcade.Group
   public bullets!: Phaser.Physics.Arcade.Group
   public holdBallStubs!: Phaser.Physics.Arcade.Group
@@ -244,6 +245,33 @@ export default class Paddle extends Phaser.Physics.Arcade.Sprite {
 
     this.sounds.shot.play()
   }
+
+  //////////////////////////////////////////////////////////////
+  ////// INVULNERABILITY FRAMES
+  tryFlashInvulnerable(): boolean { // returns whether it was invulnerable before
+    if (this.invulnerable) return true
+    this.gameScene.sounds.lifeLost.play()
+    this.invulnerable = true
+    const duration = 1000
+    const pulseMs = 100
+    const repeats = Math.floor(duration / pulseMs) - 1
+    this.setTint(0xff6666)
+    this.gameScene.tweens.add({
+      targets: this,
+      alpha: 0.5,
+      ease: 'Sine.easeInOut',
+      yoyo: true,
+      duration: pulseMs / 2,
+      repeat: repeats,
+      onComplete: () => {
+        this.clearTint()
+        this.alpha = 1
+        this.invulnerable = false
+      }
+    })
+    return false
+  }
+
 }
 
 export const createPaddle = function (scene: Game) {
